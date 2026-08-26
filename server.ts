@@ -218,14 +218,14 @@ let ordersList: any[] = [
 
 let systemConfig = {
   marqueeNotice: "Với đội ngũ nhân sự năng động luôn sẵn sàng tư vấn và hỗ trợ phục vụ quý khách hàng 24/7",
-  hotline: "038 988 0369",
-  hotline2: "034 840 2466",
-  companyEmail: "tecnic.vn.medical@gmail.com",
-  headquarters: "Tầng 2, Tòa nhà New Skyline, KĐT Văn Quán, Q. Hà Đông, TP. Hà Nội",
-  bankName: "BIDV - Ngân hàng TMCP Đầu tư và Phát triển Việt Nam",
-  accountNumber: "8661234668",
-  accountHolder: "CONG TY CP CN VA DV Y TE TECNIC",
-  branch: "Chi nhánh Hà Tây, Hà Nội"
+  hotline: "034 84 02466",
+  hotline2: "038 988 0369",
+  companyEmail: "tecnic.medtech@gmail.com",
+  headquarters: "Tầng 2, Tòa nhà New Skyline, KĐT mới Văn Quán - Yên Phúc, Phường Hà Đông, TP. Hà Nội, Việt Nam",
+  bankName: "Ngân hàng Quân Đội (MB Bank)",
+  accountNumber: "787216666",
+  accountHolder: "CÔNG TY CỔ PHẦN GIẢI PHÁP CÔNG NGHỆ HỖ TRỢ Y TẾ TECNIC",
+  branch: ""
 };
 let estimatesList: any[] = [];
 let otpStore: Record<string, { code: string, expiresAt: number }> = {}; // Store OTPs in memory
@@ -378,13 +378,13 @@ app.post("/api/auth/send-otp", async (req: Request, res: Response) => {
       });
 
       await transporter.sendMail({
-        from: `"TECNIC MEDICAL" <${smtpUser}>`,
+        from: `"TECNIC MEDTECH" <${smtpUser}>`,
         to: email,
-        subject: "[MIỄN PHÍ] Mã xác nhận OTP từ TECNIC MEDICAL",
+        subject: "[MIỄN PHÍ] Mã xác nhận OTP từ TECNIC MEDTECH",
         html: `
           <div style="font-family: Arial, sans-serif; max-width: 500px; margin: 0 auto; border: 1px solid #e2e8f0; border-radius: 10px; overflow: hidden;">
             <div style="background-color: #143472; color: white; padding: 20px; text-align: center;">
-              <h2 style="margin: 0;">TECNIC MEDICAL</h2>
+              <h2 style="margin: 0;">TECNIC MEDTECH</h2>
               <p style="margin: 5px 0 0 0; font-size: 12px; color: #6ee7b7;">Dịch vụ xác thực Email / Gmail - Miễn phí 100%</p>
             </div>
             <div style="padding: 20px; text-align: center;">
@@ -559,7 +559,7 @@ app.post("/api/auth/login", (req: Request, res: Response) => {
       id: `USR-${Date.now().toString().slice(-6)}`,
       fullName: isEmail ? cleanId.split('@')[0].toUpperCase() : `Khách Hàng ${cleanId.slice(-4)}`,
       phone: isEmail ? "0389880369" : cleanId,
-      email: isEmail ? cleanId : "tecnic.vn.medical@gmail.com",
+      email: isEmail ? cleanId : "tecnic.medtech@gmail.com",
       address: "Hà Nội, Việt Nam",
       accountType: (selectedRole as any) || "CA_NHAN",
       clinicName: "",
@@ -624,7 +624,7 @@ app.post("/api/orders", (req: Request, res: Response) => {
     orderCode: `TECNIC-${Math.floor(100000 + Math.random() * 900000)}`,
     customerName,
     customerPhone,
-    customerEmail: customerEmail || "tecnic.vn.medical@gmail.com",
+    customerEmail: customerEmail || "tecnic.medtech@gmail.com",
     shippingAddress,
     items: orderItems,
     totalMarketPrice,

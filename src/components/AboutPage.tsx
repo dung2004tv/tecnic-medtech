@@ -437,12 +437,12 @@ export const AboutPage: React.FC<AboutPageProps> = ({
 
                   <div className="flex items-center gap-2">
                     <Phone className="w-4 h-4 text-emerald-600 shrink-0" />
-                    <span>Hotline 24/7: <b>034 84 02466</b></span>
+                    <span>Hotline 24/7: <b>034 84 02466 / 038 988 0369</b></span>
                   </div>
 
                   <div className="flex items-center gap-2">
                     <Mail className="w-4 h-4 text-blue-600 shrink-0" />
-                    <span>Email: <b>tecnic.vn.medical@gmail.com</b></span>
+                    <span>Email: <b>tecnic.medtech@gmail.com</b></span>
                   </div>
 
                   <div className="flex items-center gap-2">
@@ -476,7 +476,7 @@ export const AboutPage: React.FC<AboutPageProps> = ({
                 <div className="bg-gradient-to-r from-[#143472] to-[#0071ba] text-white p-4 rounded-xl flex items-center justify-between">
                   <div>
                     <div className="font-bold text-xs">Đặt lịch tư vấn & thử máy tại nhà:</div>
-                    <div className="text-amber-300 font-bold text-sm">034 84 02466</div>
+                    <div className="text-amber-300 font-bold text-sm">034 84 02466 / 038 988 0369</div>
                   </div>
                   <a
                     href="tel:0348402466"

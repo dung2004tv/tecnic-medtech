@@ -338,7 +338,7 @@ export const TecnicMedtechBanner: React.FC<TecnicMedtechBannerProps> = ({
             </div>
             <div>
               <p className="font-bold text-xs sm:text-sm text-slate-800">Tư Vấn Y Khoa 24/7</p>
-              <p className="text-[10px] sm:text-xs text-slate-500">Hotline: 034 84 02466</p>
+              <p className="text-[10px] sm:text-xs text-slate-500">034 84 02466 - 038 988 0369</p>
             </div>
           </div>
 

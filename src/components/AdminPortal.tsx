@@ -56,9 +56,9 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
   const [usersList, setUsersList] = useState<User[]>([]);
   const [systemConfig, setSystemConfig] = useState({
     marqueeNotice: "Với đội ngũ nhân sự năng động luôn sẵn sàng tư vấn và hỗ trợ phục vụ quý khách hàng 24/7",
-    hotline: "038 988 0369",
-    hotline2: "034 840 2466",
-    companyEmail: "tecnic.vn.medical@gmail.com",
+    hotline: "034 84 02466",
+    hotline2: "038 988 0369",
+    companyEmail: "tecnic.medtech@gmail.com",
     headquarters: "Tầng 2, Tòa nhà New Skyline, KĐT Văn Quán, Q. Hà Đông, TP. Hà Nội",
     bankName: "BIDV - Ngân hàng TMCP Đầu tư và Phát triển Việt Nam",
     accountNumber: "8661234668",

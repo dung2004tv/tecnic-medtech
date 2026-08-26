@@ -93,22 +93,27 @@ export const Header: React.FC<HeaderProps> = ({
         <div className="max-w-7xl mx-auto flex items-center justify-between gap-2">
           
           {/* Hotline & Advice */}
-          <div className="flex items-center gap-2 sm:gap-4 overflow-hidden">
-            <a 
-              href="tel:0348402466" 
-              className="flex items-center gap-1 text-blue-100 hover:text-amber-300 transition font-medium shrink-0"
-              title="Bấm để gọi hotline"
-            >
+          <div className="flex items-center gap-2 sm:gap-3 overflow-hidden">
+            <div className="flex items-center gap-1.5 text-blue-100 font-medium shrink-0">
               <Phone className="w-3 h-3 text-amber-400 shrink-0" />
               <span className="hidden xs:inline text-blue-200">Hotline:</span>
-              <b className="text-amber-300 text-xs sm:text-sm font-black tracking-wide">034 84 02466</b>
-              <span className="text-[10px] text-blue-300 hidden sm:inline">(Tư vấn 24/7)</span>
-            </a>
+              <a href="tel:0348402466" className="text-amber-300 text-xs sm:text-sm font-black tracking-wide hover:underline">
+                034 84 02466
+              </a>
+              <span className="text-blue-300 text-xs">/</span>
+              <a href="tel:0389880369" className="text-amber-300 text-xs sm:text-sm font-black tracking-wide hover:underline">
+                038 988 0369
+              </a>
+              <span className="text-[10px] text-blue-300 hidden sm:inline">(24/7)</span>
+            </div>
             
-            <span className="hidden lg:flex items-center gap-1.5 text-blue-200 truncate">
+            <a 
+              href="mailto:tecnic.medtech@gmail.com"
+              className="hidden lg:flex items-center gap-1.5 text-blue-200 hover:text-white truncate"
+            >
               <Mail className="w-3.5 h-3.5 text-blue-300 shrink-0" />
-              tecnic.vn.medical@gmail.com
-            </span>
+              tecnic.medtech@gmail.com
+            </a>
           </div>
 
           {/* Quick Links & Contact Button */}

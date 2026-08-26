@@ -79,12 +79,20 @@ export const ContactPage: React.FC<ContactPageProps> = ({
           </div>
           <h3 className="font-black text-sm text-slate-900">Hotline Tư Vấn 24/7</h3>
           <p className="text-xs text-slate-500">Tư vấn chọn thiết bị & đặt hàng nhanh:</p>
-          <a 
-            href="tel:0348402466" 
-            className="block text-base font-black text-red-600 hover:underline"
-          >
-            034 84 02466
-          </a>
+          <div className="space-y-1">
+            <a 
+              href="tel:0348402466" 
+              className="block text-base font-black text-red-600 hover:underline"
+            >
+              034 84 02466
+            </a>
+            <a 
+              href="tel:0389880369" 
+              className="block text-sm font-bold text-amber-700 hover:underline"
+            >
+              038 988 0369
+            </a>
+          </div>
         </div>
 
         {/* Email */}
@@ -95,10 +103,10 @@ export const ContactPage: React.FC<ContactPageProps> = ({
           <h3 className="font-black text-sm text-slate-900">Email Hỗ Trợ</h3>
           <p className="text-xs text-slate-500">Gửi yêu cầu báo giá dự án / phòng khám:</p>
           <a 
-            href="mailto:tecnic.vn.medical@gmail.com" 
+            href="mailto:tecnic.medtech@gmail.com" 
             className="block text-xs font-bold text-[#0071ba] truncate hover:underline"
           >
-            tecnic.vn.medical@gmail.com
+            tecnic.medtech@gmail.com
           </a>
         </div>
 

@@ -55,7 +55,7 @@ export const Footer: React.FC<FooterProps> = ({
             <HeadphonesIcon className="w-10 h-10 text-cyan-400" strokeWidth={1.5} />
             <div>
               <p className="font-bold text-sm">Hỗ trợ khách hàng 24/7</p>
-              <p className="text-xs text-amber-300 font-bold">Hotline: 034 84 02466</p>
+              <p className="text-xs text-amber-300 font-bold">Hotline: 034 84 02466 / 038 988 0369</p>
             </div>
           </div>
         </div>
@@ -81,11 +81,11 @@ export const Footer: React.FC<FooterProps> = ({
               </p>
               <p className="flex items-center gap-2">
                 <Phone className="w-4 h-4 text-cyan-400 shrink-0" />
-                <span><b className="text-white">Điện thoại / Hotline:</b> <b className="text-amber-300">034 84 02466</b></span>
+                <span><b className="text-white">Điện thoại / Hotline:</b> <b className="text-amber-300">034 84 02466 / 038 988 0369</b></span>
               </p>
               <p className="flex items-center gap-2">
                 <Mail className="w-4 h-4 text-cyan-400 shrink-0" />
-                <span><b className="text-white">Email:</b> tecnic.vn.medical@gmail.com</span>
+                <span><b className="text-white">Email:</b> tecnic.medtech@gmail.com</span>
               </p>
             </div>
           </div>

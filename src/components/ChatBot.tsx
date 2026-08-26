@@ -140,9 +140,10 @@ function generateClientMedicalReply(query: string): string {
   if (q.includes("thanh toán") || q.includes("giao hàng") || q.includes("địa chỉ") || q.includes("hotline") || q.includes("tài khoản")) {
     return `Dạ thông tin liên hệ và đặt hàng tại **TECNIC MEDTECH** (tecnic.vn):
 - 🏢 **Trụ sở**: Tầng 2, Tòa nhà New Skyline, KĐT Văn Quán, P. Hà Đông, Hà Nội.
-- 📞 **Hotline tư vấn 24/7**: 034 84 02466 (Tư vấn thiết bị tận tâm).
-- 💳 **Tài khoản doanh nghiệp**: Ngân hàng BIDV – Chi nhánh Hà Đông | STK: **8661234668** | Tên: CÔNG TY CP CN VA DV Y TE TECNIC.
-- 🚚 **Giao hàng**: Miễn phí ship toàn quốc cho đơn từ 1.000.000đ, hỗ trợ kiểm tra thiết bị trước khi thanh toán COD!`;
+- 📞 **Hotline tư vấn 24/7**: 034 84 02466 / 038 988 0369 (Tư vấn thiết bị tận tâm).
+- 📧 **Email**: tecnic.medtech@gmail.com
+- 💳 **Tài khoản doanh nghiệp**: Ngân hàng Quân Đội (MB Bank) | STK: **787216666** | Chủ TK: CÔNG TY CỔ PHẦN GIẢI PHÁP CÔNG NGHỆ HỖ TRỢ Y TẾ TECNIC.
+- 🚚 **Giao hàng**: Hỗ trợ giao hàng toàn quốc, kiểm tra thiết bị trước khi thanh toán COD!`;
   }
 
   return `Dạ xin chào Quý khách! Chuyên viên Tư vấn Thiết Bị & Vật Tư Y Tế TECNIC hân hạnh được hỗ trợ.

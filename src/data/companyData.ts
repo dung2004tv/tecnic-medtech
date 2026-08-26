@@ -1,5 +1,5 @@
 export const COMPANY_INFO = {
-  name: 'CÔNG TY CỔ PHẦN GIẢI PHÁP CÔNG NGHỆ HỖ TRỢ Y TẾ TECNIC',
+  name: 'CÔNG TY CỔ PHẦN GIẢI PHÁP CÔNG NGHỆ HỖ TRỢ Y TẾ TECNIC (TECNIC Medtech)',
   shortName: 'TECNIC MEDTECH',
   brandName: 'TECNIC MEDTECH',
   slogan: 'Giải pháp toàn diện - Tái sinh cuộc sống',
@@ -11,12 +11,12 @@ export const COMPANY_INFO = {
     'Phụng sự: Cổ đông',
     'Phụng sự: Cộng đồng, xã hội'
   ],
-  taxId: '0110912898',
+  taxId: '0110887948',
   address: 'Tầng 2, Tòa nhà New Skyline, KĐT mới Văn Quán - Yên Phúc, Phường Hà Đông, TP. Hà Nội, Việt Nam',
   googleMapsUrl: 'https://www.google.com/maps/search/?api=1&query=Tầng+2+Tòa+nhà+New+Skyline+Văn+Quán+Yên+Phúc+Hà+Đông+Hà+Nội',
   googleMapsEmbed: 'https://www.google.com/maps?q=Tầng+2+Tòa+nhà+New+Skyline+Văn+Quán+Yên+Phúc+Hà+Đông+Hà+Nội&output=embed',
-  hotlines: ['034 84 02466'],
-  emails: ['tecnic.vn.medical@gmail.com', 'nguyendungdbd1@gmail.com'],
+  hotlines: ['034 84 02466', '038 988 0369'],
+  emails: ['tecnic.medtech@gmail.com', 'nguyendungdbd1@gmail.com'],
   website: 'https://tecnic.vn/',
   bankAccount: {
     bankName: 'Ngân hàng MB Bank',
@@ -27,7 +27,7 @@ export const COMPANY_INFO = {
     note: 'TECNIC MEDTECH không yêu cầu chuyển tiền vào tài khoản cá nhân.'
   },
   workingHours: {
-    weekday: 'Thứ 2 – Thứ 6: sáng 08:00 – 12:00 , chiều 1:30 đến 5:30',
+    weekday: 'Thứ 2 – Thứ 6: sáng 08:00 – 12:00 , chiều 14h30 – 17h30',
     weekend: 'Thứ 7 – Chủ nhật: Nghỉ (Hotline hỗ trợ 24/7)'
   },
   coreFields: [

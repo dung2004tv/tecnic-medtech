@@ -157,12 +157,12 @@ export const CompanyAbout: React.FC<CompanyAboutProps> = ({ isOpen, onClose }) =
 
                 <div className="flex items-center gap-2">
                   <Phone className="w-4 h-4 text-emerald-600 shrink-0" />
-                  <span>Hotline: <b>034 84 02466</b></span>
+                  <span>Hotline: <b>034 84 02466 / 038 988 0369</b></span>
                 </div>
 
                 <div className="flex items-center gap-2">
                   <Mail className="w-4 h-4 text-blue-600 shrink-0" />
-                  <span>Email: <b>tecnic.vn.medical@gmail.com</b></span>
+                  <span>Email: <b>tecnic.medtech@gmail.com</b></span>
                 </div>
 
                 <div className="flex items-center gap-2">
