@@ -246,11 +246,11 @@ export const ChatBot: React.FC<ChatBotProps> = ({ onSelectProduct, allProducts }
   };
 
   return (
-    <aside aria-label="Hỗ trợ trực tuyến" className="fixed bottom-5 right-5 z-50 flex flex-col items-end">
+    <aside aria-label="Hỗ trợ trực tuyến" className="fixed bottom-16 sm:bottom-6 right-3 sm:right-6 z-50 flex flex-col items-end">
       
       {/* CHAT WINDOW */}
       {isOpen && (
-        <div className="bg-white w-[94vw] sm:w-[440px] h-[580px] rounded-3xl shadow-2xl border border-slate-200 flex flex-col overflow-hidden mb-3 animate-fadeIn">
+        <div className="bg-white w-[92vw] sm:w-[440px] h-[75vh] max-h-[580px] rounded-3xl shadow-2xl border border-slate-200 flex flex-col overflow-hidden mb-3 animate-fadeIn">
           
           {/* CHAT HEADER */}
           <div className="bg-[#143472] text-white p-3.5 sm:p-4 flex justify-between items-center shrink-0 border-b-2 border-amber-400">

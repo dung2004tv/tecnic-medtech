@@ -46,32 +46,31 @@ export const Navigation: React.FC<NavigationProps> = ({
   };
 
   return (
-    <nav className="bg-white border-b border-slate-200 shadow-sm relative z-40">
-      <div className="max-w-7xl mx-auto px-4 flex items-center justify-between text-xs font-bold">
+    <nav className="bg-white border-b border-slate-200 shadow-xs sticky top-[92px] sm:top-[104px] md:top-[112px] z-40">
+      <div className="max-w-7xl mx-auto px-2 sm:px-4 flex items-center justify-between text-xs font-bold">
         
         {/* MEGA MENU DROPDOWN BUTTON */}
-        <div className="relative">
+        <div className="relative shrink-0">
           <button
             onClick={() => {
               setIsMegaMenuOpen(!isMegaMenuOpen);
               if (currentView !== 'PRODUCTS') onSelectView('PRODUCTS');
             }}
-            onMouseEnter={() => setIsMegaMenuOpen(true)}
-            className="flex items-center gap-2.5 bg-[#143472] text-white px-5 py-3.5 hover:bg-blue-900 transition font-black tracking-wide text-sm"
+            className="flex items-center gap-1.5 sm:gap-2.5 bg-[#143472] hover:bg-blue-900 text-white px-3 sm:px-5 py-2.5 sm:py-3.5 transition font-black tracking-wide text-xs sm:text-sm cursor-pointer rounded-t-lg sm:rounded-none"
           >
-            <Menu className="w-5 h-5" />
-            <span className="uppercase text-xs sm:text-sm">DANH MỤC THIẾT BỊ Y TẾ</span>
-            <ChevronDown className="w-4 h-4 text-blue-200" />
+            <Menu className="w-4 h-4 sm:w-5 sm:h-5" />
+            <span className="uppercase text-[11px] sm:text-xs md:text-sm">DANH MỤC</span>
+            <ChevronDown className={`w-3.5 h-3.5 sm:w-4 sm:h-4 text-blue-200 transition-transform ${isMegaMenuOpen ? 'rotate-180' : ''}`} />
           </button>
 
           {/* MEGA MENU CONTENT */}
           {isMegaMenuOpen && (
             <div 
               onMouseLeave={() => setIsMegaMenuOpen(false)}
-              className="absolute left-0 top-full w-96 bg-white border border-slate-200 shadow-2xl rounded-b-2xl py-2 z-50 divide-y divide-slate-100 max-h-[80vh] overflow-y-auto"
+              className="fixed inset-x-2 sm:absolute sm:left-0 sm:right-auto top-[135px] sm:top-full w-auto sm:w-96 bg-white border border-slate-200 shadow-2xl rounded-2xl sm:rounded-t-none sm:rounded-b-2xl py-2 z-50 divide-y divide-slate-100 max-h-[75vh] overflow-y-auto"
             >
-              <div className="px-4 py-2.5 bg-slate-50 text-xs font-black text-slate-600 uppercase tracking-wider flex justify-between items-center">
-                <span>Hệ Sinh Thái Sản Phẩm Y Tế</span>
+              <div className="px-4 py-2.5 bg-slate-50 text-xs font-black text-slate-600 uppercase tracking-wider flex justify-between items-center sticky top-0 bg-slate-50/95 backdrop-blur-xs z-10">
+                <span>Danh Mục Thiết Bị Y Tế</span>
                 <span className="text-[#0071ba] font-black">Chuẩn Bộ Y Tế</span>
               </div>
               {CATEGORIES.map((cat) => (
@@ -82,7 +81,7 @@ export const Navigation: React.FC<NavigationProps> = ({
                     onSelectCategory(cat.id);
                     setIsMegaMenuOpen(false);
                   }}
-                  className={`w-full text-left px-4 py-3 flex items-center justify-between hover:bg-blue-50 transition group ${
+                  className={`w-full text-left px-4 py-2.5 sm:py-3 flex items-center justify-between hover:bg-blue-50 transition group cursor-pointer ${
                     activeCategory === cat.id && currentView === 'PRODUCTS' ? 'bg-blue-50 text-[#0071ba] font-black' : 'text-slate-800'
                   }`}
                 >
@@ -90,9 +89,9 @@ export const Navigation: React.FC<NavigationProps> = ({
                     <div className="p-1 rounded-lg bg-slate-100 group-hover:bg-white group-hover:shadow-xs transition">
                       {getCategoryIcon(cat.id)}
                     </div>
-                    <span className="text-sm font-bold group-hover:text-[#0071ba]">{cat.name}</span>
+                    <span className="text-xs sm:text-sm font-bold group-hover:text-[#0071ba]">{cat.name}</span>
                   </div>
-                  <span className="text-xs bg-slate-100 group-hover:bg-blue-100 text-slate-600 font-bold px-2 py-0.5 rounded-full">
+                  <span className="text-[11px] sm:text-xs bg-slate-100 group-hover:bg-blue-100 text-slate-600 font-bold px-2 py-0.5 rounded-full">
                     {cat.count}
                   </span>
                 </button>
@@ -101,59 +100,71 @@ export const Navigation: React.FC<NavigationProps> = ({
           )}
         </div>
 
-        {/* MAIN NAVIGATION TABS (HOME / PRODUCTS / ABOUT / ARTICLES / ADMIN) */}
-        <div className="flex items-center gap-1 overflow-x-auto no-scrollbar py-1 flex-1 mx-2">
+        {/* MAIN NAVIGATION TABS (Compact, swipeable, clear active states) */}
+        <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-1.5 flex-1 mx-1.5 sm:mx-3 scroll-smooth">
           
           {/* TAB: SẢN PHẨM */}
           <button
-            onClick={() => onSelectView('PRODUCTS')}
-            className={`px-4 py-2.5 rounded-lg whitespace-nowrap transition flex items-center gap-1.5 shrink-0 text-xs sm:text-sm ${
+            onClick={() => {
+              onSelectView('PRODUCTS');
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
+            className={`px-3 sm:px-4 py-1.5 sm:py-2 rounded-full whitespace-nowrap transition-all flex items-center gap-1.5 shrink-0 text-xs sm:text-sm cursor-pointer ${
               currentView === 'PRODUCTS'
-                ? 'text-[#0071ba] border-b-2 border-[#0071ba] bg-blue-50/60 font-black'
-                : 'text-slate-600 hover:text-[#0071ba]'
+                ? 'bg-[#0071ba] text-white shadow-xs font-bold'
+                : 'text-slate-700 hover:text-[#0071ba] hover:bg-slate-100 font-medium'
             }`}
           >
-            <ShoppingBag className="w-4 h-4" />
-            <span>Sản Phẩm Thiết Bị Y Tế</span>
+            <ShoppingBag className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+            <span>Sản Phẩm</span>
           </button>
-
 
           {/* TAB: GIỚI THIỆU TECNIC */}
           <button
-            onClick={() => onSelectView('ABOUT')}
-            className={`px-4 py-2.5 rounded-lg whitespace-nowrap transition flex items-center gap-1.5 shrink-0 text-xs sm:text-sm ${
+            onClick={() => {
+              onSelectView('ABOUT');
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
+            className={`px-3 sm:px-4 py-1.5 sm:py-2 rounded-full whitespace-nowrap transition-all flex items-center gap-1.5 shrink-0 text-xs sm:text-sm cursor-pointer ${
               currentView === 'ABOUT'
-                ? 'text-[#0071ba] border-b-2 border-[#0071ba] bg-blue-50/60 font-black'
-                : 'text-slate-600 hover:text-[#0071ba]'
+                ? 'bg-[#0071ba] text-white shadow-xs font-bold'
+                : 'text-slate-700 hover:text-[#0071ba] hover:bg-slate-100 font-medium'
             }`}
           >
-            <Info className="w-4 h-4 text-[#0071ba]" />
-            <span>Giới Thiệu TECNIC</span>
+            <Info className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+            <span>Giới Thiệu</span>
           </button>
 
           {/* TAB: TIN TỨC & KIẾN THỨC Y KHOA */}
           <button
-            onClick={() => onSelectView('ARTICLES')}
-            className={`px-4 py-2.5 rounded-lg whitespace-nowrap transition flex items-center gap-1.5 shrink-0 text-xs sm:text-sm ${
+            onClick={() => {
+              onSelectView('ARTICLES');
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
+            className={`px-3 sm:px-4 py-1.5 sm:py-2 rounded-full whitespace-nowrap transition-all flex items-center gap-1.5 shrink-0 text-xs sm:text-sm cursor-pointer ${
               currentView === 'ARTICLES'
-                ? 'text-[#0071ba] border-b-2 border-[#0071ba] bg-blue-50/60 font-black'
-                : 'text-slate-600 hover:text-[#0071ba]'
+                ? 'bg-[#0071ba] text-white shadow-xs font-bold'
+                : 'text-slate-700 hover:text-[#0071ba] hover:bg-slate-100 font-medium'
             }`}
           >
-            <BookOpen className="w-4 h-4 text-purple-600" />
-            <span>Tin Tức & Cẩm Nang Y Khoa</span>
+            <BookOpen className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+            <span className="hidden sm:inline">Tin Tức & Cẩm Nang</span>
+            <span className="sm:hidden">Cẩm Nang</span>
           </button>
 
           {/* TAB: LIÊN HỆ */}
           <button
-            onClick={() => onSelectView('CONTACT')}
-            className={`px-4 py-2.5 rounded-lg whitespace-nowrap transition flex items-center gap-1.5 shrink-0 text-xs sm:text-sm ${
+            onClick={() => {
+              onSelectView('CONTACT');
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
+            className={`px-3 sm:px-4 py-1.5 sm:py-2 rounded-full whitespace-nowrap transition-all flex items-center gap-1.5 shrink-0 text-xs sm:text-sm cursor-pointer ${
               currentView === 'CONTACT'
-                ? 'text-[#0071ba] border-b-2 border-[#0071ba] bg-blue-50/60 font-black'
-                : 'text-slate-600 hover:text-[#0071ba]'
+                ? 'bg-[#0071ba] text-white shadow-xs font-bold'
+                : 'text-slate-700 hover:text-[#0071ba] hover:bg-slate-100 font-medium'
             }`}
           >
-            <PhoneCall className="w-4 h-4 text-emerald-600" />
+            <PhoneCall className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
             <span>Liên Hệ</span>
           </button>
 
