@@ -1,0 +1,6 @@
+{
+  "name": "TECNIC Medical Store",
+  "description": "TECNIC - Hệ sinh thái thiết bị y tế, dụng cụ phục hồi chức năng và công nghệ hỗ trợ y tế chuẩn Bộ Y Tế. Kiến tạo để phụng sự.",
+  "requestFramePermissions": ["geolocation"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

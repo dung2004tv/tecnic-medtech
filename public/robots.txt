@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://ytetecnic.vn/sitemap.xml
