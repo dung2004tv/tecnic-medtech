@@ -1,0 +1,642 @@
+[
+  {
+    "id": "ORD-1787822869640",
+    "orderCode": "TECNIC-MT1008",
+    "customerName": "long",
+    "customerPhone": "0389880369",
+    "customerEmail": "nguyendungdbd1@gmail.com",
+    "shippingAddress": "2",
+    "items": [
+      {
+        "productId": 100018,
+        "productName": "XE LĂN X-72",
+        "productImage": "/products/XE LĂN X-72.png",
+        "price": 3850000,
+        "marketPrice": 4620000,
+        "quantity": 2,
+        "subtotal": 7700000,
+        "isBulky": false
+      }
+    ],
+    "totalMarketPrice": 9240000,
+    "totalTecnicPrice": 7700000,
+    "totalSaved": 1540000,
+    "shippingFee": 0,
+    "finalTotal": 7700000,
+    "paymentMethod": "BANK_TRANSFER",
+    "paymentStatus": "PENDING",
+    "orderStatus": "PENDING",
+    "needsInvoice": false,
+    "invoiceInfo": null,
+    "notes": "",
+    "createdAt": "2026-08-27T09:27:49.640Z",
+    "bankTransferInfo": {
+      "bankName": "Ngân hàng MB Bank",
+      "branch": "",
+      "accountNumber": "787216666",
+      "accountHolder": "CÔNG TY CỔ PHẦN GIẢI PHÁP CÔNG NGHỆ HỖ TRỢ Y TẾ TECNIC",
+      "transferContent": "TECNIC-MT1008",
+      "qrUrl": "https://img.vietqr.io/image/mb-787216666-compact2.png?amount=7700000&addInfo=TECNIC-MT1008&accountName=CONG%20TY%20CP%20CN%20VA%20DV%20Y%20TE%20TECNIC"
+    }
+  },
+  {
+    "id": "ORD-1787822641222",
+    "orderCode": "TECNIC-MT1007",
+    "customerName": "long",
+    "customerPhone": "0389880369",
+    "customerEmail": "nguyendungdbd1@gmail.com",
+    "shippingAddress": "2",
+    "items": [
+      {
+        "productId": 100026,
+        "productName": "GHẾ BÔ GBM-016",
+        "productImage": "/products/GHẾ BÔ GBM-016.png",
+        "price": 2290000,
+        "marketPrice": 2748000,
+        "quantity": 1,
+        "subtotal": 2290000,
+        "isBulky": false
+      }
+    ],
+    "totalMarketPrice": 2748000,
+    "totalTecnicPrice": 2290000,
+    "totalSaved": 458000,
+    "shippingFee": 0,
+    "finalTotal": 2290000,
+    "paymentMethod": "COD",
+    "paymentStatus": "UNPAID",
+    "orderStatus": "PROCESSING",
+    "needsInvoice": false,
+    "invoiceInfo": null,
+    "notes": "",
+    "createdAt": "2026-08-27T09:24:01.222Z",
+    "bankTransferInfo": {
+      "bankName": "Ngân hàng MB Bank",
+      "branch": "",
+      "accountNumber": "787216666",
+      "accountHolder": "CÔNG TY CỔ PHẦN GIẢI PHÁP CÔNG NGHỆ HỖ TRỢ Y TẾ TECNIC",
+      "transferContent": "TECNIC-MT1007",
+      "qrUrl": "https://img.vietqr.io/image/mb-787216666-compact2.png?amount=2290000&addInfo=TECNIC-MT1007&accountName=CONG%20TY%20CP%20CN%20VA%20DV%20Y%20TE%20TECNIC"
+    }
+  },
+  {
+    "id": "ORD-1787822379576",
+    "orderCode": "TECNIC-MT1006",
+    "customerName": "long",
+    "customerPhone": "0389880369",
+    "customerEmail": "nguyendungdbd1@gmail.com",
+    "shippingAddress": "2",
+    "items": [
+      {
+        "productId": 100014,
+        "productName": "KHUNG TẬP ĐI GBM-021",
+        "productImage": "/products/KHUNG TẬP ĐI GBM-021.png",
+        "price": 2290000,
+        "marketPrice": 2748000,
+        "quantity": 1,
+        "subtotal": 2290000,
+        "isBulky": false
+      }
+    ],
+    "totalMarketPrice": 2748000,
+    "totalTecnicPrice": 2290000,
+    "totalSaved": 458000,
+    "shippingFee": 0,
+    "finalTotal": 2290000,
+    "paymentMethod": "COD",
+    "paymentStatus": "UNPAID",
+    "orderStatus": "PROCESSING",
+    "needsInvoice": false,
+    "invoiceInfo": null,
+    "notes": "",
+    "createdAt": "2026-08-27T09:19:39.576Z",
+    "bankTransferInfo": {
+      "bankName": "Ngân hàng MB Bank",
+      "branch": "",
+      "accountNumber": "787216666",
+      "accountHolder": "CÔNG TY CỔ PHẦN GIẢI PHÁP CÔNG NGHỆ HỖ TRỢ Y TẾ TECNIC",
+      "transferContent": "TECNIC-MT1006",
+      "qrUrl": "https://img.vietqr.io/image/mb-787216666-compact2.png?amount=2290000&addInfo=TECNIC-MT1006&accountName=CONG%20TY%20CP%20CN%20VA%20DV%20Y%20TE%20TECNIC"
+    }
+  },
+  {
+    "id": "ORD-1787820783998",
+    "orderCode": "TECNIC-MT1005",
+    "customerName": "Quản Trị Viên Hệ Thống TECNIC",
+    "customerPhone": "0348402466",
+    "customerEmail": "admin@tecnic.vn",
+    "shippingAddress": "Hẹn thanh toán và nhận hàng tại trụ sở: Ngày 2004-12-04, lúc 03:52",
+    "items": [
+      {
+        "productId": 10002,
+        "productName": "GẬY 3 CHÂN LUCASS B-926",
+        "productImage": "/products/GẬY 3 CHÂN LUCASS B-926.png",
+        "price": 240000,
+        "marketPrice": 288000,
+        "quantity": 1,
+        "subtotal": 240000,
+        "isBulky": false
+      }
+    ],
+    "totalMarketPrice": 288000,
+    "totalTecnicPrice": 240000,
+    "totalSaved": 48000,
+    "shippingFee": 0,
+    "finalTotal": 240000,
+    "paymentMethod": "STORE_PAYMENT",
+    "paymentStatus": "PENDING",
+    "orderStatus": "PENDING",
+    "needsInvoice": false,
+    "invoiceInfo": null,
+    "notes": "",
+    "createdAt": "2026-08-27T08:53:03.998Z",
+    "bankTransferInfo": {
+      "bankName": "Ngân hàng MB Bank",
+      "branch": "",
+      "accountNumber": "787216666",
+      "accountHolder": "CÔNG TY CỔ PHẦN GIẢI PHÁP CÔNG NGHỆ HỖ TRỢ Y TẾ TECNIC",
+      "transferContent": "TECNIC-MT1005",
+      "qrUrl": "https://img.vietqr.io/image/mb-787216666-compact2.png?amount=240000&addInfo=TECNIC-MT1005&accountName=CONG%20TY%20CP%20CN%20VA%20DV%20Y%20TE%20TECNIC"
+    }
+  },
+  {
+    "id": "ORD-1787818300316",
+    "orderCode": "TECNIC-MT1004",
+    "customerName": "long",
+    "customerPhone": "0389880369",
+    "customerEmail": "nguyendungdbd1@gmail.com",
+    "shippingAddress": "số 2",
+    "items": [
+      {
+        "productId": 10002,
+        "productName": "GẬY 3 CHÂN LUCASS B-926",
+        "productImage": "/products/GẬY 3 CHÂN LUCASS B-926.png",
+        "price": 240000,
+        "marketPrice": 288000,
+        "quantity": 1,
+        "subtotal": 240000,
+        "isBulky": false
+      }
+    ],
+    "totalMarketPrice": 288000,
+    "totalTecnicPrice": 240000,
+    "totalSaved": 48000,
+    "shippingFee": 0,
+    "finalTotal": 240000,
+    "paymentMethod": "STORE_PAYMENT",
+    "paymentStatus": "PENDING",
+    "orderStatus": "PENDING",
+    "needsInvoice": false,
+    "invoiceInfo": null,
+    "notes": "",
+    "createdAt": "2026-08-27T08:11:40.316Z",
+    "bankTransferInfo": {
+      "bankName": "Ngân hàng MB Bank",
+      "branch": "",
+      "accountNumber": "787216666",
+      "accountHolder": "CÔNG TY CỔ PHẦN GIẢI PHÁP CÔNG NGHỆ HỖ TRỢ Y TẾ TECNIC",
+      "transferContent": "TECNIC-MT1004",
+      "qrUrl": "https://img.vietqr.io/image/mb-787216666-compact2.png?amount=240000&addInfo=TECNIC-MT1004&accountName=CONG%20TY%20CP%20CN%20VA%20DV%20Y%20TE%20TECNIC"
+    }
+  },
+  {
+    "id": "ORD-1787818081368",
+    "orderCode": "TECNIC-MT1003",
+    "customerName": "long",
+    "customerPhone": "0389880369",
+    "customerEmail": "nguyendungdbd1@gmail.com",
+    "shippingAddress": "số 2",
+    "items": [
+      {
+        "productId": 10002,
+        "productName": "GẬY 3 CHÂN LUCASS B-926",
+        "productImage": "/products/GẬY 3 CHÂN LUCASS B-926.png",
+        "price": 240000,
+        "marketPrice": 288000,
+        "quantity": 1,
+        "subtotal": 240000,
+        "isBulky": false
+      }
+    ],
+    "totalMarketPrice": 288000,
+    "totalTecnicPrice": 240000,
+    "totalSaved": 48000,
+    "shippingFee": 0,
+    "finalTotal": 240000,
+    "paymentMethod": "COD",
+    "paymentStatus": "UNPAID",
+    "orderStatus": "PROCESSING",
+    "needsInvoice": false,
+    "invoiceInfo": null,
+    "notes": "",
+    "createdAt": "2026-08-27T08:08:01.368Z",
+    "bankTransferInfo": {
+      "bankName": "Ngân hàng MB Bank",
+      "branch": "",
+      "accountNumber": "787216666",
+      "accountHolder": "CÔNG TY CỔ PHẦN GIẢI PHÁP CÔNG NGHỆ HỖ TRỢ Y TẾ TECNIC",
+      "transferContent": "TECNIC-MT1003",
+      "qrUrl": "https://img.vietqr.io/image/mb-787216666-compact2.png?amount=240000&addInfo=TECNIC-MT1003&accountName=CONG%20TY%20CP%20CN%20VA%20DV%20Y%20TE%20TECNIC"
+    }
+  },
+  {
+    "id": "ORD-1787817239033",
+    "orderCode": "TECNIC-MT1002",
+    "customerName": "Quản Trị Viên Hệ Thống TECNIC",
+    "customerPhone": "0348402466",
+    "customerEmail": "admin@tecnic.vn",
+    "shippingAddress": "Tòa New Skyline, Văn Quán, Hà Đông, Hà Nội",
+    "items": [
+      {
+        "productId": 100053,
+        "productName": "THANH TAY VỊN NKT CHỮ T",
+        "productImage": "/products/THANH TAY VỊN NKT CHỮ T.png",
+        "price": 3960000,
+        "marketPrice": 4752000,
+        "quantity": 1,
+        "subtotal": 3960000,
+        "isBulky": false
+      }
+    ],
+    "totalMarketPrice": 4752000,
+    "totalTecnicPrice": 3960000,
+    "totalSaved": 792000,
+    "shippingFee": 0,
+    "finalTotal": 3960000,
+    "paymentMethod": "BANK_TRANSFER",
+    "paymentStatus": "PENDING",
+    "orderStatus": "PENDING",
+    "needsInvoice": false,
+    "invoiceInfo": null,
+    "notes": "",
+    "createdAt": "2026-08-27T07:53:59.033Z",
+    "bankTransferInfo": {
+      "bankName": "Ngân hàng MB Bank",
+      "branch": "",
+      "accountNumber": "787216666",
+      "accountHolder": "CÔNG TY CỔ PHẦN GIẢI PHÁP CÔNG NGHỆ HỖ TRỢ Y TẾ TECNIC",
+      "transferContent": "TECNIC-MT1002",
+      "qrUrl": "https://img.vietqr.io/image/mb-787216666-compact2.png?amount=3960000&addInfo=TECNIC-MT1002&accountName=CONG%20TY%20CP%20CN%20VA%20DV%20Y%20TE%20TECNIC"
+    }
+  },
+  {
+    "id": "ORD-1787807108919",
+    "orderCode": "TECNIC-MT1001",
+    "customerName": "long",
+    "customerPhone": "0389880369",
+    "customerEmail": "nguyendungdbd1@gmail.com",
+    "shippingAddress": "số 2",
+    "items": [
+      {
+        "productId": 10005,
+        "productName": "NẠNG LUCASS VCL500 (MỘT ĐÔI)",
+        "productImage": "/products/NẠNG LUCASS VCL500 (MỘT ĐÔI).png",
+        "price": 290000,
+        "marketPrice": 348000,
+        "quantity": 1,
+        "subtotal": 290000
+      }
+    ],
+    "totalMarketPrice": 348000,
+    "totalTecnicPrice": 290000,
+    "totalSaved": 58000,
+    "shippingFee": 0,
+    "finalTotal": 290000,
+    "paymentMethod": "COD",
+    "paymentStatus": "UNPAID",
+    "orderStatus": "PROCESSING",
+    "needsInvoice": false,
+    "invoiceInfo": null,
+    "notes": "",
+    "createdAt": "2026-08-27T05:05:08.919Z",
+    "bankTransferInfo": {
+      "bankName": "Ngân hàng MB Bank",
+      "branch": "",
+      "accountNumber": "787216666",
+      "accountHolder": "CÔNG TY CỔ PHẦN GIẢI PHÁP CÔNG NGHỆ HỖ TRỢ Y TẾ TECNIC",
+      "transferContent": "TECNIC-MT1001",
+      "qrUrl": "https://img.vietqr.io/image/mb-787216666-compact2.png?amount=290000&addInfo=TECNIC-MT1001&accountName=CONG%20TY%20CP%20CN%20VA%20DV%20Y%20TE%20TECNIC"
+    }
+  },
+  {
+    "id": "ORD-1787806766022",
+    "orderCode": "TECNIC-917791",
+    "customerName": "Quản Trị Viên Hệ Thống TECNIC",
+    "customerPhone": "0348402466",
+    "customerEmail": "admin@tecnic.vn",
+    "shippingAddress": "Tòa New Skyline, Văn Quán, Hà Đông, Hà Nội",
+    "items": [
+      {
+        "productId": 100056,
+        "productName": "BÓNG GAI TẬP TAY  CƠ(BÓNG BỐN NGÓN)",
+        "productImage": "/products/BÓNG GAI TẬP TAY  CƠ(BÓNG BỐN NGÓN).png",
+        "price": 86000,
+        "marketPrice": 103200,
+        "quantity": 1,
+        "subtotal": 86000
+      },
+      {
+        "productId": 100012,
+        "productName": "KHUNG TẬP ĐI GBM-037B",
+        "productImage": "/products/KHUNG TẬP ĐI GBM-037B.png",
+        "price": 550000,
+        "marketPrice": 660000,
+        "quantity": 1,
+        "subtotal": 550000
+      }
+    ],
+    "totalMarketPrice": 763200,
+    "totalTecnicPrice": 636000,
+    "totalSaved": 127200,
+    "shippingFee": 0,
+    "finalTotal": 636000,
+    "paymentMethod": "COD",
+    "paymentStatus": "UNPAID",
+    "orderStatus": "PENDING",
+    "needsInvoice": false,
+    "invoiceInfo": null,
+    "notes": "",
+    "createdAt": "2026-08-27T04:59:26.022Z",
+    "bankTransferInfo": {
+      "bankName": "Ngân hàng MB Bank",
+      "branch": "",
+      "accountNumber": "787216666",
+      "accountHolder": "CÔNG TY CỔ PHẦN GIẢI PHÁP CÔNG NGHỆ HỖ TRỢ Y TẾ TECNIC",
+      "transferContent": "TECNIC 0348402466",
+      "qrUrl": "https://img.vietqr.io/image/BIDV-8661234668-compact2.png?amount=636000&addInfo=TECNIC%200348402466&accountName=CONG%20TY%20CP%20CN%20VA%20DV%20Y%20TE%20TECNIC"
+    }
+  },
+  {
+    "id": "ORD-1787804501099",
+    "orderCode": "TECNIC-435620",
+    "customerName": "Quản Trị Viên Hệ Thống TECNIC",
+    "customerPhone": "0348402466",
+    "customerEmail": "admin@tecnic.vn",
+    "shippingAddress": "Tòa New Skyline, Văn Quán, Hà Đông, Hà Nội",
+    "items": [
+      {
+        "productId": 100099,
+        "productName": "GIƯỜNG Y TẾ ROYALMED GIN2",
+        "productImage": "/products/GIƯỜNG Y TẾ ROYALMED GIN2.png",
+        "price": 3400000,
+        "marketPrice": 4080000,
+        "quantity": 1,
+        "subtotal": 3400000
+      }
+    ],
+    "totalMarketPrice": 4080000,
+    "totalTecnicPrice": 3400000,
+    "totalSaved": 680000,
+    "shippingFee": 0,
+    "finalTotal": 3400000,
+    "paymentMethod": "STORE_PAYMENT",
+    "paymentStatus": "PAID",
+    "orderStatus": "PENDING",
+    "needsInvoice": false,
+    "invoiceInfo": null,
+    "notes": "",
+    "createdAt": "2026-08-27T04:21:41.099Z",
+    "bankTransferInfo": {
+      "bankName": "Ngân hàng MB Bank",
+      "branch": "",
+      "accountNumber": "787216666",
+      "accountHolder": "CÔNG TY CỔ PHẦN GIẢI PHÁP CÔNG NGHỆ HỖ TRỢ Y TẾ TECNIC",
+      "transferContent": "TECNIC 0348402466",
+      "qrUrl": "https://img.vietqr.io/image/BIDV-8661234668-compact2.png?amount=3400000&addInfo=TECNIC%200348402466&accountName=CONG%20TY%20CP%20CN%20VA%20DV%20Y%20TE%20TECNIC"
+    }
+  },
+  {
+    "id": "ORD-1787804344207",
+    "orderCode": "TECNIC-721943",
+    "customerName": "Quản Trị Viên Hệ Thống TECNIC",
+    "customerPhone": "0348402466",
+    "customerEmail": "admin@tecnic.vn",
+    "shippingAddress": "Tòa New Skyline, Văn Quán, Hà Đông, Hà Nội",
+    "items": [
+      {
+        "productId": 10004,
+        "productName": "NẠNG NHÔM C12C02 (MỘT ĐÔI)",
+        "productImage": "/products/NẠNG NHÔM C12C02 (MỘT ĐÔI).png",
+        "price": 265000,
+        "marketPrice": 318000,
+        "quantity": 1,
+        "subtotal": 265000
+      }
+    ],
+    "totalMarketPrice": 318000,
+    "totalTecnicPrice": 265000,
+    "totalSaved": 53000,
+    "shippingFee": 30000,
+    "finalTotal": 295000,
+    "paymentMethod": "STORE_PAYMENT",
+    "paymentStatus": "PAID",
+    "orderStatus": "PENDING",
+    "needsInvoice": false,
+    "invoiceInfo": null,
+    "notes": "",
+    "createdAt": "2026-08-27T04:19:04.207Z",
+    "bankTransferInfo": {
+      "bankName": "Ngân hàng MB Bank",
+      "branch": "",
+      "accountNumber": "787216666",
+      "accountHolder": "CÔNG TY CỔ PHẦN GIẢI PHÁP CÔNG NGHỆ HỖ TRỢ Y TẾ TECNIC",
+      "transferContent": "TECNIC 0348402466",
+      "qrUrl": "https://img.vietqr.io/image/BIDV-8661234668-compact2.png?amount=295000&addInfo=TECNIC%200348402466&accountName=CONG%20TY%20CP%20CN%20VA%20DV%20Y%20TE%20TECNIC"
+    }
+  },
+  {
+    "id": "ORD-1787797990476",
+    "orderCode": "TECNIC-785068",
+    "customerName": "long",
+    "customerPhone": "0389880369",
+    "customerEmail": "nguyendungdbd1@gmail.com",
+    "shippingAddress": "123",
+    "items": [
+      {
+        "productId": 10003,
+        "productName": "GẬY 3 CHÂN OSADA RMS01-4",
+        "productImage": "/products/GẬY 3 CHÂN OSADA RMS01-4.png",
+        "price": 199000,
+        "marketPrice": 238800,
+        "quantity": 1,
+        "subtotal": 199000
+      }
+    ],
+    "totalMarketPrice": 238800,
+    "totalTecnicPrice": 199000,
+    "totalSaved": 39800,
+    "shippingFee": 30000,
+    "finalTotal": 229000,
+    "paymentMethod": "BANK_TRANSFER",
+    "paymentStatus": "PAID",
+    "orderStatus": "PENDING",
+    "needsInvoice": false,
+    "invoiceInfo": null,
+    "notes": "",
+    "createdAt": "2026-08-27T02:33:10.476Z",
+    "bankTransferInfo": {
+      "bankName": "Ngân hàng MB Bank",
+      "branch": "",
+      "accountNumber": "787216666",
+      "accountHolder": "CÔNG TY CỔ PHẦN GIẢI PHÁP CÔNG NGHỆ HỖ TRỢ Y TẾ TECNIC",
+      "transferContent": "TECNIC 0389880369",
+      "qrUrl": "https://img.vietqr.io/image/BIDV-8661234668-compact2.png?amount=229000&addInfo=TECNIC%200389880369&accountName=CONG%20TY%20CP%20CN%20VA%20DV%20Y%20TE%20TECNIC"
+    }
+  },
+  {
+    "id": "ORD-882194",
+    "orderCode": "MGD: ORD-882194",
+    "customerName": "ThS. BS. CKII Nguyễn Hoàng Long",
+    "customerPhone": "0912345678",
+    "customerEmail": "bslong.bachmai@gmail.com",
+    "shippingAddress": "128 Giải Phóng, Phương Mai, Đống Đa, Hà Nội",
+    "items": [
+      {
+        "productId": 100014,
+        "productName": "Khung tập đi phục hồi chức năng GBM-021 đa năng",
+        "productImage": "/products/KHUNG TẬP ĐI GBM-021.png",
+        "price": 2290000,
+        "marketPrice": 2850000,
+        "quantity": 1,
+        "subtotal": 2290000
+      },
+      {
+        "productId": 100007,
+        "productName": "Đai định hình cột sống lưng Bonbone Pro Hard Slim Nhật Bản",
+        "productImage": "/products/Đai lưng định hình cột sống Pro hard slim.png",
+        "price": 1350000,
+        "marketPrice": 1650000,
+        "quantity": 2,
+        "subtotal": 2700000
+      }
+    ],
+    "totalMarketPrice": 6150000,
+    "totalTecnicPrice": 4990000,
+    "totalSaved": 1160000,
+    "shippingFee": 0,
+    "finalTotal": 5100000,
+    "paymentMethod": "BANK_TRANSFER",
+    "paymentStatus": "PAID",
+    "orderStatus": "PENDING",
+    "needsInvoice": true,
+    "invoiceInfo": {
+      "companyName": "Bệnh viện Bạch Mai - Khoa PHCN",
+      "taxCode": "0100743849",
+      "companyAddress": "78 Giải Phóng, Đống Đa, Hà Nội",
+      "invoiceEmail": "taichinh.bachmai@gmail.com"
+    },
+    "notes": "Giao trong giờ hành chính tới phòng khám phục hồi chức năng.",
+    "createdAt": "2026-08-26T07:26:18.000Z"
+  },
+  {
+    "id": "ORD-774129",
+    "orderCode": "MGD: ORD-774129",
+    "customerName": "ThS. BS Trần Minh Đức",
+    "customerPhone": "0988223344",
+    "customerEmail": "minhduc.med@gmail.com",
+    "shippingAddress": "Tầng 3 Tòa nhà K, 78 Giải Phóng, Đống Đa, Hà Nội",
+    "items": [
+      {
+        "productId": 100001,
+        "productName": "Găng tay Robot phục hồi chức năng sau tai biến đột quỵ thông minh",
+        "productImage": "/products/GĂNG TAY ROBOT PHỤC HỒI CHỨC NĂNG TAY LIỆT ĐỘT QUỴ.png",
+        "price": 6850000,
+        "marketPrice": 8500000,
+        "quantity": 1,
+        "subtotal": 6850000
+      },
+      {
+        "productId": 100008,
+        "productName": "Đai hỗ trợ khớp gối Bonbone Thin PF Cross Nhật Bản",
+        "productImage": "/products/Đai hỗ trợ khớp gối Bonbone Free Knee Supporter.png",
+        "price": 980000,
+        "marketPrice": 1250000,
+        "quantity": 2,
+        "subtotal": 1960000
+      }
+    ],
+    "totalMarketPrice": 11000000,
+    "totalTecnicPrice": 8810000,
+    "totalSaved": 2190000,
+    "shippingFee": 0,
+    "finalTotal": 8850000,
+    "paymentMethod": "BANK_TRANSFER",
+    "paymentStatus": "PAID",
+    "orderStatus": "PACKING",
+    "needsInvoice": true,
+    "invoiceInfo": null,
+    "notes": "Đơn dự án phục hồi chức năng đột quỵ.",
+    "createdAt": "2026-08-25T09:26:18.000Z"
+  },
+  {
+    "id": "ORD-652390",
+    "orderCode": "MGD: ORD-652390",
+    "customerName": "Dược sĩ Lê Thị Hương",
+    "customerPhone": "0904556778",
+    "customerEmail": "huong.nhathuoc@gmail.com",
+    "shippingAddress": "45 Nguyễn Trãi, Thanh Xuân, Hà Nội",
+    "items": [
+      {
+        "productId": 100002,
+        "productName": "Xe lăn tay ngả nằm 180 độ có bô vệ sinh Lucass X7 Cao cấp",
+        "productImage": "/products/XE LĂN TAY CÓ BÔ VỆ SINH VÀ PHANH TAY LUCASS X7.png",
+        "price": 3650000,
+        "marketPrice": 4200000,
+        "quantity": 1,
+        "subtotal": 3650000
+      },
+      {
+        "productId": 100006,
+        "productName": "Đệm hơi chống loét tự động đảo khí cho người nằm liệt",
+        "productImage": "/products/ĐỆM HƠI CHỐNG LOÉT TỰ ĐỘNG ĐẢO KHÍ.png",
+        "price": 1250000,
+        "marketPrice": 1500000,
+        "quantity": 1,
+        "subtotal": 1250000
+      }
+    ],
+    "totalMarketPrice": 5700000,
+    "totalTecnicPrice": 4900000,
+    "totalSaved": 800000,
+    "shippingFee": 50000,
+    "finalTotal": 4950000,
+    "paymentMethod": "COD",
+    "paymentStatus": "UNPAID",
+    "orderStatus": "SHIPPING",
+    "needsInvoice": false,
+    "invoiceInfo": null,
+    "notes": "Giao buổi chiều sau 14h.",
+    "createdAt": "2026-08-24T09:26:18.000Z"
+  },
+  {
+    "id": "ORD-519842",
+    "orderCode": "MGD: ORD-519842",
+    "customerName": "Phạm Đức Anh",
+    "customerPhone": "0915998822",
+    "customerEmail": "ducanh.pham@gmail.com",
+    "shippingAddress": "Khu Đô Thị Văn Quán, Hà Đông, Hà Nội",
+    "items": [
+      {
+        "productId": 100010,
+        "productName": "Ghế bô tắm đa năng di chuyển có bánh xe & phanh khóa an toàn",
+        "productImage": "/products/GHẾ BÔ TẮM VÀ DI CHUYỂN NGƯỜI BỆNH ĐA NĂNG.png",
+        "price": 4960000,
+        "marketPrice": 5800000,
+        "quantity": 1,
+        "subtotal": 4960000
+      }
+    ],
+    "totalMarketPrice": 5800000,
+    "totalTecnicPrice": 4960000,
+    "totalSaved": 840000,
+    "shippingFee": 0,
+    "finalTotal": 4960000,
+    "paymentMethod": "BANK_TRANSFER",
+    "paymentStatus": "PAID",
+    "orderStatus": "DELIVERED",
+    "needsInvoice": false,
+    "invoiceInfo": null,
+    "notes": "Đã giao thành công và hướng dẫn sử dụng cho gia đình.",
+    "createdAt": "2026-08-23T09:26:18.000Z"
+  }
+]
