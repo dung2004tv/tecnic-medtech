@@ -93,5 +93,17 @@
     "clinicName": "",
     "status": "ACTIVE",
     "createdAt": "2026-08-27T07:20:55.235Z"
+  },
+  {
+    "id": "USR-924863",
+    "fullName": "Khách Hàng dung",
+    "phone": "",
+    "email": "tecnic.medtech@gmail.com",
+    "password": "123456",
+    "address": "Hà Nội, Việt Nam",
+    "accountType": "CA_NHAN",
+    "clinicName": "",
+    "status": "ACTIVE",
+    "createdAt": "2026-08-28T01:18:44.863Z"
   }
 ]

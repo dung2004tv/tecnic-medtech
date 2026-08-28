@@ -1,5 +1,45 @@
 [
   {
+    "id": "ORD-1787882539285",
+    "orderCode": "TECNIC-MT1001",
+    "customerName": "123",
+    "customerPhone": "0347258369",
+    "customerEmail": "nguyendungdbd1@gmail.com",
+    "shippingAddress": "2",
+    "items": [
+      {
+        "productId": 10003,
+        "productName": "GẬY 3 CHÂN OSADA RMS01-4",
+        "productImage": "/products/GẬY 3 CHÂN OSADA RMS01-4.png",
+        "price": 199000,
+        "marketPrice": 238800,
+        "quantity": 1,
+        "subtotal": 199000,
+        "isBulky": false
+      }
+    ],
+    "totalMarketPrice": 238800,
+    "totalTecnicPrice": 199000,
+    "totalSaved": 39800,
+    "shippingFee": 0,
+    "finalTotal": 199000,
+    "paymentMethod": "BANK_TRANSFER",
+    "paymentStatus": "PENDING",
+    "orderStatus": "PENDING",
+    "needsInvoice": false,
+    "invoiceInfo": null,
+    "notes": "",
+    "createdAt": "2026-08-28T02:02:19.285Z",
+    "bankTransferInfo": {
+      "bankName": "Ngân hàng MB Bank",
+      "branch": "",
+      "accountNumber": "787216666",
+      "accountHolder": "CÔNG TY CỔ PHẦN GIẢI PHÁP CÔNG NGHỆ HỖ TRỢ Y TẾ TECNIC",
+      "transferContent": "TECNIC-MT1001",
+      "qrUrl": "https://img.vietqr.io/image/mb-787216666-compact2.png?amount=199000&addInfo=TECNIC-MT1001&accountName=CONG%20TY%20CP%20CN%20VA%20DV%20Y%20TE%20TECNIC"
+    }
+  },
+  {
     "id": "ORD-1787822869640",
     "orderCode": "TECNIC-MT1008",
     "customerName": "long",
