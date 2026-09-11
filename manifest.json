@@ -1,0 +1,44 @@
+{
+  "name": "TECNIC MEDTECH - Thiết Bị Y Tế & Phục Hồi Chức Năng",
+  "short_name": "TECNIC App",
+  "description": "Hệ thống phân phối thiết bị y tế, giường bệnh đa năng, xe lăn, đai nẹp chính hãng TECNIC MEDTECH.",
+  "start_url": "/",
+  "scope": "/",
+  "id": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#ffffff",
+  "theme_color": "#0077b6",
+  "icons": [
+    {
+      "src": "/logo-tecnic.jpg",
+      "sizes": "192x192 512x512 1024x1024",
+      "type": "image/jpeg",
+      "purpose": "any"
+    },
+    {
+      "src": "/logo-tecnic.png",
+      "sizes": "192x192 512x512 1024x1024",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/logo-tecnic.jpg",
+      "sizes": "512x512",
+      "type": "image/jpeg",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/pwa-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/pwa-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}

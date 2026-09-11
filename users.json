@@ -1,0 +1,34 @@
+[
+  {
+    "id": "USR-ADMIN-ROOT",
+    "fullName": "Quản Trị Viên TECNIC MEDTECH",
+    "phone": "0348402466",
+    "email": "admin@ytetecnic.vn",
+    "password": "tecnic2466",
+    "address": "Tòa New Skyline, Văn Quán, Hà Đông, Hà Nội",
+    "accountType": "ADMIN",
+    "clinicName": "TECNIC MEDTECH VIỆT NAM",
+    "permissions": [
+      "ALL"
+    ],
+    "status": "ACTIVE",
+    "createdAt": "2026-08-27T19:19:52.206Z"
+  },
+  {
+    "id": "USR-STAFF-01",
+    "fullName": "Nhân Viên Điều Hành & CSKH",
+    "phone": "0981784234",
+    "email": "nhanvien@tecnic.vn",
+    "password": "staff",
+    "address": "Tầng 2, Tòa nhà New Skyline, Hà Đông, Hà Nội",
+    "accountType": "STAFF",
+    "clinicName": "Phòng Kinh Doanh TECNIC",
+    "permissions": [
+      "ORDERS",
+      "PRODUCTS_VIEW",
+      "ARTICLES_VIEW"
+    ],
+    "status": "ACTIVE",
+    "createdAt": "2026-08-27T01:19:33.778Z"
+  }
+]
