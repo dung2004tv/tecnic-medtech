@@ -30,7 +30,13 @@ export const ContactPage: React.FC<ContactPageProps> = ({
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.fullName || !formData.phone) {
-      alert('Vui lòng nhập họ tên và số điện thoại liên hệ');
+      alert('Vui lòng nhập đầy đủ họ tên và số điện thoại liên hệ');
+      return;
+    }
+
+    const cleanPhone = formData.phone.replace(/[^0-9]/g, '');
+    if (!/^0[0-9]{8,10}$/.test(cleanPhone) && !/^[0-9]{9,11}$/.test(cleanPhone)) {
+      alert('⚠️ Số điện thoại không hợp lệ! Vui lòng nhập số điện thoại hợp lệ (bắt đầu bằng 0) để chuyên viên liên hệ tư vấn.');
       return;
     }
 
@@ -52,7 +58,7 @@ export const ContactPage: React.FC<ContactPageProps> = ({
   return (
     <div className="space-y-8 animate-fadeIn">
       {/* 1. HERO HEADER */}
-      <div className="bg-gradient-to-r from-[#143472] via-[#0071ba] to-[#143472] rounded-3xl p-6 sm:p-10 text-white shadow-xl relative overflow-hidden">
+      <div className="bg-gradient-to-r from-[#0c2a5c] via-[#0071ba] to-[#0c2a5c] rounded-3xl p-6 sm:p-10 text-white shadow-xl relative overflow-hidden">
         <div className="max-w-3xl space-y-3 relative z-10">
           <div className="inline-flex items-center gap-2 bg-amber-400 text-blue-950 text-xs font-black px-3.5 py-1 rounded-full uppercase tracking-wider shadow-sm">
             <Sparkles className="w-3.5 h-3.5" />
@@ -96,15 +102,15 @@ export const ContactPage: React.FC<ContactPageProps> = ({
         </div>
 
         {/* Email */}
-        <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs hover:shadow-md hover:border-blue-300 transition space-y-2.5">
-          <div className="w-10 h-10 rounded-xl bg-blue-100 text-[#0071ba] flex items-center justify-center font-bold">
+        <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs hover:shadow-md hover:border-slate-300 transition space-y-2.5">
+          <div className="w-10 h-10 rounded-xl bg-slate-100 text-slate-800 flex items-center justify-center font-bold">
             <Mail className="w-5 h-5" />
           </div>
           <h3 className="font-black text-sm text-slate-900">Email Hỗ Trợ</h3>
           <p className="text-xs text-slate-500">Gửi yêu cầu báo giá dự án / phòng khám:</p>
           <a 
             href="mailto:tecnic.medtech@gmail.com" 
-            className="block text-xs font-bold text-[#0071ba] truncate hover:underline"
+            className="block text-xs font-bold text-slate-800 truncate hover:underline"
           >
             tecnic.medtech@gmail.com
           </a>
@@ -140,8 +146,8 @@ export const ContactPage: React.FC<ContactPageProps> = ({
         {/* LEFT COLUMN: CONTACT FORM (7 cols) */}
         <div className="lg:col-span-7 bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-sm space-y-5">
           <div className="border-b border-slate-100 pb-4">
-            <h2 className="text-lg sm:text-xl font-black text-[#143472] uppercase flex items-center gap-2">
-              <MessageSquare className="w-5 h-5 text-[#0071ba]" />
+            <h2 className="text-lg sm:text-xl font-black text-slate-900 uppercase flex items-center gap-2">
+              <MessageSquare className="w-5 h-5 text-slate-700" />
               GỬI YÊU CẦU TƯ VẤN & BÁO GIÁ
             </h2>
             <p className="text-xs text-slate-500 mt-1">
@@ -161,7 +167,7 @@ export const ContactPage: React.FC<ContactPageProps> = ({
               <button
                 type="button"
                 onClick={() => setSubmitted(false)}
-                className="mt-2 text-xs font-bold text-[#0071ba] underline"
+                className="mt-2 text-xs font-bold text-slate-800 underline hover:text-slate-950"
               >
                 Gửi thêm yêu cầu khác
               </button>
@@ -247,13 +253,13 @@ export const ContactPage: React.FC<ContactPageProps> = ({
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full bg-[#143472] hover:bg-blue-900 text-white font-black py-3 rounded-2xl shadow-md transition flex items-center justify-center gap-2 uppercase tracking-wide text-xs"
+                className="w-full bg-[#0071ba] hover:bg-[#005a96] text-white font-black py-3 rounded-2xl shadow-md transition flex items-center justify-center gap-2 uppercase tracking-wide text-xs cursor-pointer"
               >
                 {isSubmitting ? (
                   <span>Đang gửi thông tin...</span>
                 ) : (
                   <>
-                    <Send className="w-4 h-4 text-amber-400" />
+                    <Send className="w-4 h-4 text-amber-300" />
                     <span>Gửi Yêu Cầu Tư Vấn Ngay</span>
                   </>
                 )}
@@ -276,7 +282,7 @@ export const ContactPage: React.FC<ContactPageProps> = ({
                 href={COMPANY_INFO.googleMapsUrl}
                 target="_blank"
                 rel="noreferrer"
-                className="text-[11px] font-bold text-[#0071ba] hover:underline flex items-center gap-1"
+                className="text-[11px] font-bold text-slate-800 hover:text-slate-950 hover:underline flex items-center gap-1"
               >
                 Mở Google Maps <ExternalLink className="w-3 h-3" />
               </a>

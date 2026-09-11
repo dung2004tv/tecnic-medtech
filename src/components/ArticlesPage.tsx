@@ -331,18 +331,6 @@ export const ArticlesPage: React.FC<ArticlesPageProps> = ({
               Tổng hợp cẩm nang chăm sóc người bệnh, kỹ thuật phục hồi chức năng và hướng dẫn sử dụng các thiết bị y tế chuẩn Bộ Y Tế được biên soạn bởi Đội ngũ Chuyên viên & Kỹ thuật viên TECNIC MEDTECH.
             </p>
           </div>
-
-          {currentUser && (currentUser.accountType === 'ADMIN' || currentUser.accountType === 'STAFF') && (
-            <div className="flex flex-wrap items-center gap-3 shrink-0">
-              <button
-                onClick={onOpenAdmin}
-                className="flex items-center gap-2 bg-amber-400 hover:bg-amber-300 text-blue-950 px-4 py-2.5 rounded-xl font-bold text-xs shadow-md transition transform hover:-translate-y-0.5"
-              >
-                <Sparkles className="w-4 h-4 text-red-600" />
-                <span>Quản Trị / Tạo Bài Viết Bằng AI</span>
-              </button>
-            </div>
-          )}
         </div>
 
         {/* Decorative background shapes */}

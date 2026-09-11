@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Plus, Edit, Code, CheckCircle2, Trash2 } from 'lucide-react';
+import { Plus, Edit, Trash2 } from 'lucide-react';
 
 interface CodeSnippet {
   id: string;
@@ -34,13 +34,19 @@ export const AdminCodeConfig: React.FC = () => {
     }
   ]);
   const [editingSnippet, setEditingSnippet] = useState<CodeSnippet | null>(null);
-  
+
+  const handleDelete = (id: string, name: string) => {
+    if (window.confirm(`Bạn có chắc muốn xóa cấu hình code "${name}"?`)) {
+      setSnippets(snippets.filter(s => s.id !== id));
+    }
+  };
+
   if (editingSnippet) {
     return (
-      <div className="space-y-4 font-sans text-slate-800">
+      <div className="space-y-4 font-sans text-slate-800 animate-fadeIn">
         <div className="flex flex-wrap items-center justify-between gap-2">
           <h1 className="text-2xl font-bold text-slate-800 tracking-tight">
-            Edit code
+            {editingSnippet.id ? 'Edit code' : 'Thêm mới code'}
           </h1>
           <div className="flex items-center gap-1.5 text-xs text-slate-500">
             <span className="hover:text-blue-600 cursor-pointer">Trang chủ</span>
@@ -54,6 +60,10 @@ export const AdminCodeConfig: React.FC = () => {
         <div className="flex justify-end gap-2 mb-2">
           <button 
             onClick={() => {
+              if (!editingSnippet.name.trim()) {
+                alert("Vui lòng nhập tên đoạn code!");
+                return;
+              }
               if (editingSnippet.id) {
                 setSnippets(snippets.map(s => s.id === editingSnippet.id ? editingSnippet : s));
               } else {
@@ -61,41 +71,43 @@ export const AdminCodeConfig: React.FC = () => {
               }
               setEditingSnippet(null);
             }}
-            className="px-4 py-2 bg-[#17a2b8] hover:bg-[#138496] text-white font-bold rounded shadow-xs transition"
+            className="px-4 py-2 bg-[#17a2b8] hover:bg-[#138496] text-white font-bold rounded shadow-xs transition cursor-pointer"
           >
             Chấp nhận
           </button>
           <button 
             onClick={() => setEditingSnippet(null)}
-            className="px-4 py-2 bg-[#dc3545] hover:bg-[#c82333] text-white font-bold rounded shadow-xs transition"
+            className="px-4 py-2 bg-[#dc3545] hover:bg-[#c82333] text-white font-bold rounded shadow-xs transition cursor-pointer"
           >
             Làm lại
           </button>
         </div>
 
-        <div className="bg-white border border-slate-200 shadow-xs">
+        <div className="bg-white border border-slate-200 shadow-xs rounded-lg overflow-hidden">
           <div className="bg-slate-50 px-4 py-3 border-b border-slate-200">
-            <h2 className="font-bold text-slate-800">Thông tin code</h2>
+            <h2 className="font-bold text-slate-800 text-sm">Thông tin code</h2>
           </div>
           
-          <div className="p-4 space-y-6">
+          <div className="p-4 space-y-6 text-xs">
             <div className="grid grid-cols-1 md:grid-cols-[200px_1fr] gap-4 items-start border-b border-slate-100 pb-6">
-              <label className="font-bold text-slate-700 pt-2 text-sm">Tên</label>
+              <label className="font-bold text-slate-700 pt-2 text-sm">Tên <span className="text-red-500">*</span></label>
               <input 
                 type="text" 
                 value={editingSnippet.name}
                 onChange={(e) => setEditingSnippet({ ...editingSnippet, name: e.target.value })}
-                className="w-full border border-slate-300 p-2.5 outline-none focus:border-[#17a2b8]"
+                placeholder="Ví dụ: Code Google Analytics, Code Zalo Chat..."
+                className="w-full border border-slate-300 p-2.5 outline-none focus:border-[#17a2b8] rounded"
               />
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-[200px_1fr] gap-4 items-start border-b border-slate-100 pb-6">
-              <label className="font-bold text-slate-700 pt-2 text-sm">Nhập mô tả</label>
+              <label className="font-bold text-slate-700 pt-2 text-sm">Nhập đoạn code / kịch bản</label>
               <textarea 
                 rows={10}
                 value={editingSnippet.code}
                 onChange={(e) => setEditingSnippet({ ...editingSnippet, code: e.target.value })}
-                className="w-full border border-slate-300 p-2.5 outline-none focus:border-[#17a2b8] font-mono text-sm"
+                placeholder="<!-- Thẻ <script> hoặc <iframe> -->"
+                className="w-full border border-slate-300 p-2.5 outline-none focus:border-[#17a2b8] font-mono text-xs rounded"
               />
             </div>
             
@@ -105,7 +117,7 @@ export const AdminCodeConfig: React.FC = () => {
                 type="number" 
                 value={editingSnippet.order}
                 onChange={(e) => setEditingSnippet({ ...editingSnippet, order: parseInt(e.target.value) || 0 })}
-                className="w-full border border-slate-300 p-2.5 outline-none focus:border-[#17a2b8]"
+                className="w-full border border-slate-300 p-2.5 outline-none focus:border-[#17a2b8] rounded"
               />
             </div>
             
@@ -141,7 +153,7 @@ export const AdminCodeConfig: React.FC = () => {
   }
 
   return (
-    <div className="space-y-4 font-sans text-slate-800">
+    <div className="space-y-4 font-sans text-slate-800 animate-fadeIn">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <h1 className="text-2xl font-bold text-slate-800 tracking-tight">Danh sách code</h1>
         <div className="flex items-center gap-1.5 text-xs text-slate-500">
@@ -160,11 +172,11 @@ export const AdminCodeConfig: React.FC = () => {
               id: '',
               name: '',
               code: '',
-              order: 0,
+              order: snippets.length + 1,
               isVisible: true
             });
           }}
-          className="bg-[#17a2b8] hover:bg-[#138496] text-white text-xs font-bold px-4 py-2 rounded shadow-xs flex items-center gap-1.5 transition"
+          className="bg-[#17a2b8] hover:bg-[#138496] text-white text-xs font-bold px-4 py-2 rounded shadow-xs flex items-center gap-1.5 transition cursor-pointer"
         >
           <Plus className="w-4 h-4" />
           <span>+ Thêm mới</span>
@@ -179,14 +191,16 @@ export const AdminCodeConfig: React.FC = () => {
               <th className="py-2.5 px-4 min-w-[240px]">Name</th>
               <th className="py-2.5 px-3 w-28 text-center">Số thứ tự</th>
               <th className="py-2.5 px-3 w-28 text-center">Hiển thị</th>
-              <th className="py-2.5 px-3 w-24 text-center">Action</th>
+              <th className="py-2.5 px-3 w-28 text-center">Action</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-100 font-medium">
             {snippets.map((snip, idx) => (
               <tr key={snip.id} className="hover:bg-slate-50/80 transition">
                 <td className="py-3 px-3 text-center text-slate-500">{idx + 1}</td>
-                <td className="py-3 px-4 font-bold text-[#0071ba]">{snip.name}</td>
+                <td className="py-3 px-4 font-bold text-[#0071ba] cursor-pointer hover:underline" onClick={() => setEditingSnippet(snip)}>
+                  {snip.name}
+                </td>
                 <td className="py-3 px-3 text-center">{snip.order}</td>
                 <td className="py-3 px-3 text-center">
                   {snip.isVisible ? (
@@ -196,13 +210,22 @@ export const AdminCodeConfig: React.FC = () => {
                   )}
                 </td>
                 <td className="py-3 px-3 text-center">
-                  <button 
-                    onClick={() => setEditingSnippet(snip)}
-                    className="bg-[#17a2b8] hover:bg-[#138496] text-white p-1.5 rounded transition" 
-                    title="Sửa mã code"
-                  >
-                    <Edit className="w-3.5 h-3.5" />
-                  </button>
+                  <div className="flex items-center justify-center gap-1.5">
+                    <button 
+                      onClick={() => setEditingSnippet(snip)}
+                      className="bg-[#17a2b8] hover:bg-[#138496] text-white p-1.5 rounded transition cursor-pointer" 
+                      title="Sửa mã code"
+                    >
+                      <Edit className="w-3.5 h-3.5" />
+                    </button>
+                    <button 
+                      onClick={() => handleDelete(snip.id, snip.name)}
+                      className="bg-[#dc3545] hover:bg-[#c82333] text-white p-1.5 rounded transition cursor-pointer" 
+                      title="Xóa mã code"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
                 </td>
               </tr>
             ))}

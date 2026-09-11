@@ -19,7 +19,7 @@ export interface TopicLink {
   categoryId?: CategoryId;
   articleId?: string;
   product?: Product;
-  page?: 'ABOUT' | 'CONTACT' | 'ARTICLES' | 'PRODUCTS';
+  page?: 'HOME' | 'ABOUT' | 'CONTACT' | 'ARTICLES' | 'PRODUCTS';
   badge?: string;
   iconType?: 'bed' | 'wheelchair' | 'robot' | 'cushion' | 'brace' | 'wave' | 'walker' | 'toilet' | 'article' | 'about' | 'contact' | 'phone' | 'zalo' | 'globe' | 'hospital' | 'insurance' | 'gov' | 'search';
 }
@@ -28,6 +28,7 @@ interface ChatBotProps {
   onSelectProduct?: (product: Product) => void;
   onSelectCategory?: (categoryId: CategoryId) => void;
   onSelectArticle?: (articleId: string) => void;
+  onOpenHome?: () => void;
   onOpenAbout?: () => void;
   onOpenContact?: () => void;
   onOpenArticles?: () => void;
@@ -95,13 +96,11 @@ const INITIAL_MESSAGES: ExtendedChatMessage[] = [
     sender: 'assistant',
     text: `Dạ kính chào Quý khách! Chuyên viên Tư vấn Thiết Bị & Vật Tư Y Tế TECNIC MEDTECH sẵn sàng hỗ trợ Quý khách 24/7.
     
-Quý khách có thể hỏi về các dòng thiết bị y tế của TECNIC hoặc bất kỳ chủ đề y khoa, bệnh viện, bảo hiểm hay tra cứu thông tin khác (hệ thống sẽ cung cấp lời khuyên kèm đường link dẫn ra trang web liên quan):
+Quý khách có thể hỏi về các dòng thiết bị y tế của TECNIC để được tư vấn và liên hệ đặt hàng nhanh chóng:
 1. 🛏️ **Giường y tế dưỡng bệnh**: Giường 2-4 tay quay có bô, giường điện tự động, giường kéo giãn.
 2. 🦽 **Xe lăn**: Xe lăn ngả nằm 180°, xe lăn siêu nhẹ 7.5kg, xe lăn có bô vệ sinh.
 3. 🤖 **Phục hồi chức năng tai biến**: Găng tay Robot tập bàn tay, ghế nâng chuyển thủy lực.
-4. 🩺 **Đai nẹp Bonbone Nhật Bản**: Đai trợ lực khớp gối, đai thắt lưng, đai cổ.
-5. 🌐 **Chủ đề khác / Bên ngoài**: Tra cứu BHYT, bệnh viện (Bạch Mai, 108, Vinmec), Cổng thông tin Bộ Y Tế, tra cứu thông tin mở rộng.`,
-    relatedTopicLinks: INITIAL_TOPIC_LINKS,
+4. 🩺 **Đai nẹp Bonbone Nhật Bản**: Đai trợ lực khớp gối, đai thắt lưng, đai cổ.`,
     timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
   }
 ];
@@ -600,6 +599,7 @@ export const ChatBot: React.FC<ChatBotProps> = ({
   onSelectProduct, 
   onSelectCategory,
   onSelectArticle,
+  onOpenHome,
   onOpenAbout,
   onOpenContact,
   onOpenArticles,
@@ -619,6 +619,71 @@ export const ChatBot: React.FC<ChatBotProps> = ({
     }
   }, [messages, isOpen, isTyping]);
 
+  // Handle consulting a specific product directly in chat
+  const handleConsultProduct = (p: Product) => {
+    const userMsg: ExtendedChatMessage = {
+      id: `usr-${Date.now()}`,
+      sender: 'user',
+      text: `Dạ em muốn xem thông tin chi tiết & tư vấn mẫu: ${p.name}`,
+      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+    };
+
+    const ratingStr = p.rating ? `${p.rating}` : '4.9';
+    const reviewsStr = p.reviewCount ? `(${p.reviewCount} đánh giá)` : '(136 đánh giá)';
+    const priceFormatted = p.tecnicPrice.toLocaleString('vi-VN') + 'đ';
+    const warrantyStr = 'Bảo hành tại TECNIC MEDTECH';
+
+    let specsList = '';
+    if (p.specifications) {
+      if (p.specifications.brand) specsList += `\n- **Thương hiệu / Hãng**: ${p.specifications.brand}`;
+      if (p.specifications.origin) specsList += `\n- **Xuất xứ**: ${p.specifications.origin}`;
+      if (p.specifications.model) specsList += `\n- **Model / Mã SP**: ${p.specifications.model}`;
+      if (p.specifications.dimensions) specsList += `\n- **Kích thước**: ${p.specifications.dimensions}`;
+      if (p.specifications.weight) specsList += `\n- **Trọng lượng**: ${p.specifications.weight}`;
+      if (p.specifications.material) specsList += `\n- **Chất liệu**: ${p.specifications.material}`;
+      if (p.specifications.powerSource) specsList += `\n- **Công suất / Nguồn điện**: ${p.specifications.powerSource}`;
+      if (p.specifications.targetUsers) specsList += `\n- **Đối tượng khuyên dùng**: ${p.specifications.targetUsers}`;
+    }
+    if (!specsList) {
+      specsList = `\n- **Mô tả ngắn**: ${p.shortDescription}`;
+    }
+
+    const adviceStr = p.specifications?.targetUsers
+      ? `Mẫu này phù hợp với nhu cầu của **${p.specifications.targetUsers}** và gia đình yêu cầu sản phẩm chuẩn chất lượng y tế, độ bền cao và dễ sử dụng.`
+      : `Mẫu này phù hợp với nhu cầu sử dụng thực tế, vận hành êm ái và hỗ trợ chăm sóc / phục hồi sức khỏe tối ưu.`;
+
+    const replyText = `Dạ mời anh/chị xem thông tin chi tiết sản phẩm:
+
+**${p.name}**
+⭐ **${ratingStr}** ${reviewsStr}
+💰 Giá bán: **${priceFormatted}** ${(p.marketPrice && p.marketPrice > p.tecnicPrice) ? `*(Giá niêm yết: ${p.marketPrice.toLocaleString('vi-VN')}đ)*` : ''}
+
+📋 **Thông số nổi bật:**${specsList}
+
+💡 **Tư vấn từ Chuyên viên TECNIC MEDTECH:**
+${adviceStr}
+
+🛡️ **Quyền lợi chỉ có tại TECNIC MEDTECH:**
+- ✅ **${warrantyStr}**
+- 🚚 **Giao hàng nhanh trong 2-4 giờ & Lắp đặt tận nơi**
+- 🔄 **Đổi trả dễ dàng trong 30 ngày**
+- 👨‍⚕️ **Hỗ trợ tư vấn chuyên môn y khoa 24/7**
+
+📞 **Tư vấn & Liên hệ đặt hàng ngay cho Anh/Chị:**
+- **Hotline 24/7**: [034 84 02466](tel:0348402466) / [038 988 0369](tel:0389880369)
+- **Nhắn Zalo đặt hàng**: [Chat Zalo 034 84 02466](https://zalo.me/0348402466)`;
+
+    const botMsg: ExtendedChatMessage = {
+      id: `bot-${Date.now()}`,
+      sender: 'assistant',
+      text: replyText,
+      recommendedProducts: [p],
+      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+    };
+
+    setMessages((prev) => [...prev, userMsg, botMsg]);
+  };
+
   // Handle clicking a topic link (Support both In-App Navigation and External Web Link Navigation)
   const handleTopicLinkClick = (link: TopicLink) => {
     if (link.type === 'EXTERNAL_WEB' && link.url) {
@@ -636,7 +701,8 @@ export const ChatBot: React.FC<ChatBotProps> = ({
     } else if (link.type === 'ARTICLE' && link.articleId && onSelectArticle) {
       onSelectArticle(link.articleId);
     } else if (link.type === 'PAGE') {
-      if (link.page === 'ABOUT' && onOpenAbout) onOpenAbout();
+      if (link.page === 'HOME' && onOpenHome) onOpenHome();
+      else if (link.page === 'ABOUT' && onOpenAbout) onOpenAbout();
       else if (link.page === 'CONTACT' && onOpenContact) onOpenContact();
       else if (link.page === 'ARTICLES' && onOpenArticles) onOpenArticles();
       else if (link.page === 'PRODUCTS' && onOpenProducts) onOpenProducts();
@@ -717,11 +783,11 @@ export const ChatBot: React.FC<ChatBotProps> = ({
   };
 
   return (
-    <aside aria-label="Hỗ trợ trực tuyến" className="fixed bottom-4 sm:bottom-4 right-4 sm:right-6 z-50 flex flex-col items-end">
+    <aside aria-label="Hỗ trợ trực tuyến" className="fixed bottom-18 sm:bottom-4 right-3 sm:right-6 z-40 flex flex-col items-end">
       
       {/* CHAT WINDOW */}
       {isOpen && (
-        <div className="bg-white w-[92vw] sm:w-[460px] h-[80vh] max-h-[620px] rounded-3xl shadow-2xl border border-slate-200 flex flex-col overflow-hidden mb-3 animate-fadeIn">
+        <div className="bg-white w-[94vw] sm:w-[460px] h-[72vh] max-h-[620px] rounded-3xl shadow-2xl border border-slate-200 flex flex-col overflow-hidden mb-2 sm:mb-3 animate-fadeIn">
           
           {/* CHAT HEADER */}
           <div className="bg-[#143472] text-white p-3.5 sm:p-4 flex justify-between items-center shrink-0 border-b-2 border-sky-400">
@@ -789,96 +855,6 @@ export const ChatBot: React.FC<ChatBotProps> = ({
                 >
                   <ChatMessageRenderer text={msg.text} />
 
-                  {/* 1. TOPIC & PAGE & EXTERNAL WEB NAVIGATION CARDS */}
-                  {msg.relatedTopicLinks && msg.relatedTopicLinks.length > 0 && (
-                    <div className="mt-3.5 pt-3 border-t border-slate-100 space-y-2">
-                      <div className="flex items-center justify-between">
-                        <span className="text-[11px] font-black text-[#143472] uppercase tracking-wide flex items-center gap-1.5">
-                          <Compass className="w-3.5 h-3.5 text-[#0071ba]" />
-                          Trang & Chủ đề liên quan đến câu hỏi:
-                        </span>
-                      </div>
-
-                      <div className="space-y-1.5">
-                        {msg.relatedTopicLinks.map((link) => {
-                          const isExternal = link.type === 'EXTERNAL_WEB';
-
-                          return (
-                            <button
-                              key={link.id}
-                              type="button"
-                              onClick={() => handleTopicLinkClick(link)}
-                              className={`w-full text-left p-2.5 rounded-xl transition group flex items-start justify-between gap-2 shadow-2xs border ${
-                                isExternal 
-                                  ? 'bg-gradient-to-r from-sky-50 to-indigo-50/60 border-sky-200 hover:border-sky-500 hover:from-sky-100 hover:to-indigo-100/70' 
-                                  : 'bg-gradient-to-r from-blue-50/90 to-slate-50 hover:from-blue-100/90 hover:to-blue-50 border-blue-200/80 hover:border-[#0071ba]'
-                              }`}
-                            >
-                              <div className="flex items-start gap-2.5 overflow-hidden flex-1">
-                                <div className={`w-7 h-7 rounded-lg text-white flex items-center justify-center shrink-0 text-xs mt-0.5 shadow-xs ${
-                                  isExternal ? 'bg-sky-600' : 'bg-[#0071ba]'
-                                }`}>
-                                  {isExternal ? (
-                                    link.iconType === 'gov' ? (
-                                      <Landmark className="w-3.5 h-3.5" />
-                                    ) : link.iconType === 'search' ? (
-                                      <Search className="w-3.5 h-3.5" />
-                                    ) : (
-                                      <Globe className="w-3.5 h-3.5" />
-                                    )
-                                  ) : link.type === 'ARTICLE' ? (
-                                    <BookOpen className="w-3.5 h-3.5" />
-                                  ) : link.type === 'PAGE' && link.page === 'CONTACT' ? (
-                                    <MapPin className="w-3.5 h-3.5" />
-                                  ) : link.type === 'PAGE' && link.page === 'ABOUT' ? (
-                                    <Building2 className="w-3.5 h-3.5" />
-                                  ) : (
-                                    <Layers className="w-3.5 h-3.5" />
-                                  )}
-                                </div>
-                                <div className="overflow-hidden">
-                                  <div className="flex items-center gap-1.5 flex-wrap">
-                                    <span className={`font-bold text-[12px] transition-colors leading-tight ${
-                                      isExternal 
-                                        ? 'text-slate-900 group-hover:text-sky-700' 
-                                        : 'text-slate-900 group-hover:text-[#0071ba]'
-                                    }`}>
-                                      {link.title}
-                                    </span>
-                                    {link.badge && (
-                                      <span className={`text-[9px] font-black uppercase px-1.5 py-0.2 rounded-md border ${
-                                        isExternal
-                                          ? 'bg-sky-100 text-sky-800 border-sky-300'
-                                          : 'bg-white text-[#0071ba] border-blue-200'
-                                      }`}>
-                                        {link.badge}
-                                      </span>
-                                    )}
-                                  </div>
-                                  {link.subtitle && (
-                                    <p className="text-[10.5px] text-slate-500 line-clamp-1 mt-0.5">
-                                      {link.subtitle}
-                                    </p>
-                                  )}
-                                </div>
-                              </div>
-
-                              <div className={`shrink-0 flex items-center group-hover:translate-x-0.5 transition-transform mt-1 ${
-                                isExternal ? 'text-sky-700' : 'text-[#0071ba]'
-                              }`}>
-                                {isExternal ? (
-                                  <ExternalLink className="w-4 h-4" />
-                                ) : (
-                                  <ArrowUpRight className="w-4 h-4" />
-                                )}
-                              </div>
-                            </button>
-                          );
-                        })}
-                      </div>
-                    </div>
-                  )}
-                  
                   {/* 2. RECOMMENDED PRODUCTS CARDS */}
                   {msg.recommendedProducts && msg.recommendedProducts.length > 0 && (
                     <div className="mt-3 pt-2.5 border-t border-slate-100 space-y-2">
@@ -912,11 +888,21 @@ export const ChatBot: React.FC<ChatBotProps> = ({
                             <div className="flex items-center gap-1 shrink-0">
                               <button 
                                 type="button"
-                                onClick={() => onSelectProduct && onSelectProduct(p)}
-                                className="text-[10px] bg-[#0071ba] text-white px-2.5 py-1 rounded-lg font-bold flex items-center gap-1 hover:bg-blue-800"
+                                onClick={() => handleConsultProduct(p)}
+                                className="text-[10px] bg-[#0071ba] text-white px-2 py-1 rounded-lg font-bold flex items-center gap-1 hover:bg-blue-800 transition cursor-pointer"
+                                title="Xem thông tin chi tiết & tư vấn mẫu này"
                               >
                                 <Eye className="w-2.5 h-2.5" />
                                 Xem
+                              </button>
+                              <button 
+                                type="button"
+                                onClick={() => onSelectProduct && onSelectProduct(p)}
+                                className="text-[10px] bg-amber-500 text-white px-2 py-1 rounded-lg font-bold flex items-center gap-1 hover:bg-amber-600 transition cursor-pointer"
+                                title="Mua ngay / Trang chi tiết sản phẩm"
+                              >
+                                <ShoppingCart className="w-2.5 h-2.5" />
+                                Mua ngay
                               </button>
                             </div>
                           </div>

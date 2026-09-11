@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Plus, Search, RotateCcw, Edit, Trash2 } from 'lucide-react';
 import { Product } from '../../types';
 import { CATEGORIES } from '../../data/productsData';
+import { ProductImage } from '../ProductImage';
 
 interface AdminProductListProps {
   products: Product[];
@@ -186,13 +187,14 @@ export const AdminProductList: React.FC<AdminProductListProps> = ({
                   {p.name}
                 </td>
                 <td className="py-2.5 px-3 text-center">
-                  {p.image && (
-                    <img 
-                      src={p.image} 
-                      alt="" 
-                      className="w-12 h-12 object-contain mx-auto rounded border border-slate-200 bg-white" 
+                  <div className="w-12 h-12 mx-auto rounded border border-slate-200 overflow-hidden flex items-center justify-center bg-white shadow-2xs">
+                    <ProductImage 
+                      product={p} 
+                      size="sm" 
+                      showBadge={false} 
+                      className="w-full h-full object-contain" 
                     />
-                  )}
+                  </div>
                 </td>
                 <td className="py-2.5 px-3 text-center">
                   <span className="px-2 py-0.5 rounded text-[11px] font-bold text-white bg-[#28a745]">

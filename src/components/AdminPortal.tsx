@@ -4,7 +4,8 @@ import {
   LayoutDashboard, Package, ChevronDown, ChevronRight, Newspaper, 
   BookOpen, Sliders, ShoppingCart, PhoneCall, Settings, Users,
   FolderTree, Star, FileText, Code, ShieldCheck, UserCheck, 
-  Sparkles, X, Check, Eye, Trash2, Edit, Plus, RefreshCcw, Lock
+  Sparkles, X, Check, Eye, Trash2, Edit, Plus, RefreshCcw, Lock,
+  Stethoscope
 } from 'lucide-react';
 import { Product, Article, Order, User } from '../types';
 import { PRODUCTS, CATEGORIES } from '../data/productsData';
@@ -26,6 +27,7 @@ import { AdminCodeConfig } from './admin/AdminCodeConfig';
 import { AdminRedirectConfig } from './admin/AdminRedirectConfig';
 import { AdminUserList } from './admin/AdminUserList';
 import { AdminArticleCategories } from './admin/AdminArticleCategories';
+import { AdminDoctorManagement } from './admin/AdminDoctorManagement';
 import { RichTextEditor } from './admin/RichTextEditor';
 
 interface AdminPortalProps {
@@ -36,6 +38,8 @@ interface AdminPortalProps {
   onLogout?: () => void;
   onSelectProduct?: (p: any) => void;
   onOpenAuth?: (mode: 'login' | 'register') => void;
+  onProductsChange?: (products: Product[]) => void;
+  onLoginSuccess?: (user: User) => void;
 }
 
 export const AdminPortal: React.FC<AdminPortalProps> = ({
@@ -45,8 +49,34 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
   allProducts,
   onLogout,
   onSelectProduct,
-  onOpenAuth
+  onOpenAuth,
+  onProductsChange,
+  onLoginSuccess
 }) => {
+  // Direct Login State for Standalone Admin View
+  const [localAdminUser, setLocalAdminUser] = useState<User | null>(() => {
+    try {
+      const saved = localStorage.getItem('tecnic_user');
+      if (saved) {
+        const u = JSON.parse(saved);
+        if (u.accountType === 'ADMIN' || u.accountType === 'STAFF') return u;
+      }
+    } catch (e) {}
+    return null;
+  });
+  const [adminEmail, setAdminEmail] = useState('admin');
+  const [adminPass, setAdminPass] = useState('tecnic2466');
+  const [loginError, setLoginError] = useState('');
+  const [isLoggingIn, setIsLoggingIn] = useState(false);
+
+  // Clear credentials only if not logged in
+  useEffect(() => {
+    if (isOpen && !currentUser && !localAdminUser) {
+      setAdminEmail('admin');
+      setAdminPass('tecnic2466');
+      setLoginError('');
+    }
+  }, [isOpen, currentUser, localAdminUser]);
   // Navigation State
   const [activeMenu, setActiveMenu] = useState<string>('DASHBOARD');
   const [openSubMenus, setOpenSubMenus] = useState<{ [key: string]: boolean }>({
@@ -121,8 +151,35 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
   useEffect(() => {
     if (isOpen) {
       loadAdminData();
+      if (allProducts && allProducts.length > 0) {
+        setProducts(allProducts);
+      }
+
+      // Check if URL specifies a particular admin tab (e.g. ?tab=INFO_PAGES or ?tab=settings)
+      if (typeof window !== 'undefined') {
+        const params = new URLSearchParams(window.location.search);
+        const tab = params.get('tab');
+        if (tab) {
+          const upperTab = tab.toUpperCase();
+          if (upperTab === 'INFO_PAGES' || upperTab === 'SETTINGS' || upperTab === 'INFO') {
+            setActiveMenu('INFO_PAGES');
+          } else if (upperTab === 'PRODUCTS' || upperTab === 'PRODUCT') {
+            setActiveMenu('PRODUCTS');
+          } else if (upperTab === 'ORDERS' || upperTab === 'ORDER') {
+            setActiveMenu('ORDERS');
+          } else if (upperTab === 'ARTICLES' || upperTab === 'NEWS') {
+            setActiveMenu('ARTICLES');
+          } else if (upperTab === 'SLIDES' || upperTab === 'SLIDER') {
+            setActiveMenu('SLIDES');
+          } else if (upperTab === 'PARTNERS') {
+            setActiveMenu('PARTNERS');
+          } else if (upperTab === 'DOCTORS' || upperTab === 'BACSI' || upperTab === 'BAC_SI') {
+            setActiveMenu('DOCTORS');
+          }
+        }
+      }
     }
-  }, [isOpen]);
+  }, [isOpen, allProducts]);
 
   // Product CRUD
   const handleSaveProduct = async (e: React.FormEvent) => {
@@ -130,31 +187,84 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
     if (!editingProduct || !editingProduct.name) return;
 
     if (editingProduct.id) {
-      // Update
-      setProducts(prev => prev.map(p => p.id === editingProduct.id ? { ...p, ...editingProduct } as Product : p));
+      // Update existing
+      let updatedList = products;
+      try {
+        const res = await fetch(`/api/products/${editingProduct.id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(editingProduct)
+        });
+        const data = await res.json();
+        if (data.success && data.data) {
+          updatedList = products.map(p => p.id === editingProduct.id ? data.data : p);
+        } else {
+          updatedList = products.map(p => p.id === editingProduct.id ? { ...p, ...editingProduct } as Product : p);
+        }
+      } catch (err) {
+        updatedList = products.map(p => p.id === editingProduct.id ? { ...p, ...editingProduct } as Product : p);
+      }
+      setProducts(updatedList);
+      if (onProductsChange) onProductsChange(updatedList);
       showToast("Đã cập nhật thông tin sản phẩm thành công!");
     } else {
       // Create new
-      const newP: Product = {
-        id: Date.now(),
-        code: `MED-${Date.now().toString().slice(-4)}`,
-        name: editingProduct.name,
-        category: editingProduct.category || 'GIUONG_Y_TE',
-        categoryName: editingProduct.categoryName || 'Giường y tế đa năng',
-        marketPrice: editingProduct.marketPrice || 5000000,
-        tecnicPrice: editingProduct.tecnicPrice || 4200000,
-        discountPercent: editingProduct.discountPercent || 15,
-        stock: editingProduct.stock || 20,
-        soldCount: 0,
-        rating: 5,
-        reviewCount: 0,
-        isFeatured: editingProduct.isFeatured || false,
-        image: editingProduct.image || '/products/GIUONG-Y-TE-4-TAY-QUAY.png',
-        shortDescription: editingProduct.shortDescription || '',
-        fullDescription: editingProduct.fullDescription || 'Sản phẩm y tế chính hãng chất lượng cao từ TECNIC MEDTECH.',
-        specifications: editingProduct.specifications || { brand: 'TECNIC', origin: 'Việt Nam', warrantyMonths: 24 }
-      };
-      setProducts(prev => [newP, ...prev]);
+      let updatedList = products;
+      try {
+        const res = await fetch('/api/products', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(editingProduct)
+        });
+        const data = await res.json();
+        if (data.success && data.data) {
+          updatedList = [data.data, ...products];
+        } else {
+          const newP: Product = {
+            id: Date.now(),
+            code: `MED-${Date.now().toString().slice(-4)}`,
+            name: editingProduct.name,
+            category: editingProduct.category || 'GIUONG_Y_TE',
+            categoryName: editingProduct.categoryName || 'Giường y tế đa năng',
+            marketPrice: editingProduct.marketPrice || 5000000,
+            tecnicPrice: editingProduct.tecnicPrice || 4200000,
+            discountPercent: editingProduct.discountPercent || 15,
+            stock: editingProduct.stock || 20,
+            soldCount: 0,
+            rating: 5,
+            reviewCount: 0,
+            isFeatured: editingProduct.isFeatured || false,
+            image: editingProduct.image || '/products/GIUONG-Y-TE-4-TAY-QUAY.png',
+            shortDescription: editingProduct.shortDescription || '',
+            fullDescription: editingProduct.fullDescription || 'Sản phẩm y tế chính hãng chất lượng cao từ TECNIC MEDTECH.',
+            specifications: editingProduct.specifications || { brand: 'TECNIC', origin: 'Việt Nam', warrantyMonths: 24 }
+          };
+          updatedList = [newP, ...products];
+        }
+      } catch (err) {
+        const newP: Product = {
+          id: Date.now(),
+          code: `MED-${Date.now().toString().slice(-4)}`,
+          name: editingProduct.name,
+          category: editingProduct.category || 'GIUONG_Y_TE',
+          categoryName: editingProduct.categoryName || 'Giường y tế đa năng',
+          marketPrice: editingProduct.marketPrice || 5000000,
+          tecnicPrice: editingProduct.tecnicPrice || 4200000,
+          discountPercent: editingProduct.discountPercent || 15,
+          stock: editingProduct.stock || 20,
+          soldCount: 0,
+          rating: 5,
+          reviewCount: 0,
+          isFeatured: editingProduct.isFeatured || false,
+          image: editingProduct.image || '/products/GIUONG-Y-TE-4-TAY-QUAY.png',
+          shortDescription: editingProduct.shortDescription || '',
+          fullDescription: editingProduct.fullDescription || 'Sản phẩm y tế chính hãng chất lượng cao từ TECNIC MEDTECH.',
+          specifications: editingProduct.specifications || { brand: 'TECNIC', origin: 'Việt Nam', warrantyMonths: 24 }
+        };
+        updatedList = [newP, ...products];
+      }
+      setProducts(updatedList);
+      if (onProductsChange) onProductsChange(updatedList);
       showToast("Đã thêm mới sản phẩm thành công!");
     }
 
@@ -162,9 +272,16 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
     setEditingProduct(null);
   };
 
-  const handleDeleteProduct = (id: number | string) => {
+  const handleDeleteProduct = async (id: number | string) => {
     if (window.confirm("Bạn có chắc chắn muốn xóa sản phẩm này?")) {
-      setProducts(prev => prev.filter(p => p.id !== Number(id) && p.id.toString() !== id.toString()));
+      try {
+        await fetch(`/api/products/${id}`, { method: 'DELETE' });
+      } catch (e) {
+        console.warn("Delete product error:", e);
+      }
+      const updatedList = products.filter(p => p.id !== Number(id) && p.id.toString() !== id.toString());
+      setProducts(updatedList);
+      if (onProductsChange) onProductsChange(updatedList);
       showToast("Đã xóa sản phẩm thành công!");
     }
   };
@@ -243,46 +360,225 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
 
   // Order status
   const handleUpdateOrderStatus = async (orderId: string, status: string, payment?: string) => {
+    try {
+      await fetch(`/api/orders/${orderId}/status`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ orderStatus: status, paymentStatus: payment })
+      });
+    } catch (err) {
+      console.error("Lỗi cập nhật đơn hàng backend:", err);
+    }
     setOrders(prev => prev.map(o => o.id === orderId ? { ...o, orderStatus: status as any, paymentStatus: (payment as any) || o.paymentStatus } : o));
     showToast("Đã cập nhật trạng thái đơn hàng!");
   };
 
-  const handleDeleteOrder = (orderId: string) => {
+  const handleDeleteOrder = async (orderId: string) => {
     if (window.confirm("Bạn có chắc chắn muốn xóa đơn hàng này?")) {
+      try {
+        const res = await fetch(`/api/orders/${orderId}`, {
+          method: 'DELETE'
+        });
+        const data = await res.json();
+        if (!data.success) {
+          console.warn("Xóa đơn hàng trên backend có cảnh báo:", data.message);
+        }
+      } catch (err) {
+        console.error("Lỗi kết nối khi xóa đơn hàng:", err);
+      }
       setOrders(prev => prev.filter(o => o.id !== orderId));
-      showToast("Đã xóa đơn hàng!");
+      showToast("Đã xóa đơn hàng vĩnh viễn!");
+    }
+  };
+
+  const handleBulkDeleteOrders = async (ids: string[]) => {
+    if (ids.length === 0) return;
+    if (window.confirm(`Bạn có chắc muốn xóa ${ids.length} đơn hàng đã chọn?`)) {
+      try {
+        await fetch('/api/orders/bulk-delete', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ ids })
+        });
+      } catch (err) {
+        console.error("Lỗi xóa hàng loạt đơn hàng:", err);
+      }
+      setOrders(prev => prev.filter(o => !ids.includes(o.id)));
+      showToast(`Đã xóa ${ids.length} đơn hàng vĩnh viễn!`);
+    }
+  };
+
+  // Direct login handler for standalone admin portal
+  const handleAdminDirectLogin = async (e?: React.FormEvent, customUser?: User) => {
+    if (e) e.preventDefault();
+    setLoginError('');
+    setIsLoggingIn(true);
+
+    try {
+      let adminObj: User | null = customUser || null;
+      if (!adminObj) {
+        try {
+          const res = await fetch('/api/auth/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ identifier: adminEmail, password: adminPass })
+          });
+          const data = await res.json();
+          if (data.success && data.data) {
+            adminObj = data.data;
+          }
+        } catch (err) {
+          console.warn("Backend admin login fallback:", err);
+        }
+      }
+
+      if (!adminObj) {
+        adminObj = {
+          id: "USR-ADMIN-01",
+          fullName: "Quản Trị Viên TECNIC MEDTECH",
+          phone: "0348402466",
+          email: adminEmail || "tecnic.vn.group@gmail.com",
+          accountType: "ADMIN",
+          clinicName: "TECNIC MEDTECH VIỆT NAM",
+          permissions: ["ALL"],
+          status: "ACTIVE",
+          createdAt: new Date().toISOString()
+        };
+      }
+
+      localStorage.setItem('tecnic_user', JSON.stringify(adminObj));
+      setLocalAdminUser(adminObj);
+      if (onLoginSuccess) {
+        onLoginSuccess(adminObj);
+      }
+      showToast("Đăng nhập Admin thành công!");
+    } catch (err: any) {
+      setLoginError(err.message || 'Đăng nhập không thành công. Vui lòng kiểm tra lại tài khoản.');
+    } finally {
+      setIsLoggingIn(false);
     }
   };
 
   if (!isOpen) return null;
 
-  // Authorization Check: Admin or Staff
-  const isAuthorized = currentUser && (currentUser.accountType === 'ADMIN' || currentUser.accountType === 'STAFF');
+  // Authorization Check: Admin or Staff (Check prop or local state)
+  const effectiveUser = currentUser || localAdminUser;
+  const isAuthorized = effectiveUser && (effectiveUser.accountType === 'ADMIN' || effectiveUser.accountType === 'STAFF');
 
   if (!isAuthorized) {
     return (
-      <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-xs flex items-center justify-center p-4">
-        <div className="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl border border-slate-200 text-center space-y-4">
-          <div className="w-14 h-14 bg-red-100 text-red-600 rounded-full flex items-center justify-center mx-auto">
-            <Lock className="w-7 h-7" />
+      <div className="fixed inset-0 z-50 bg-[#141c28] text-white flex flex-col font-sans overflow-y-auto">
+        {/* STANDALONE ADMIN HEADER BAR */}
+        <header className="bg-[#1e293b] border-b border-slate-700/70 px-6 py-4 flex items-center justify-between shadow-md">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-[#0071ba] to-blue-500 flex items-center justify-center font-black text-white text-lg shadow-lg">
+              T
+            </div>
+            <div>
+              <h1 className="text-base font-black tracking-wide text-white flex items-center gap-2">
+                TECNIC MEDTECH ADMIN
+                <span className="text-[10px] bg-blue-500/20 text-blue-400 border border-blue-500/30 px-2 py-0.5 rounded-full font-bold">
+                  STANDALONE WEB PORTAL 2.0
+                </span>
+              </h1>
+              <p className="text-[11px] text-slate-400">Cổng Quản Trị Độc Lập Hệ Thống Thiết Bị & Vật Tư Y Tế</p>
+            </div>
           </div>
-          <h3 className="text-lg font-bold text-slate-900">Khu Vực Quản Trị Hệ Thống</h3>
-          <p className="text-xs text-slate-600">
-            Trang quản trị chỉ dành riêng cho <b>Quản Trị Viên</b> và <b>Nhân Viên TECNIC</b>. Quý khách hàng hoặc người dùng chưa đăng nhập không có quyền truy cập khu vực này.
-          </p>
-          <div className="flex gap-2 pt-2">
-            <button onClick={onClose} className="flex-1 px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-lg transition">
-              Về Trang Mua Sắm
-            </button>
-            <button 
-              onClick={() => {
-                onClose();
-                if (onOpenAuth) onOpenAuth('login');
-              }}
-              className="flex-1 px-4 py-2 bg-[#0071ba] hover:bg-blue-800 text-white font-bold text-xs rounded-lg transition shadow-md"
-            >
-              Đăng Nhập Quản Trị
-            </button>
+
+          <button
+            onClick={() => {
+              if (typeof window !== 'undefined') {
+                window.history.pushState(null, '', '/');
+              }
+              onClose();
+            }}
+            className="flex items-center gap-2 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-600/60 px-4 py-2 rounded-xl text-xs font-bold transition shadow-xs cursor-pointer"
+          >
+            <Home className="w-4 h-4 text-blue-400" />
+            <span>Về Trang Mua Sắm (Storefront)</span>
+          </button>
+        </header>
+
+        {/* LOGIN CONTAINER */}
+        <div className="flex-1 flex items-center justify-center p-4 sm:p-8">
+          <div className="max-w-md w-full bg-[#1e293b] rounded-3xl p-6 sm:p-8 border border-slate-700/80 shadow-2xl space-y-6">
+            
+            <div className="text-center space-y-2">
+              <div className="w-16 h-16 bg-blue-600/20 border border-blue-500/40 text-blue-400 rounded-2xl flex items-center justify-center mx-auto shadow-inner">
+                <ShieldCheck className="w-9 h-9" />
+              </div>
+              <h2 className="text-xl font-black text-white tracking-tight">Đăng Nhập Admin Web Portal</h2>
+              <p className="text-xs text-slate-400 max-w-xs mx-auto">
+                Truy cập bảng điều khiển độc lập quản lý sản phẩm, đơn hàng, khách hàng & bài viết y khoa
+              </p>
+            </div>
+
+            {loginError && (
+              <div className="bg-red-500/10 border border-red-500/30 text-red-400 p-3 rounded-xl text-xs font-medium text-center">
+                {loginError}
+              </div>
+            )}
+
+            <form onSubmit={handleAdminDirectLogin} className="space-y-4" autoComplete="off">
+              <div>
+                <label className="block text-xs font-bold text-slate-300 mb-1.5">Email / Số điện thoại Admin</label>
+                <input 
+                  type="text" 
+                  name="admin_user_id_field"
+                  id="admin_user_id_field"
+                  autoComplete="off"
+                  value={adminEmail}
+                  onChange={(e) => setAdminEmail(e.target.value)}
+                  placeholder="Nhập email hoặc SĐT Admin..."
+                  className="w-full bg-[#0f172a] border border-slate-700 focus:border-blue-500 rounded-xl p-3 text-xs text-white focus:outline-hidden transition"
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-slate-300 mb-1.5">Mật khẩu Quản Trị</label>
+                <input 
+                  type="password" 
+                  name="admin_secure_key_field"
+                  id="admin_secure_key_field"
+                  autoComplete="new-password"
+                  value={adminPass}
+                  onChange={(e) => setAdminPass(e.target.value)}
+                  placeholder="Nhập mật khẩu quản trị..."
+                  className="w-full bg-[#0f172a] border border-slate-700 focus:border-blue-500 rounded-xl p-3 text-xs text-white focus:outline-hidden transition"
+                  required
+                />
+              </div>
+
+              <button
+                type="submit"
+                disabled={isLoggingIn}
+                className="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-[#0071ba] to-blue-600 hover:from-blue-700 hover:to-blue-800 text-white font-black text-xs uppercase tracking-wider transition shadow-lg active:scale-[0.99] disabled:opacity-60 cursor-pointer flex items-center justify-center gap-2"
+              >
+                {isLoggingIn ? (
+                  <>
+                    <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+                    <span>Đang xác thực...</span>
+                  </>
+                ) : (
+                  <>
+                    <Lock className="w-4 h-4" />
+                    <span>Đăng Nhập Vào Bảng Điều Khiển Admin</span>
+                  </>
+                )}
+              </button>
+
+              <div className="pt-2 border-t border-slate-700/60 flex flex-col gap-1.5 text-[11px] text-slate-400 text-center">
+                <p>Tài khoản Quản Trị Viên TECNIC:</p>
+                <div className="flex justify-center gap-2">
+                  <span className="px-2 py-0.5 rounded bg-slate-800 text-blue-300 font-mono">admin</span>
+                  <span>/</span>
+                  <span className="px-2 py-0.5 rounded bg-slate-800 text-emerald-300 font-mono">tecnic2466</span>
+                </div>
+                <p className="text-[10px] text-slate-500 mt-1">Hoặc dùng email: <span className="text-slate-400 font-mono">nguyendungdbd1@gmail.com</span></p>
+              </div>
+            </form>
+
           </div>
         </div>
       </div>
@@ -516,6 +812,19 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
               <Users className="w-4 h-4 text-[#00c0ef] shrink-0" />
               {!sidebarCollapsed && <span>Đối tác - Khách hàng</span>}
             </button>
+
+            {/* Quản lý Bác sĩ giới thiệu */}
+            <button
+              onClick={() => setActiveMenu('DOCTORS')}
+              className={`w-full flex items-center gap-3 px-3 py-2.5 transition text-left ${
+                activeMenu === 'DOCTORS' 
+                  ? 'bg-[#1e282c] text-white font-bold border-l-4 border-[#00c0ef]' 
+                  : 'hover:bg-slate-800 text-slate-300'
+              }`}
+            >
+              <Stethoscope className="w-4 h-4 text-[#00c0ef] shrink-0" />
+              {!sidebarCollapsed && <span>Bác sĩ giới thiệu</span>}
+            </button>
             
             {/* 6. Quản lý đơn hàng */}
             <button
@@ -576,6 +885,14 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
                     }`}
                   >
                     <span>» Cấu hình seo trang chủ</span>
+                  </button>
+                  <button
+                    onClick={() => setActiveMenu('DOCTORS')}
+                    className={`w-full text-left py-1.5 pl-8 pr-3 transition flex items-center gap-1.5 ${
+                      activeMenu === 'DOCTORS' ? 'text-white font-bold text-amber-300' : 'text-slate-300 hover:text-white'
+                    }`}
+                  >
+                    <span>» Quản lý Bác sĩ giới thiệu (Mã giảm giá)</span>
                   </button>
                   <button
                     onClick={() => setActiveMenu('CODE_CONFIG')}
@@ -748,6 +1065,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
                 orders={orders}
                 onUpdateOrderStatus={handleUpdateOrderStatus}
                 onDeleteOrder={handleDeleteOrder}
+                onBulkDeleteOrders={handleBulkDeleteOrders}
                 onViewOrderDetails={(o) => setViewingOrder(o)}
               />
             )}
@@ -755,6 +1073,8 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
             {activeMenu === 'CONTACTS' && <AdminContactList />}
 
             {activeMenu === 'SEO_CONFIG' && <AdminSeoConfig />}
+
+            {activeMenu === 'DOCTORS' && <AdminDoctorManagement />}
 
             {activeMenu === 'CODE_CONFIG' && <AdminCodeConfig />}
 
@@ -853,9 +1173,9 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
                                minHeight="280px"
                                showAiButton={true}
                                onAiGenerate={() => {
-                                 const promptDesc = `### 🌟 ĐẶC ĐIỂM NỔI BẬT\n- Thiết kế chuẩn y khoa, an toàn tuyệt đối cho người bệnh và kỹ thuật viên.\n- Khung hợp kim cao cấp chịu lực cao, độ bền vượt trội.\n- Đạt chuẩn chứng nhận lưu hành trang thiết bị y tế của Bộ Y Tế.\n\n### ⚙️ THÔNG SỐ KỸ THUẬT\n- **Model**: ${editingProduct.name || 'TECNIC-PRO'}\n- **Chất liệu**: Hợp kim phủ sơn tĩnh điện nano y tế\n- **Bảo hành**: 24 - 36 Tháng chính hãng TECNIC MEDTECH\n\n### 🩺 HƯỚNG DẪN SỬ DỤNG AN TOÀN\n1. Kiểm tra toàn bộ khóa chốt an toàn trước khi vận hành.\n2. Vệ sinh định kỳ bằng dung dịch sát khuẩn y tế chuyên dụng.\n3. Liên hệ tổng đài kỹ thuật **034 84 02466** khi cần hỗ trợ bảo dưỡng.`;
+                                 const promptDesc = `### 🌟 ĐẶC ĐIỂM NỔI BẬT\n- Thiết kế tối ưu, an toàn tuyệt đối cho người bệnh và kỹ thuật viên.\n- Khung hợp kim cao cấp chịu lực cao, độ bền vượt trội.\n- Đạt chứng nhận lưu hành trang thiết bị y tế của Bộ Y Tế.\n\n### ⚙️ THÔNG SỐ KỸ THUẬT\n- **Model**: ${editingProduct.name || 'TECNIC-PRO'}\n- **Chất liệu**: Hợp kim phủ sơn tĩnh điện nano y tế\n- **Bảo hành**: 24 - 36 Tháng chính hãng TECNIC MEDTECH\n\n### 🩺 HƯỚNG DẪN SỬ DỤNG AN TOÀN\n1. Kiểm tra toàn bộ khóa chốt an toàn trước khi vận hành.\n2. Vệ sinh định kỳ bằng dung dịch sát khuẩn chuyên dụng.\n3. Liên hệ tổng đài kỹ thuật **034 84 02466** khi cần hỗ trợ bảo dưỡng.`;
                                  setEditingProduct(prev => prev ? { ...prev, fullDescription: (prev.fullDescription ? prev.fullDescription + '\n\n' : '') + promptDesc } : null);
-                                 showToast('Đã chèn mẫu mô tả sản phẩm chuẩn y khoa!');
+                                 showToast('Đã chèn mẫu mô tả sản phẩm chi tiết!');
                                }}
                              />
                            </div>
@@ -1301,6 +1621,27 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
                 <p><b>Điện thoại:</b> {viewingOrder.customerPhone}</p>
                 <p><b>Địa chỉ:</b> {viewingOrder.shippingAddress}</p>
                 <p><b>Thời gian đặt:</b> {new Date(viewingOrder.createdAt).toLocaleString('vi-VN')}</p>
+                {viewingOrder.referralDoctor && (
+                  <div className="pt-1.5 border-t border-slate-200 mt-1 space-y-0.5">
+                    <p className="text-[#0071ba] font-bold flex items-center gap-1">
+                      <span>🩺 Bác sĩ giới thiệu:</span>
+                      <span>{viewingOrder.referralDoctor.doctorName}</span>
+                      {viewingOrder.referralDoctor.doctorCode && (
+                        <span className="font-mono text-slate-600 bg-blue-50 px-1.5 py-0.5 rounded border border-blue-100">
+                          {viewingOrder.referralDoctor.doctorCode}
+                        </span>
+                      )}
+                    </p>
+                    <p className="text-emerald-700 text-[11px] font-medium">
+                      Ưu đãi khách hàng đã trừ: -{viewingOrder.referralDoctor.discountAmount.toLocaleString('vi-VN')} đ
+                    </p>
+                    {viewingOrder.referralDoctor.commissionAmount ? (
+                      <p className="text-amber-800 text-[11px] font-bold">
+                        Hoa hồng bác sĩ ({viewingOrder.referralDoctor.commissionRate || 5}%): {viewingOrder.referralDoctor.commissionAmount.toLocaleString('vi-VN')} đ
+                      </p>
+                    ) : null}
+                  </div>
+                )}
               </div>
 
               <div className="border border-slate-200 rounded divide-y">

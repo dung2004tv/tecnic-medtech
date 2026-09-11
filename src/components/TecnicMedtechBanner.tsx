@@ -60,7 +60,7 @@ export const TecnicMedtechBanner: React.FC<TecnicMedtechBannerProps> = ({
     <section 
       id="tecnic-medtech-banner"
       aria-label="Banner Chính Hãng TECNIC MEDTECH" 
-      className="relative w-full bg-slate-50 py-3 sm:py-5 border-b border-slate-200"
+      className="relative w-full bg-slate-50 py-3 sm:py-5 border-b border-slate-200 overflow-hidden"
     >
       <div className="max-w-[1400px] mx-auto px-3 sm:px-6">
         
@@ -228,17 +228,17 @@ export const TecnicMedtechBanner: React.FC<TecnicMedtechBannerProps> = ({
                   </h2>
                 </div>
 
-                {/* CURSIVE SLOGAN: "Chất lượng tạo uy tín" (Full Vietnamese calligraphic script) */}
+                {/* CURSIVE SLOGAN: "Giải pháp toàn diện, tái sinh cuộc sống" */}
                 <div className="pt-0.5 sm:pt-1">
                   <p 
-                    className="text-[#006ebc] font-semibold text-2xl sm:text-3xl lg:text-4xl xl:text-[42px] leading-relaxed drop-shadow-xs select-none"
+                    className="text-[#006ebc] font-semibold text-xl sm:text-2xl lg:text-3xl xl:text-[36px] leading-relaxed drop-shadow-xs select-none"
                     style={{ 
                       fontFamily: "'Dancing Script', 'Alex Brush', 'Great Vibes', cursive, 'Brush Script MT'",
                       wordSpacing: '0.12em',
                       letterSpacing: '0.02em'
                     }}
                   >
-                    Chất lượng tạo uy tín
+                    Giải pháp toàn diện, tái sinh cuộc sống
                   </p>
                 </div>
 

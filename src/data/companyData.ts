@@ -1,9 +1,9 @@
 export const COMPANY_INFO = {
-  name: 'CÔNG TY CỔ PHẦN GIẢI PHÁP CÔNG NGHỆ HỖ TRỢ Y TẾ TECNIC (TECNIC Medtech)',
-  shortName: 'TECNIC Medtech',
-  brandName: 'TECNIC Medtech',
-  slogan: 'Kiến tạo để phụng sự',
-  mission: 'Kiến tạo để phụng sự',
+  name: 'CÔNG TY CỔ PHẦN GIẢI PHÁP CÔNG NGHỆ HỖ TRỢ Y TẾ TECNIC (TECNIC MEDTECH)',
+  shortName: 'TECNIC MEDTECH',
+  brandName: 'TECNIC MEDTECH',
+  slogan: 'Giải pháp toàn diện, tái sinh cuộc sống',
+  mission: 'Giải pháp toàn diện, tái sinh cuộc sống',
   vision: 'TECNIC hướng tới thuộc nhóm VNR 500, sản phẩm/dịch vụ nằm trong nhóm dẫn đầu thị trường. Là doanh nghiệp nằm trong nhóm dẫn đầu về các chỉ số mang lại sự hạnh phúc và cơ hội phát triển cho người lao động trong doanh nghiệp.',
   coreValues: [
     'Phụng sự: Khách hàng, Bệnh nhân',
@@ -17,14 +17,14 @@ export const COMPANY_INFO = {
   googleMapsEmbed: 'https://www.google.com/maps?q=Tầng+2+Tòa+nhà+New+Skyline+Văn+Quán+Yên+Phúc+Hà+Đông+Hà+Nội&output=embed',
   hotlines: ['034 84 02466', '038 988 0369'],
   emails: ['tecnic.medtech@gmail.com', 'nguyendungdbd1@gmail.com'],
-  website: 'https://tecnic.vn/',
+  website: 'https://ytetecnic.vn/',
   bankAccount: {
     bankName: 'Ngân hàng MB Bank',
     branch: '',
     accountNumber: '787216666',
     accountHolder: 'CÔNG TY CỔ PHẦN GIẢI PHÁP CÔNG NGHỆ HỖ TRỢ Y TẾ TECNIC',
     qrCodeImage: 'https://img.vietqr.io/image/mb-787216666-compact2.png',
-    note: 'TECNIC Medtech không yêu cầu chuyển tiền vào tài khoản cá nhân.'
+    note: 'TECNIC MEDTECH không yêu cầu chuyển tiền vào tài khoản cá nhân.'
   },
   workingHours: {
     weekday: 'Thứ 2 – Thứ 6: sáng 08:00 – 12:00 , chiều 14h30 – 17h30',
@@ -61,7 +61,7 @@ export const COMPANY_INFO = {
     {
       title: 'Chính sách bảo vệ dữ liệu cá nhân',
       url: 'https://ytetecnic.vn/chinh-sach-quyen-rieng-tu-va-bao-mat-du-lieu-ca-nhan',
-      desc: 'Bảo mật tuyệt đối hồ sơ bệnh án, thông tin đơn hàng và thông số sức khỏe người dùng theo chuẩn y khoa.'
+      desc: 'Bảo mật tuyệt đối hồ sơ bệnh án, thông tin đơn hàng và thông số sức khỏe người dùng theo quy định bảo mật thông tin y tế.'
     },
     {
       title: 'Chính sách vận chuyển & giao nhận',
@@ -89,21 +89,31 @@ CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 USE tecnic_medical_db;
 
--- 1. BẢNG NGƯỜI DÙNG & BÁC SĨ (USERS)
+-- 1. BẢNG NGƯỜI DÙNG & DOANH NGHIỆP (USERS) - HỖ TRỢ HÀNG NGHÌN TÀI KHOẢN & OAUTH ZALO/FACEBOOK/ZOHO
 CREATE TABLE IF NOT EXISTS users (
     id INT AUTO_INCREMENT PRIMARY KEY,
     full_name VARCHAR(150) NOT NULL,
-    phone VARCHAR(20) NOT NULL UNIQUE,
-    email VARCHAR(150) NOT NULL UNIQUE,
-    password_hash VARCHAR(255) NOT NULL,
+    phone VARCHAR(20) NOT NULL,
+    email VARCHAR(150),
+    password_hash VARCHAR(255) DEFAULT NULL,
+    auth_provider ENUM('LOCAL', 'ZALO', 'FACEBOOK', 'GOOGLE', 'ZOHO') DEFAULT 'LOCAL',
+    social_id VARCHAR(120) DEFAULT NULL,
+    avatar_url TEXT DEFAULT NULL,
+    zoho_contact_id VARCHAR(100) DEFAULT NULL,
+    account_type ENUM('CA_NHAN', 'BAC_SI', 'PHONG_KHAM', 'DAI_LY', 'DOANH_NGHIEP', 'ADMIN', 'STAFF') DEFAULT 'CA_NHAN',
+    company_name VARCHAR(255) DEFAULT NULL,
+    tax_code VARCHAR(50) DEFAULT NULL,
     address TEXT,
     city VARCHAR(100),
     district VARCHAR(100),
-    account_type ENUM('CA_NHAN', 'BAC_SI', 'PHONG_KHAM', 'DAI_LY') DEFAULT 'CA_NHAN',
-    clinic_name VARCHAR(200),
-    tax_code VARCHAR(50),
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
+    status ENUM('ACTIVE', 'PENDING_VERIFY', 'BANNED') DEFAULT 'ACTIVE',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    INDEX idx_phone (phone),
+    INDEX idx_email (email),
+    INDEX idx_social (social_id, auth_provider),
+    INDEX idx_zoho (zoho_contact_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- 2. BẢNG DANH MỤC THIẾT BỊ (CATEGORIES)
 CREATE TABLE IF NOT EXISTS categories (

@@ -6,6 +6,7 @@ interface AdminOrderListProps {
   orders: Order[];
   onUpdateOrderStatus: (orderId: string, status: string, payment?: string) => void;
   onDeleteOrder: (orderId: string) => void;
+  onBulkDeleteOrders?: (ids: string[]) => void;
   onViewOrderDetails: (order: Order) => void;
 }
 
@@ -13,6 +14,7 @@ export const AdminOrderList: React.FC<AdminOrderListProps> = ({
   orders,
   onUpdateOrderStatus,
   onDeleteOrder,
+  onBulkDeleteOrders,
   onViewOrderDetails
 }) => {
   const [keyword, setKeyword] = useState('');
@@ -188,8 +190,22 @@ export const AdminOrderList: React.FC<AdminOrderListProps> = ({
         </div>
       </div>
 
-      {/* Record Counter */}
-      <div className="flex justify-end text-xs font-bold text-slate-700">
+      {/* Record Counter & Bulk Action */}
+      <div className="flex flex-wrap items-center justify-between gap-2 text-xs font-bold text-slate-700">
+        <div>
+          {selectedIds.length > 0 && onBulkDeleteOrders && (
+            <button
+              onClick={() => {
+                onBulkDeleteOrders(selectedIds);
+                setSelectedIds([]);
+              }}
+              className="bg-red-600 hover:bg-red-700 text-white text-xs font-bold py-1 px-3 rounded flex items-center gap-1 shadow-xs transition"
+            >
+              <Trash2 className="w-3.5 h-3.5" />
+              <span>Xóa ({selectedIds.length}) đơn đã chọn</span>
+            </button>
+          )}
+        </div>
         <span>Tổng số bản ghi {filteredOrders.length} / {orders.length}</span>
       </div>
 
@@ -199,7 +215,19 @@ export const AdminOrderList: React.FC<AdminOrderListProps> = ({
           <thead>
             <tr className="bg-slate-50 border-b border-slate-200 text-slate-700 font-bold">
               <th className="py-2.5 px-3 w-10 text-center">
-                <input type="checkbox" className="rounded" />
+                <input 
+                  type="checkbox" 
+                  className="rounded cursor-pointer"
+                  checked={filteredOrders.length > 0 && selectedIds.length === filteredOrders.length}
+                  onChange={(e) => {
+                    if (e.target.checked) {
+                      setSelectedIds(filteredOrders.map(o => o.id));
+                    } else {
+                      setSelectedIds([]);
+                    }
+                  }}
+                  title="Chọn tất cả"
+                />
               </th>
               <th className="py-2.5 px-2 w-10 text-center">Stt</th>
               <th className="py-2.5 px-4 min-w-[280px]">Thông tin người đặt hàng</th>
@@ -240,6 +268,19 @@ export const AdminOrderList: React.FC<AdminOrderListProps> = ({
                   <div className="text-slate-500 text-[11px]">
                     Địa chỉ: {o.shippingAddress}
                   </div>
+                  {o.referralDoctor && (
+                    <div className="pt-1">
+                      <span className="inline-flex flex-wrap items-center gap-1 bg-blue-50 text-[#0071ba] border border-blue-200 px-2 py-0.5 rounded text-[10px] font-bold">
+                        <span>🩺 BS:</span>
+                        <span>{o.referralDoctor.doctorName}</span>
+                        {o.referralDoctor.doctorCode && <span className="text-slate-500 font-mono">({o.referralDoctor.doctorCode})</span>}
+                        <span className="text-emerald-700">(-{o.referralDoctor.discountAmount.toLocaleString('vi-VN')} đ)</span>
+                        {o.referralDoctor.commissionAmount ? (
+                          <span className="text-amber-700 font-medium ml-0.5">| Hoa hồng: {o.referralDoctor.commissionAmount.toLocaleString('vi-VN')} đ</span>
+                        ) : null}
+                      </span>
+                    </div>
+                  )}
                 </td>
 
                 {/* Tổng tiền */}

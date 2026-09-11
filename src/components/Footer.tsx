@@ -11,18 +11,24 @@ import { TecnicLogo } from './TecnicLogo';
 
 interface FooterProps {
   onSelectCategory?: (catId: CategoryId) => void;
+  onOpenHome?: () => void;
   onOpenAbout: () => void;
   onOpenContact?: () => void;
   onOpenArticles?: () => void;
   onOpenProducts?: () => void;
+  onOpenAdmin?: () => void;
+  onOpenInstallApp?: () => void;
 }
 
 export const Footer: React.FC<FooterProps> = ({
   onSelectCategory,
+  onOpenHome,
   onOpenAbout,
   onOpenContact,
   onOpenArticles,
-  onOpenProducts
+  onOpenProducts,
+  onOpenAdmin,
+  onOpenInstallApp
 }) => {
   const handleOpenMap = () => {
     window.open(COMPANY_INFO.googleMapsUrl, '_blank');
@@ -33,8 +39,11 @@ export const Footer: React.FC<FooterProps> = ({
       <div className="max-w-7xl mx-auto px-4 space-y-8">
         
         {/* 1. CENTERED TECNIC LOGO */}
-        <div className="flex flex-col items-center justify-center text-center pt-2">
-          <TecnicLogo size="lg" layout="vertical" showSlogan={true} />
+        <div className="flex flex-col items-center justify-center text-center pt-2 gap-1.5">
+          <TecnicLogo size="lg" layout="vertical" showSlogan={false} />
+          <p className="text-[#0071ba] font-bold italic text-sm sm:text-base">
+            "{COMPANY_INFO.slogan}"
+          </p>
         </div>
 
         {/* 2. THREE COLUMNS CONTENT */}
@@ -42,8 +51,10 @@ export const Footer: React.FC<FooterProps> = ({
           
           {/* CỘT 1: CÔNG TY CỔ PHẦN CÔNG NGHỆ VÀ DỊCH VỤ Y TẾ TECNIC (TECNIC) */}
           <div className="space-y-4">
-            <h4 className="font-black text-sm sm:text-base text-slate-900 uppercase tracking-tight leading-snug">
-              {COMPANY_INFO.name}
+            <h4 className="font-black text-sm sm:text-base text-slate-900 uppercase tracking-tight leading-snug break-words">
+              <span className="inline-block">CÔNG TY CỔ PHẦN GIẢI PHÁP</span>{' '}
+              <span className="inline-block">CÔNG NGHỆ HỖ TRỢ Y TẾ TECNIC</span>{' '}
+              <span className="inline-block text-[#0071ba]">(TECNIC MEDTECH)</span>
             </h4>
             
             <div className="space-y-2.5 text-xs text-slate-600 leading-relaxed">
@@ -90,8 +101,8 @@ export const Footer: React.FC<FooterProps> = ({
                 <Globe className="w-4 h-4 text-blue-600 shrink-0" />
                 <span>
                   <strong className="text-slate-900">Website:</strong>{' '}
-                  <a href="https://tecnic.vn" target="_blank" rel="noopener noreferrer" className="text-[#0071ba] hover:underline font-bold">
-                    tecnic.vn
+                  <a href="https://ytetecnic.vn" target="_blank" rel="noopener noreferrer" className="text-[#0071ba] hover:underline font-bold">
+                    ytetecnic.vn
                   </a>
                 </span>
               </p>
@@ -107,8 +118,8 @@ export const Footer: React.FC<FooterProps> = ({
             <ul className="space-y-2.5 text-xs text-slate-600">
               <li>
                 <button 
-                  onClick={onOpenProducts} 
-                  className="hover:text-[#0071ba] hover:translate-x-1 transition-all flex items-center gap-1.5"
+                  onClick={onOpenHome || onOpenProducts} 
+                  className="hover:text-[#0071ba] hover:translate-x-1 transition-all flex items-center gap-1.5 cursor-pointer"
                 >
                   <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
                   Trang chủ TECNIC
@@ -117,7 +128,7 @@ export const Footer: React.FC<FooterProps> = ({
               <li>
                 <button 
                   onClick={onOpenAbout} 
-                  className="hover:text-[#0071ba] hover:translate-x-1 transition-all flex items-center gap-1.5"
+                  className="hover:text-[#0071ba] hover:translate-x-1 transition-all flex items-center gap-1.5 cursor-pointer"
                 >
                   <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
                   Giới thiệu doanh nghiệp & Sứ mệnh
@@ -126,10 +137,10 @@ export const Footer: React.FC<FooterProps> = ({
               <li>
                 <button 
                   onClick={onOpenProducts} 
-                  className="hover:text-[#0071ba] hover:translate-x-1 transition-all flex items-center gap-1.5"
+                  className="hover:text-[#0071ba] hover:translate-x-1 transition-all flex items-center gap-1.5 cursor-pointer"
                 >
                   <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
-                  Danh mục thiết bị y tế & PHCN
+                  Danh mục sản phẩm thiết bị y tế
                 </button>
               </li>
               <li>
@@ -168,6 +179,17 @@ export const Footer: React.FC<FooterProps> = ({
                   Liên hệ & Đặt lịch tư vấn
                 </button>
               </li>
+              {onOpenInstallApp && (
+                <li>
+                  <button 
+                    onClick={onOpenInstallApp} 
+                    className="hover:text-emerald-600 hover:translate-x-1 transition-all flex items-center gap-1.5 font-bold text-emerald-600 cursor-pointer"
+                  >
+                    <ChevronRight className="w-3.5 h-3.5 text-emerald-600" />
+                    📱 Tải TECNIC App cho iOS & Android
+                  </button>
+                </li>
+              )}
             </ul>
           </div>
 
@@ -210,13 +232,17 @@ export const Footer: React.FC<FooterProps> = ({
         </div>
 
         {/* 3. COPYRIGHT BAR */}
-        <div className="pt-6 border-t border-slate-100 text-center text-xs text-slate-500">
-          <p className="font-semibold text-slate-700">
-            Bản quyền thuộc về CÔNG TY CỔ PHẦN GIẢI PHÁP CÔNG NGHỆ HỖ TRỢ Y TẾ TECNIC (TECNIC Medtech).
-          </p>
-          <p className="text-[11px] text-slate-400 mt-1">
-            Chuyên cung cấp giải pháp công nghệ, thiết bị y tế & dụng cụ phục hồi chức năng chính hãng tại Việt Nam.
-          </p>
+        <div className="pt-6 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-500 text-center sm:text-left">
+          <div>
+            <p className="font-semibold text-slate-700 leading-relaxed">
+              Bản quyền thuộc về <span className="inline-block">CÔNG TY CỔ PHẦN GIẢI PHÁP</span>{' '}
+              <span className="inline-block">CÔNG NGHỆ HỖ TRỢ Y TẾ TECNIC</span>{' '}
+              <span className="inline-block">(TECNIC Medtech).</span>
+            </p>
+            <p className="text-[11px] text-slate-400 mt-0.5">
+              Chuyên cung cấp giải pháp công nghệ, thiết bị y tế & dụng cụ phục hồi chức năng chính hãng tại Việt Nam.
+            </p>
+          </div>
         </div>
 
       </div>

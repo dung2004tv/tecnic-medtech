@@ -16,7 +16,7 @@ import React, { useState } from 'react';
 import { 
   X, Star, ShoppingCart, ShieldCheck, Truck, RotateCcw, 
   CheckCircle2, Award, Info, Heart, Share2, PhoneCall, Stethoscope, 
-  FileText, Copy, Check, MessageCircle, ExternalLink
+  FileText, Copy, Check, MessageCircle, ExternalLink, Headphones
 } from 'lucide-react';
 import { Product } from '../types';
 import { COMPANY_INFO } from '../data/companyData';
@@ -123,7 +123,7 @@ export const ProductModal: React.FC<ProductModalProps> = ({
             {/* LEFT: PRODUCT IMAGE & TRUST BADGES */}
             <div className="space-y-4">
               <div className="bg-slate-50 border border-slate-200 rounded-2xl p-4 flex items-center justify-center h-72 sm:h-80 relative overflow-hidden">
-                <ProductImage product={product} size="lg" />
+                <ProductImage product={product} size="lg" showBadge={false} />
               </div>
 
               {/* Share link banner for Sales/Staff */}
@@ -150,7 +150,7 @@ export const ProductModal: React.FC<ProductModalProps> = ({
               <div className="grid grid-cols-2 gap-2 text-[11px]">
                 <div className="bg-blue-50 border border-blue-100 p-2.5 rounded-xl flex items-center gap-2 text-slate-700">
                   <ShieldCheck className="w-4 h-4 text-[#0071ba] shrink-0" />
-                  <span>Bảo hành <b>{product.specifications.warrantyMonths} tháng</b> chính hãng</span>
+                  <span>Bảo hành tại <b>TECNIC MEDTECH</b></span>
                 </div>
                 <div className="bg-emerald-50 border border-emerald-100 p-2.5 rounded-xl flex items-center gap-2 text-slate-700">
                   <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
@@ -179,26 +179,31 @@ export const ProductModal: React.FC<ProductModalProps> = ({
                     <span>{product.rating}</span>
                   </div>
                   <span className="text-slate-300">•</span>
-                  <span className={`font-bold ${
-                    isOutOfStock ? 'text-red-600' : 'text-emerald-700'
+                  <span className={`font-bold px-2 py-0.5 rounded-md whitespace-nowrap text-[11px] ${
+                    isOutOfStock 
+                      ? 'bg-red-50 text-red-600 border border-red-200' 
+                      : (product.stock < 3 
+                          ? 'bg-amber-50 text-amber-700 border border-amber-200' 
+                          : 'bg-emerald-50 text-emerald-700 border border-emerald-200')
                   }`}>
-                    {isOutOfStock ? 'Trạng thái: Hết hàng' : 'Trạng thái: Còn hàng'}
+                    {isOutOfStock ? 'Hết hàng' : (product.stock < 3 ? 'Hàng đang về' : 'Còn hàng')}
                   </span>
                 </div>
 
                 {/* Price Box */}
-                <div className="mt-4 p-4 bg-slate-50 rounded-2xl border border-slate-200 space-y-1.5">
-                  <div className="flex items-baseline gap-3">
-                    <span className="text-2xl font-black text-red-600">
-                      {product.tecnicPrice.toLocaleString('vi-VN')} đ
-                    </span>
+                <div className="mt-4 p-4 bg-slate-50 rounded-2xl border border-slate-200 space-y-1">
+                  <div className="text-2xl font-black text-red-600 whitespace-nowrap">
+                    {product.tecnicPrice.toLocaleString('vi-VN')}&nbsp;đ
+                  </div>
+                  <div className="flex flex-wrap items-center gap-2 text-xs text-slate-500 font-medium">
                     {product.marketPrice > product.tecnicPrice && (
-                      <span className="text-xs text-slate-400 line-through">
-                        Giá niêm yết: {product.marketPrice.toLocaleString('vi-VN')} đ
+                      <span className="line-through text-slate-400 whitespace-nowrap">
+                        Giá niêm yết: {product.marketPrice.toLocaleString('vi-VN')}&nbsp;đ
                       </span>
                     )}
+                    <span className="text-slate-500 font-bold text-[11px] bg-slate-200/70 px-2 py-0.5 rounded border border-slate-200 shrink-0">(Đã gồm VAT)</span>
                   </div>
-                  <p className="text-[11px] text-emerald-700 font-bold flex items-center gap-1">
+                  <p className="text-[11px] text-emerald-700 font-bold flex items-center gap-1 pt-1">
                     <Award className="w-3.5 h-3.5" />
                     Phân phối chính hãng bởi TECNIC MEDTECH
                   </p>
@@ -241,17 +246,19 @@ export const ProductModal: React.FC<ProductModalProps> = ({
                   </button>
                 </div>
 
-                {/* ROW 2: ĐẶT HÀNG TO VỚI CHỮ NHỎ DƯỚI */}
+                {/* ROW 2: ĐẶT HÀNG NGAY */}
                 <button
                   onClick={() => {
                     onBuyNow(product, quantity);
                     onClose();
                   }}
                   disabled={isOutOfStock}
-                  className="w-full py-3 px-4 rounded-xl font-black bg-red-600 hover:bg-red-700 text-white transition shadow-md flex flex-col items-center justify-center disabled:opacity-50 cursor-pointer"
+                  className="w-full py-3 px-4 rounded-xl font-black bg-gradient-to-r from-[#143472] via-[#0071ba] to-[#143472] hover:from-[#0e387a] hover:to-[#0071ba] text-white transition shadow-md hover:shadow-lg flex flex-col items-center justify-center disabled:opacity-50 cursor-pointer border border-blue-400/20"
                 >
-                  <span className="text-sm uppercase tracking-wide">ĐẶT HÀNG</span>
-                  <span className="text-[10px] font-normal text-red-100">Gọi điện xác nhận và giao hàng tận nơi</span>
+                  <span className="text-base uppercase tracking-wider text-white font-black">
+                    ĐẶT HÀNG NGAY
+                  </span>
+                  <span className="text-[10px] font-medium text-sky-100 mt-0.5">Tư vấn thông số & gọi xác nhận giao tận nhà</span>
                 </button>
 
                 {/* Direct Hotline / Zalo Consultant */}
@@ -280,40 +287,32 @@ export const ProductModal: React.FC<ProductModalProps> = ({
 
           </div>
 
-          {/* TABS: THÔNG SỐ KỸ THUẬT & HƯỚNG DẪN */}
+          {/* TABS: THÔNG TIN CHI TIẾT & HƯỚNG DẪN */}
           <div className="pt-4 border-t border-slate-200">
             <div className="flex border-b border-slate-200 text-xs font-bold gap-4">
               <button
                 onClick={() => setActiveTab('desc')}
-                className={`pb-2.5 transition border-b-2 ${
+                className={`pb-2.5 transition border-b-2 uppercase tracking-wide ${
                   activeTab === 'desc' ? 'border-[#0071ba] text-[#0071ba] font-black' : 'border-transparent text-slate-500 hover:text-slate-800'
                 }`}
               >
-                Mô tả chi tiết & Tính năng
-              </button>
-              <button
-                onClick={() => setActiveTab('specs')}
-                className={`pb-2.5 transition border-b-2 ${
-                  activeTab === 'specs' ? 'border-[#0071ba] text-[#0071ba] font-black' : 'border-transparent text-slate-500 hover:text-slate-800'
-                }`}
-              >
-                Thông số kỹ thuật đầy đủ
+                MÔ TẢ CHI TIẾT & TÍNH NĂNG
               </button>
               <button
                 onClick={() => setActiveTab('usage')}
-                className={`pb-2.5 transition border-b-2 whitespace-nowrap ${
+                className={`pb-2.5 transition border-b-2 whitespace-nowrap uppercase tracking-wide ${
                   activeTab === 'usage' ? 'border-[#0071ba] text-[#0071ba] font-black' : 'border-transparent text-slate-500 hover:text-slate-800'
                 }`}
               >
-                Hướng dẫn sử dụng
+                HƯỚNG DẪN SỬ DỤNG
               </button>
               <button
                 onClick={() => setActiveTab('warranty')}
-                className={`pb-2.5 transition border-b-2 whitespace-nowrap ${
+                className={`pb-2.5 transition border-b-2 whitespace-nowrap uppercase tracking-wide ${
                   activeTab === 'warranty' ? 'border-[#0071ba] text-[#0071ba] font-black' : 'border-transparent text-slate-500 hover:text-slate-800'
                 }`}
               >
-                Bảo hành sản phẩm
+                BẢO HÀNH SẢN PHẨM
               </button>
             </div>
 
@@ -321,39 +320,6 @@ export const ProductModal: React.FC<ProductModalProps> = ({
               {activeTab === 'desc' && (
                 <div className="markdown-body space-y-3">
                   <Markdown>{getRealProductDescription(product)}</Markdown>
-                </div>
-              )}
-
-              {activeTab === 'specs' && (
-                <div className="bg-slate-50 rounded-xl p-3 border border-slate-200 overflow-hidden">
-                  <table className="w-full text-left text-xs">
-                    <tbody className="divide-y divide-slate-200">
-                      <tr className="py-1.5"><th className="w-1/3 py-2 text-slate-500 font-medium">Thương hiệu</th><td className="py-2 font-bold text-slate-800">{product.specifications.brand}</td></tr>
-                      <tr className="py-1.5"><th className="py-2 text-slate-500 font-medium">Xuất xứ</th><td className="py-2 font-bold text-slate-800">{product.specifications.origin}</td></tr>
-                      <tr className="py-1.5"><th className="py-2 text-slate-500 font-medium">Bảo hành chính hãng</th><td className="py-2 font-bold text-slate-800">{product.specifications.warrantyMonths} tháng</td></tr>
-                      {product.specifications.model && (
-                        <tr className="py-1.5"><th className="py-2 text-slate-500 font-medium">Model sản phẩm</th><td className="py-2 font-bold text-slate-800">{product.specifications.model}</td></tr>
-                      )}
-                      {product.specifications.dimensions && (
-                        <tr className="py-1.5"><th className="py-2 text-slate-500 font-medium">Kích thước</th><td className="py-2 font-bold text-slate-800">{product.specifications.dimensions}</td></tr>
-                      )}
-                      {product.specifications.weight && (
-                        <tr className="py-1.5"><th className="py-2 text-slate-500 font-medium">Trọng lượng/Tải trọng</th><td className="py-2 font-bold text-slate-800">{product.specifications.weight}</td></tr>
-                      )}
-                      {product.specifications.material && (
-                        <tr className="py-1.5"><th className="py-2 text-slate-500 font-medium">Chất liệu</th><td className="py-2 font-bold text-slate-800">{product.specifications.material}</td></tr>
-                      )}
-                      {product.specifications.application && (
-                        <tr className="py-1.5"><th className="py-2 text-slate-500 font-medium">Ứng dụng</th><td className="py-2 font-bold text-slate-800">{product.specifications.application}</td></tr>
-                      )}
-                      {product.specifications.powerSource && (
-                        <tr className="py-1.5"><th className="py-2 text-slate-500 font-medium">Nguồn điện / Pin</th><td className="py-2 font-bold text-slate-800">{product.specifications.powerSource}</td></tr>
-                      )}
-                      {product.specifications.certifications && (
-                        <tr className="py-1.5"><th className="py-2 text-slate-500 font-medium">Chứng chỉ y tế</th><td className="py-2 font-bold text-emerald-700">{product.specifications.certifications.join(' • ')}</td></tr>
-                      )}
-                    </tbody>
-                  </table>
                 </div>
               )}
 
@@ -379,15 +345,15 @@ export const ProductModal: React.FC<ProductModalProps> = ({
                   <ul className="space-y-2 text-slate-700">
                     <li className="flex items-start gap-2">
                       <CheckCircle2 className="w-4 h-4 text-emerald-600 mt-0.5 shrink-0" />
-                      <span>Sản phẩm được bảo hành chính hãng <b>{product.specifications.warrantyMonths} tháng</b> theo quy định của nhà sản xuất.</span>
+                      <span>Sản phẩm được <b>bảo hành tại TECNIC MEDTECH</b> với chính sách chăm sóc và hỗ trợ kỹ thuật tận tâm.</span>
                     </li>
                     <li className="flex items-start gap-2">
                       <CheckCircle2 className="w-4 h-4 text-emerald-600 mt-0.5 shrink-0" />
-                      <span><b>Đổi trả linh hoạt:</b> Hỗ trợ đổi mới trong vòng 30 ngày nếu phát hiện lỗi từ nhà sản xuất.</span>
+                      <span><b>Đổi trả linh hoạt:</b> Hỗ trợ đổi mới trong vòng 30 ngày nếu phát hiện lỗi kỹ thuật từ nhà sản xuất.</span>
                     </li>
                     <li className="flex items-start gap-2">
                       <CheckCircle2 className="w-4 h-4 text-emerald-600 mt-0.5 shrink-0" />
-                      <span><b>Quy trình bảo hành:</b> Khách hàng có thể mang sản phẩm trực tiếp đến các trung tâm bảo hành ủy quyền hoặc gửi về văn phòng TECNIC.</span>
+                      <span><b>Quy trình bảo hành tại TECNIC MEDTECH:</b> Khách hàng liên hệ hotline kỹ thuật <b>034 84 02466</b> hoặc mang/gửi trực tiếp về văn phòng TECNIC MEDTECH (Tầng 2 tòa nhà New Skyline, Văn Quán, Hà Đông, Hà Nội) để được xử lý nhanh chóng.</span>
                     </li>
                     <li className="flex items-start gap-2">
                       <CheckCircle2 className="w-4 h-4 text-emerald-600 mt-0.5 shrink-0" />

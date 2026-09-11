@@ -44,12 +44,8 @@ export const CompanyAbout: React.FC<CompanyAboutProps> = ({ isOpen, onClose }) =
         {/* BODY CONTENT */}
         <div className="p-6 overflow-y-auto space-y-6 text-xs text-slate-700">
           
-          {/* INTRO HERO WITH VERTICAL LOGO */}
+          {/* INTRO HERO */}
           <div className="bg-gradient-to-r from-[#123577] to-[#0071ba] text-white p-6 rounded-2xl flex flex-col md:flex-row items-center gap-6 relative overflow-hidden">
-            <div className="shrink-0 flex items-center justify-center">
-              <TecnicLogo size="lg" layout="vertical" variant="dark" showSlogan={true} />
-            </div>
-            
             <div className="space-y-2 text-center md:text-left">
               <span className="inline-block bg-white/15 border border-white/20 text-white font-black text-[10px] px-2.5 py-1 rounded-full uppercase tracking-wider">
                 Hệ Sinh Thái Thiết Bị Y Tế & PHCN
@@ -57,7 +53,7 @@ export const CompanyAbout: React.FC<CompanyAboutProps> = ({ isOpen, onClose }) =
               <h2 className="text-lg sm:text-xl font-black">{COMPANY_INFO.name}</h2>
               <p className="text-sm text-sky-200 font-bold italic">"{COMPANY_INFO.slogan}"</p>
               <p className="text-xs text-blue-100 max-w-2xl leading-relaxed">
-                TECNIC tự hào mang đến Giải pháp Y tế & Phục hồi chức năng Toàn diện, đồng hành cùng người bệnh và người cao tuổi trên hành trình tự chủ sinh hoạt và nâng cao chất lượng cuộc sống.
+                Với phương châm <span className="font-bold text-white">“Giải pháp toàn diện, tái sinh cuộc sống”</span>, TECNIC Medtech lấy nhu cầu thực tế của người bệnh, gia đình và hệ thống y tế làm trọng tâm trong quá trình nghiên cứu, lựa chọn và cung cấp các giải pháp công nghệ hỗ trợ y tế.
               </p>
             </div>
           </div>

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { 
-  ArrowLeft, Phone, Share2, Check
+  ArrowLeft, Phone, Share2, Check, Headphones, MessageCircle
 } from 'lucide-react';
 import { Product } from '../types';
 import { ProductImage } from './ProductImage';
@@ -142,15 +142,18 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
             </div>
 
             {/* Price Box */}
-            <div className="flex items-end gap-3 flex-wrap pt-1">
-              <span className="text-2xl sm:text-[26px] font-bold text-[#e31837]">
-                {product.tecnicPrice.toLocaleString('vi-VN')}₫
-              </span>
-              {product.marketPrice > product.tecnicPrice && (
-                <span className="text-sm text-slate-400 line-through mb-1">
-                  Giá niêm yết: {product.marketPrice.toLocaleString('vi-VN')}₫
-                </span>
-              )}
+            <div className="space-y-1 pt-1">
+              <div className="text-2xl sm:text-[28px] font-black text-[#e31837] whitespace-nowrap">
+                {product.tecnicPrice.toLocaleString('vi-VN')}&nbsp;₫
+              </div>
+              <div className="flex flex-wrap items-center gap-2 text-xs sm:text-sm text-slate-500 font-medium">
+                {product.marketPrice > product.tecnicPrice && (
+                  <span className="line-through text-slate-400 whitespace-nowrap">
+                    Giá niêm yết: {product.marketPrice.toLocaleString('vi-VN')}&nbsp;₫
+                  </span>
+                )}
+                <span className="text-slate-500 font-bold text-xs bg-slate-100 px-2 py-0.5 rounded border border-slate-200 shrink-0">(Đã gồm VAT)</span>
+              </div>
             </div>
 
             {/* Product Info List (Công dụng, Xuất xứ, Mô tả ngắn, Màu sắc) */}
@@ -162,7 +165,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
               )}
               
               <p className="leading-relaxed">
-                <strong>Xuất xứ thương hiệu:</strong> Thương hiệu <strong>{product.specifications.brand}</strong> – {product.specifications.origin}. Sản phẩm được thiết kế và sản xuất 100% tại {product.specifications.origin}.
+                <strong>Xuất xứ thương hiệu:</strong> Thương hiệu <strong>{product.specifications.brand}</strong> – {product.specifications.origin}.
               </p>
 
               <div className="space-y-1.5">
@@ -180,6 +183,10 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
 
               <p className="leading-relaxed">
                 <strong>Màu sắc:</strong> {product.specifications.color || 'Đen'}.
+              </p>
+
+              <p className="leading-relaxed">
+                <strong>Thời gian bảo hành:</strong> <span className="text-[#0071ba] font-bold">Bảo hành tại TECNIC MEDTECH</span>.
               </p>
             </div>
 
@@ -221,27 +228,41 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
                 </button>
               </div>
 
-              {/* Row 2: ĐẶT HÀNG */}
+              {/* Row 2: ĐẶT HÀNG NGAY (GIAN HÀNG / LIÊN HỆ) */}
               <button
                 type="button"
                 onClick={() => onBuyNow(product, quantity)}
                 disabled={isOutOfStock}
-                className="w-full py-2 px-4 rounded-[3px] bg-[#032f6a] hover:bg-[#021f4a] text-white transition shadow-2xs flex flex-col items-center justify-center active:scale-[0.99] disabled:opacity-50 cursor-pointer"
+                className="w-full py-3 px-4 rounded-xl bg-[#0071ba] hover:bg-[#005a96] text-white transition shadow-md hover:shadow-lg flex flex-col items-center justify-center active:scale-[0.99] disabled:opacity-50 cursor-pointer"
               >
-                <span className="text-[16px] font-bold uppercase tracking-wide">Đặt hàng</span>
-                <span className="text-[11px] font-normal text-blue-100">
-                  Gọi điện xác nhận và giao hàng tận nơi
+                <span className="text-base sm:text-[17px] font-black uppercase tracking-wider text-white">
+                  ĐẶT HÀNG NGAY
+                </span>
+                <span className="text-[11px] sm:text-xs font-medium text-sky-100 mt-0.5">
+                  Giao hàng tận nơi & bảo hành chính hãng TECNIC
                 </span>
               </button>
               
-              {/* Row 3: HOTLINE */}
-              <a
-                href="tel:0389880369"
-                className="w-full py-2 px-4 rounded-[3px] bg-[#e31837] hover:bg-red-700 text-white transition shadow-2xs flex items-center justify-center gap-2 active:scale-[0.99] cursor-pointer"
-              >
-                <Phone className="w-4 h-4" />
-                <span className="text-[16px] font-bold uppercase tracking-wide">Hotline: 038 988 0369</span>
-              </a>
+              {/* Row 3: HOTLINE & ZALO CHAT NHANH */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
+                <a
+                  href="tel:0348402466"
+                  className="py-2.5 px-3 rounded-lg bg-[#e31837] hover:bg-red-700 text-white transition shadow-2xs flex items-center justify-center gap-2 font-bold text-xs uppercase cursor-pointer"
+                >
+                  <Phone className="w-4 h-4 shrink-0" />
+                  <span>Hotline: 034 84 02466</span>
+                </a>
+
+                <a
+                  href="https://zalo.me/0348402466"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="py-2.5 px-3 rounded-lg bg-sky-600 hover:bg-sky-700 text-white transition shadow-2xs flex items-center justify-center gap-2 font-bold text-xs uppercase cursor-pointer"
+                >
+                  <MessageCircle className="w-4 h-4 shrink-0" />
+                  <span>Tư vấn Zalo Đặt Hàng</span>
+                </a>
+              </div>
 
             </div>
 
@@ -257,7 +278,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
         <div className="lg:col-span-8 space-y-5 bg-white p-5 sm:p-7 rounded-xl border border-slate-200">
           <div>
             <h2 className="text-[20px] font-bold uppercase text-[#333333] pb-1.5 inline-block border-b-2 border-[#e31837] mb-4">
-              Mô tả sản phẩm
+              MÔ TẢ SẢN PHẨM
             </h2>
           </div>
           
@@ -286,8 +307,8 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
                     <h3 className="text-[13px] font-medium text-[#333333] group-hover:text-[#0071ba] transition line-clamp-2 leading-snug">
                       {rp.name}
                     </h3>
-                    <div className="text-[#e31837] font-bold text-sm mt-1">
-                      {rp.tecnicPrice.toLocaleString('vi-VN')} ₫
+                    <div className="text-[#e31837] font-bold text-sm mt-1 whitespace-nowrap">
+                      {rp.tecnicPrice.toLocaleString('vi-VN')}&nbsp;₫
                     </div>
                   </div>
                 </div>

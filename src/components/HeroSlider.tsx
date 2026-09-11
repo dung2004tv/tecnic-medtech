@@ -1,136 +1,221 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  ChevronLeft, ChevronRight, ShieldCheck, Truck, 
-  RotateCcw, Award, Sparkles, Bot, Building2, ArrowRight 
-} from 'lucide-react';
-import { HERO_BANNERS } from '../data/productsData';
-import { CategoryId } from '../types';
+import { ChevronLeft, ChevronRight, Pause, Play, Sparkles } from 'lucide-react';
+import { HERO_BANNERS as DEFAULT_HERO_BANNERS } from '../data/categoriesData';
+import { CategoryId, BannerSlide } from '../types';
 
 interface HeroSliderProps {
   onSelectCategory: (catId: CategoryId) => void;
-  onOpenAbout: () => void;
+  onContactClick?: () => void;
 }
 
 export const HeroSlider: React.FC<HeroSliderProps> = ({
   onSelectCategory,
-  onOpenAbout
+  onContactClick
 }) => {
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [isPaused, setIsPaused] = useState(false);
 
+  // Load custom banners or fallback to defaults
+  const [banners] = useState<BannerSlide[]>(() => {
+    const saved = localStorage.getItem('tecnic_slider_banners');
+    if (saved) {
+      try { return JSON.parse(saved); } catch (e) { /* fallback */ }
+    }
+    return DEFAULT_HERO_BANNERS;
+  });
+
+  const [customBannerUrl] = useState<string | null>(() => {
+    return localStorage.getItem('tecnic_custom_banner_url') || null;
+  });
+  const [imageLoadError, setImageLoadError] = useState(false);
+
+  // Auto-play timer: Slide 0 (banner gốc) giữ lâu hơn (12 giây), các slide khác 5.5 giây
   useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % HERO_BANNERS.length);
-    }, 6000);
-    return () => clearInterval(timer);
-  }, []);
+    if (isPaused) return;
+    const duration = currentSlide === 0 ? 12000 : 5500;
+    const timer = setTimeout(() => {
+      setCurrentSlide((prev) => (prev + 1) % banners.length);
+    }, duration);
+    return () => clearTimeout(timer);
+  }, [isPaused, currentSlide, banners.length]);
 
-  const slide = HERO_BANNERS[currentSlide];
+  const handleContact = () => {
+    if (onContactClick) {
+      onContactClick();
+    } else {
+      window.location.href = 'tel:0348402466';
+    }
+  };
+
+  const activeSlide = banners[currentSlide] || banners[0];
+  const slide0Src = customBannerUrl || '/Banner Tecnic Medtech.png';
 
   return (
-    <section className="bg-[#f0f4f9] py-4">
-      <div className="max-w-7xl mx-auto px-4 space-y-3">
+    <section 
+      aria-label="Thanh trượt Banner TECNIC MEDTECH"
+      className="bg-[#f0f4f8] py-2 sm:py-4 border-b border-slate-200 select-none"
+      onMouseEnter={() => setIsPaused(true)}
+      onMouseLeave={() => setIsPaused(false)}
+    >
+      <div className="max-w-[1400px] mx-auto px-2 sm:px-4">
         
-        {/* BANNER GRID (1 Main Carousel + 2 Sub Banners giống FPT Long Châu) */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
+        {/* MAIN SLIDER CONTAINER */}
+        <div className="bg-white rounded-2xl sm:rounded-3xl border border-slate-200/80 shadow-md overflow-hidden relative group">
           
-          {/* MAIN CAROUSEL (2 Cột trên desktop) */}
-          <div className="lg:col-span-2 relative rounded-2xl overflow-hidden shadow-sm h-64 sm:h-72 lg:h-80 bg-slate-900 group">
+          {/* SLIDE CANVAS VIEWPORT */}
+          <div className="relative w-full aspect-[21/9] min-h-[220px] sm:min-h-[340px] md:min-h-[400px] lg:min-h-[460px] bg-slate-900 overflow-hidden">
             
-            {/* Slide Background with Gradient Overlay */}
-            <div className={`absolute inset-0 bg-gradient-to-r ${slide.bgGradient} opacity-95 transition-all duration-700`}></div>
-            <img 
-              src={slide.image} 
-              alt={slide.title}
-              className="absolute inset-0 w-full h-full object-cover mix-blend-overlay opacity-30" 
-            />
+            {/* SLIDE 0: PRIMARY TECNIC MEDTECH BRAND BANNER */}
+            {currentSlide === 0 ? (
+              <div className="relative w-full h-full animate-fadeIn bg-white">
+                {!imageLoadError ? (
+                  <div className="relative w-full h-full flex items-center justify-center">
+                    <img 
+                      src={slide0Src} 
+                      alt="Banner TECNIC MEDTECH - Giải pháp y tế và phục hồi chức năng"
+                      className="w-full h-full object-cover object-center block"
+                      referrerPolicy="no-referrer"
+                      onError={() => {
+                        if (!customBannerUrl) setImageLoadError(true);
+                      }}
+                    />
 
-            {/* Slide Content */}
-            <div className="relative h-full p-6 sm:p-8 flex flex-col justify-between text-white z-10">
-              <div className="space-y-2 max-w-xl">
-                <span className="inline-flex items-center gap-1.5 bg-amber-400 text-blue-950 font-black text-xs px-3 py-1 rounded-full uppercase tracking-wider shadow-sm">
-                  <Sparkles className="w-3.5 h-3.5" />
-                  {slide.badge}
-                </span>
-                <h2 className="text-xl sm:text-2xl lg:text-3xl font-black leading-tight drop-shadow-sm uppercase">
-                  {slide.title}
-                </h2>
-                <p className="text-xs sm:text-sm text-blue-100 line-clamp-2 leading-relaxed">
-                  {slide.subtitle}
-                </p>
+                    {/* Interactive Hotspots for Slide 0 */}
+                    <div className="absolute inset-0 pointer-events-none">
+                      {/* Contact Button Hotspot */}
+                      <div className="absolute top-[58%] left-[22%] sm:left-[23%] pointer-events-auto">
+                        <button
+                          onClick={handleContact}
+                          title="Bấm để liên hệ tư vấn y khoa TECNIC"
+                          className="opacity-0 hover:opacity-100 hover:bg-blue-600/20 rounded-full w-28 sm:w-40 h-8 sm:h-12 cursor-pointer transition"
+                        >
+                          <span className="sr-only">Liên hệ ngay</span>
+                        </button>
+                      </div>
+
+                      {/* Rehab Hotspot */}
+                      <div 
+                        className="absolute top-[48%] left-[50%] w-[18%] sm:w-[15%] aspect-square rounded-full pointer-events-auto cursor-pointer hover:ring-4 hover:ring-sky-400/60 transition"
+                        title="Khám phá Thiết Bị Phục Hồi Chức Năng TECNIC"
+                        onClick={() => onSelectCategory('ROBOT_NANG_HA')}
+                      >
+                        <span className="sr-only">Xem thiết bị PHCN</span>
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  /* High Fidelity Vector Fallback Banner */
+                  <div 
+                    className="w-full h-full p-6 sm:p-12 flex flex-col justify-center relative overflow-hidden"
+                    style={{
+                      background: 'linear-gradient(135deg, #ffffff 0%, #f0f8ff 60%, #0077c8 100%)'
+                    }}
+                  >
+                    <div className="max-w-2xl space-y-3 z-10">
+                      <div className="inline-flex items-center gap-2 bg-red-600 text-white font-black text-xs px-3 py-1 rounded-full uppercase tracking-wider">
+                        <Sparkles className="w-3.5 h-3.5" />
+                        Chính Hãng TECNIC MEDTECH
+                      </div>
+                      <h2 className="text-2xl sm:text-4xl lg:text-5xl font-black text-[#0c3875] tracking-tight uppercase leading-none">
+                        GIẢI PHÁP Y TẾ & PHỤC HỒI CHỨC NĂNG
+                      </h2>
+                      <p className="text-xl sm:text-2xl font-bold text-[#006ebc] italic">
+                        Giải pháp toàn diện, tái sinh cuộc sống
+                      </p>
+                      <div className="pt-3 flex items-center gap-3">
+                        <button
+                          onClick={handleContact}
+                          className="bg-[#2997e8] hover:bg-[#0284c7] text-white font-bold text-sm px-6 py-2.5 rounded-full shadow-md flex items-center gap-2 cursor-pointer"
+                        >
+                          <span>Liên hệ ngay</span>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
-
-              <div className="flex items-center gap-3">
-                <button
-                  onClick={() => slide.targetCategory && onSelectCategory(slide.targetCategory)}
-                  className="bg-white hover:bg-amber-400 text-[#143472] hover:text-blue-950 font-black text-xs sm:text-sm px-5 py-2.5 rounded-full transition shadow-lg flex items-center gap-2"
-                >
-                  {slide.linkText}
-                  <ArrowRight className="w-4 h-4" />
-                </button>
-              </div>
-            </div>
-
-            {/* Carousel Navigation Arrows */}
-            <button
-              onClick={() => setCurrentSlide((prev) => (prev - 1 + HERO_BANNERS.length) % HERO_BANNERS.length)}
-              className="absolute left-2 top-1/2 -translate-y-1/2 bg-black/30 hover:bg-black/60 text-white p-2 rounded-full backdrop-blur-sm opacity-0 group-hover:opacity-100 transition z-20"
-            >
-              <ChevronLeft className="w-5 h-5" />
-            </button>
-            <button
-              onClick={() => setCurrentSlide((prev) => (prev + 1) % HERO_BANNERS.length)}
-              className="absolute right-2 top-1/2 -translate-y-1/2 bg-black/30 hover:bg-black/60 text-white p-2 rounded-full backdrop-blur-sm opacity-0 group-hover:opacity-100 transition z-20"
-            >
-              <ChevronRight className="w-5 h-5" />
-            </button>
-
-            {/* Slide Indicator Dots */}
-            <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex items-center gap-1.5 z-20">
-              {HERO_BANNERS.map((_, idx) => (
-                <button
-                  key={idx}
-                  onClick={() => setCurrentSlide(idx)}
-                  className={`h-1.5 rounded-full transition-all ${
-                    currentSlide === idx ? 'w-6 bg-amber-400' : 'w-2 bg-white/50'
-                  }`}
+            ) : (
+              /* SLIDES 1..N: CLEAN PROMOTIONAL WEB BANNER IMAGES */
+              <div 
+                className="relative w-full h-full animate-fadeIn cursor-pointer"
+                onClick={() => activeSlide.targetCategory && onSelectCategory(activeSlide.targetCategory)}
+              >
+                <img 
+                  src={activeSlide.image} 
+                  alt={activeSlide.title}
+                  className="w-full h-full object-cover object-center block"
+                  referrerPolicy="no-referrer"
                 />
-              ))}
-            </div>
-          </div>
 
-          {/* SIDE BANNERS (2 Khối nhỏ bên phải giống FPT Long Châu) */}
-          <div className="hidden lg:flex flex-col gap-3 h-80">
-            
-            {/* Top Side Banner */}
-            <div 
-              onClick={() => onSelectCategory('ROBOT_NANG_HA')}
-              className="flex-1 bg-gradient-to-br from-[#143472] to-[#0071ba] text-white p-4 rounded-2xl shadow-sm cursor-pointer hover:shadow-md transition relative overflow-hidden group flex flex-col justify-between"
-            >
-              <div className="relative z-10 space-y-1">
-                <span className="text-[10px] bg-red-600 text-white font-black px-2 py-0.5 rounded uppercase">Phục hồi chức năng</span>
-                <h3 className="font-black text-sm uppercase leading-snug">Găng Tay Robot & Ghế Nâng Hạ</h3>
-                <p className="text-[11px] text-blue-100">Oromi 962 • Hueloi • OSADA XDC Thủy lực</p>
+                {/* Sleek Bottom Caption Bar (Optional overlay if title exists) */}
+                {activeSlide.title && (
+                  <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent p-4 sm:p-6 text-white flex items-center justify-between pointer-events-none">
+                    <div>
+                      <span className="bg-red-600 text-white text-[10px] sm:text-xs font-black px-2.5 py-0.5 rounded-full uppercase tracking-wider mr-2">
+                        {activeSlide.badge || 'Nổi bật'}
+                      </span>
+                      <h3 className="inline-block text-sm sm:text-xl font-bold text-white shadow-xs">
+                        {activeSlide.title}
+                      </h3>
+                    </div>
+                  </div>
+                )}
               </div>
-              <div className="relative z-10 flex items-center gap-1 text-[11px] font-bold text-amber-300 group-hover:underline">
-                Xem thiết bị phục hồi chức năng →
-              </div>
-              <Bot className="absolute -bottom-2 -right-2 w-20 h-20 text-white/10 group-hover:scale-110 transition-transform pointer-events-none" />
-            </div>
+            )}
 
-            {/* Bottom Side Banner */}
-            <div 
-              onClick={onOpenAbout}
-              className="flex-1 bg-gradient-to-br from-emerald-800 to-teal-600 text-white p-4 rounded-2xl shadow-sm cursor-pointer hover:shadow-md transition relative overflow-hidden group flex flex-col justify-between"
+            {/* NAV ARROWS (Left < and Right > Buttons) */}
+            <button
+              onClick={() => setCurrentSlide((prev) => (prev - 1 + banners.length) % banners.length)}
+              className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 bg-black/30 hover:bg-red-600 text-white p-2 sm:p-3 rounded-full backdrop-blur-md opacity-70 group-hover:opacity-100 transition duration-300 z-30 shadow-lg cursor-pointer hover:scale-110 active:scale-95"
+              aria-label="Slide trước"
             >
-              <div className="relative z-10 space-y-1">
-                <span className="text-[10px] bg-amber-400 text-blue-950 font-black px-2 py-0.5 rounded uppercase">Về Doanh Nghiệp</span>
-                <h3 className="font-black text-sm uppercase leading-snug">TECNIC MEDTECH</h3>
-                <p className="text-[11px] text-emerald-100">"Giải pháp toàn diện - Tái sinh cuộc sống"</p>
+              <ChevronLeft className="w-5 h-5 sm:w-6 sm:h-6" />
+            </button>
+            <button
+              onClick={() => setCurrentSlide((prev) => (prev + 1) % banners.length)}
+              className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 bg-black/30 hover:bg-red-600 text-white p-2 sm:p-3 rounded-full backdrop-blur-md opacity-70 group-hover:opacity-100 transition duration-300 z-30 shadow-lg cursor-pointer hover:scale-110 active:scale-95"
+              aria-label="Slide tiếp theo"
+            >
+              <ChevronRight className="w-5 h-5 sm:w-6 sm:h-6" />
+            </button>
+
+            {/* BOTTOM RIGHT CONTROL WIDGET (Matches Image: ⏸ | ● ● ● ● ● 1/5) */}
+            <div className="absolute bottom-3 right-3 z-30 bg-black/60 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/20 text-white text-xs flex items-center gap-2.5 shadow-lg">
+              
+              {/* Play / Pause Toggle */}
+              <button
+                onClick={() => setIsPaused(!isPaused)}
+                className="hover:text-amber-300 transition cursor-pointer p-0.5"
+                title={isPaused ? "Bật tự động trượt" : "Tạm dừng trượt"}
+              >
+                {isPaused ? <Play className="w-3.5 h-3.5 fill-current" /> : <Pause className="w-3.5 h-3.5 fill-current" />}
+              </button>
+
+              <span className="text-white/30 font-light">|</span>
+
+              {/* Dot Indicators */}
+              <div className="flex items-center gap-1.5">
+                {banners.map((_, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => setCurrentSlide(idx)}
+                    className={`h-2 rounded-full transition-all cursor-pointer ${
+                      currentSlide === idx 
+                        ? 'w-5 bg-white shadow-xs' 
+                        : 'w-2 bg-white/40 hover:bg-white/70'
+                    }`}
+                    title={`Chuyển đến slide ${idx + 1}`}
+                  />
+                ))}
               </div>
-              <div className="relative z-10 flex items-center gap-1 text-[11px] font-bold text-amber-200 group-hover:underline">
-                Giới thiệu & Địa chỉ công ty →
-              </div>
-              <Building2 className="absolute -bottom-2 -right-2 w-20 h-20 text-white/10 group-hover:scale-110 transition-transform pointer-events-none" />
+
+              <span className="text-white/30 font-light">|</span>
+
+              {/* Counter string (e.g. 1/5) */}
+              <span className="font-mono font-bold text-[11px] text-white/90">
+                {currentSlide + 1}/{banners.length}
+              </span>
+
             </div>
 
           </div>
@@ -138,6 +223,7 @@ export const HeroSlider: React.FC<HeroSliderProps> = ({
         </div>
 
       </div>
+
     </section>
   );
 };

@@ -51,7 +51,7 @@ Sản phẩm phù hợp với:
 ### 4. Mô tả sản phẩm
 Đai Cổ Tay Wrist Bandage là sản phẩm hỗ trợ vùng cổ tay và bàn tay, được thiết kế nhằm mang lại sự ổn định chắc chắn nhưng vẫn đảm bảo khả năng vận động linh hoạt.
 
-Sản phẩm được thiết kế và sản xuất 100% tại Nhật Bản, chú trọng đến sự tiện dụng và cảm giác thoải mái trong quá trình sử dụng.
+Sản phẩm chú trọng đến sự tiện dụng và cảm giác thoải mái trong quá trình sử dụng.
 
 Wrist Bandage có thiết kế dễ dàng đeo vào và tháo ra, giúp người dùng nhanh chóng sử dụng trước khi luyện tập, vận động hoặc thi đấu mà không mất nhiều thời gian.
 
@@ -78,7 +78,7 @@ Với thiết kế gọn gàng, đàn hồi và dễ sử dụng, Wrist Bandage 
 - **Hỗ trợ phòng tránh trật cổ tay:** Khả năng cố định giúp hỗ trợ bảo vệ cổ tay trước các tác động trong quá trình vận động, đặc biệt khi tham gia các hoạt động thể thao phù hợp.
 - **Không ảnh hưởng quá trình vận động:** Chất liệu đàn hồi giúp đai ôm sát nhưng vẫn cho phép cổ tay và bàn tay cử động linh hoạt, không gây cảm giác quá cứng hoặc cồng kềnh.
 - **Độ đàn hồi tốt – thoải mái khi sử dụng:** Chất liệu có độ co giãn tốt giúp sản phẩm dễ cử động, ôm vừa vặn và tạo cảm giác thoải mái trong quá trình sử dụng.
-- **Thiết kế và sản xuất 100% tại Nhật Bản:** Sản phẩm được thiết kế và sản xuất 100% tại Nhật Bản, đáp ứng yêu cầu về tính tiện dụng và chất lượng trong quá trình sử dụng.
+- **Đáp ứng tiêu chuẩn chất lượng Nhật Bản:** Sản phẩm đáp ứng yêu cầu về tính tiện dụng và chất lượng cao trong quá trình sử dụng.
 - **Màu đen dễ sử dụng:** Màu đen tạo cảm giác gọn gàng, đơn giản và dễ phối hợp khi sử dụng trong luyện tập thể thao hoặc sinh hoạt hằng ngày.
 
 ---
@@ -91,7 +91,7 @@ Với thiết kế gọn gàng, đàn hồi và dễ sử dụng, Wrist Bandage 
 - 📋 **Mã số thuế:** 0110887948
 - 📞 **Điện thoại / Hotline:** 034 84 02466/ 038 988 0369
 - 📧 **Email:** tecnic.medtech@gmail.com
-- 🌐 **Website:** tecnic.vn
+- 🌐 **Website:** ytetecnic.vn
 
 *TECNIC Medtech – Kiến tạo để phụng sự*`,
     "specifications": {
@@ -298,11 +298,11 @@ Với thiết kế gọn gàng, đàn hồi và dễ sử dụng, Wrist Bandage 
     "reviewCount": 60,
     "isFeatured": true,
     "image": "/products/ĐAI NẸP CỔ THOÁNG KHÍ.png",
-    "shortDescription": "ĐAI NẸP CỔ THOÁNG KHÍ chính hãng Bonbone, xuất xứ Nhật bản.",
+    "shortDescription": "ĐAI NẸP CỔ THOÁNG KHÍ chính hãng Bonbone, xuất xứ Nhật Bản.",
     "fullDescription": "Sản phẩm ĐAI NẸP CỔ THOÁNG KHÍ được phân phối chính hãng bởi TECNIC. Đảm bảo chất lượng và uy tín.",
     "specifications": {
       "brand": "Bonbone",
-      "origin": "Nhật bản",
+      "origin": "Nhật Bản",
       "warrantyMonths": 12,
       "model": "Đai cổ",
       "dimensions": "",
@@ -326,11 +326,11 @@ Với thiết kế gọn gàng, đàn hồi và dễ sử dụng, Wrist Bandage 
     "reviewCount": 61,
     "isFeatured": false,
     "image": "/products/ĐAI NÂNG VAI.png",
-    "shortDescription": "ĐAI NÂNG VAI chính hãng Bonbone, xuất xứ Nhật bản.",
+    "shortDescription": "ĐAI NÂNG VAI chính hãng Bonbone, xuất xứ Nhật Bản.",
     "fullDescription": "Sản phẩm ĐAI NÂNG VAI được phân phối chính hãng bởi TECNIC. Đảm bảo chất lượng và uy tín.",
     "specifications": {
       "brand": "Bonbone",
-      "origin": "Nhật bản",
+      "origin": "Nhật Bản",
       "warrantyMonths": 12,
       "model": "Đai vai",
       "dimensions": "",
@@ -354,11 +354,11 @@ Với thiết kế gọn gàng, đàn hồi và dễ sử dụng, Wrist Bandage 
     "reviewCount": 62,
     "isFeatured": false,
     "image": "/products/ĐAI NẸP MẮT CÁ CHÂN.png",
-    "shortDescription": "ĐAI NẸP MẮT CÁ CHÂN chính hãng Bonbone, xuất xứ Nhật bản.",
+    "shortDescription": "ĐAI NẸP MẮT CÁ CHÂN chính hãng Bonbone, xuất xứ Nhật Bản.",
     "fullDescription": "Sản phẩm ĐAI NẸP MẮT CÁ CHÂN được phân phối chính hãng bởi TECNIC. Đảm bảo chất lượng và uy tín.",
     "specifications": {
       "brand": "Bonbone",
-      "origin": "Nhật bản",
+      "origin": "Nhật Bản",
       "warrantyMonths": 12,
       "model": "Đai chân",
       "dimensions": "",
@@ -382,11 +382,11 @@ Với thiết kế gọn gàng, đàn hồi và dễ sử dụng, Wrist Bandage 
     "reviewCount": 63,
     "isFeatured": false,
     "image": "/products/ĐAI HỖ TRỢ VÙNG CÁNH TAY.png",
-    "shortDescription": "ĐAI HỖ TRỢ VÙNG CÁNH TAY chính hãng Bonbone, xuất xứ Nhật bản.",
+    "shortDescription": "ĐAI HỖ TRỢ VÙNG CÁNH TAY chính hãng Bonbone, xuất xứ Nhật Bản.",
     "fullDescription": "Sản phẩm ĐAI HỖ TRỢ VÙNG CÁNH TAY được phân phối chính hãng bởi TECNIC. Đảm bảo chất lượng và uy tín.",
     "specifications": {
       "brand": "Bonbone",
-      "origin": "Nhật bản",
+      "origin": "Nhật Bản",
       "warrantyMonths": 12,
       "model": "Đai cánh tay",
       "dimensions": "",
@@ -410,11 +410,11 @@ Với thiết kế gọn gàng, đàn hồi và dễ sử dụng, Wrist Bandage 
     "reviewCount": 64,
     "isFeatured": false,
     "image": "/products/ĐAI NẸP KHUỶU TAY.png",
-    "shortDescription": "ĐAI NẸP KHUỶU TAY chính hãng Bonbone, xuất xứ Nhật bản.",
+    "shortDescription": "ĐAI NẸP KHUỶU TAY chính hãng Bonbone, xuất xứ Nhật Bản.",
     "fullDescription": "Sản phẩm ĐAI NẸP KHUỶU TAY được phân phối chính hãng bởi TECNIC. Đảm bảo chất lượng và uy tín.",
     "specifications": {
       "brand": "Bonbone",
-      "origin": "Nhật bản",
+      "origin": "Nhật Bản",
       "warrantyMonths": 12,
       "model": "Đai tay",
       "dimensions": "",
@@ -438,11 +438,11 @@ Với thiết kế gọn gàng, đàn hồi và dễ sử dụng, Wrist Bandage 
     "reviewCount": 65,
     "isFeatured": true,
     "image": "/products/ĐAI CỐ ĐỊNH ĐẦU GỐI.png",
-    "shortDescription": "ĐAI CỐ ĐỊNH ĐẦU GỐI chính hãng Bonbone, xuất xứ Nhật bản.",
+    "shortDescription": "ĐAI CỐ ĐỊNH ĐẦU GỐI chính hãng Bonbone, xuất xứ Nhật Bản.",
     "fullDescription": "Sản phẩm ĐAI CỐ ĐỊNH ĐẦU GỐI được phân phối chính hãng bởi TECNIC. Đảm bảo chất lượng và uy tín.",
     "specifications": {
       "brand": "Bonbone",
-      "origin": "Nhật bản",
+      "origin": "Nhật Bản",
       "warrantyMonths": 12,
       "model": "Đai chân",
       "dimensions": "",
@@ -466,11 +466,11 @@ Với thiết kế gọn gàng, đàn hồi và dễ sử dụng, Wrist Bandage 
     "reviewCount": 66,
     "isFeatured": false,
     "image": "/products/ĐAI HỖ TRỢ CỐ ĐỊNH ĐẦU GỐI.png",
-    "shortDescription": "ĐAI HỖ TRỢ CỐ ĐỊNH ĐẦU GỐI chính hãng Bonbone, xuất xứ Nhật bản.",
+    "shortDescription": "ĐAI HỖ TRỢ CỐ ĐỊNH ĐẦU GỐI chính hãng Bonbone, xuất xứ Nhật Bản.",
     "fullDescription": "Sản phẩm ĐAI HỖ TRỢ CỐ ĐỊNH ĐẦU GỐI được phân phối chính hãng bởi TECNIC. Đảm bảo chất lượng và uy tín.",
     "specifications": {
       "brand": "Bonbone",
-      "origin": "Nhật bản",
+      "origin": "Nhật Bản",
       "warrantyMonths": 12,
       "model": "Đai đầu gối",
       "dimensions": "",
@@ -494,11 +494,11 @@ Với thiết kế gọn gàng, đàn hồi và dễ sử dụng, Wrist Bandage 
     "reviewCount": 67,
     "isFeatured": false,
     "image": "/products/ĐAI CỐ ĐỊNH KHỚP DƯỚI GỐI.png",
-    "shortDescription": "ĐAI CỐ ĐỊNH KHỚP DƯỚI GỐI chính hãng Bonbone, xuất xứ Nhật bản.",
+    "shortDescription": "ĐAI CỐ ĐỊNH KHỚP DƯỚI GỐI chính hãng Bonbone, xuất xứ Nhật Bản.",
     "fullDescription": "Sản phẩm ĐAI CỐ ĐỊNH KHỚP DƯỚI GỐI được phân phối chính hãng bởi TECNIC. Đảm bảo chất lượng và uy tín.",
     "specifications": {
       "brand": "Bonbone",
-      "origin": "Nhật bản",
+      "origin": "Nhật Bản",
       "warrantyMonths": 12,
       "model": "Đai chân",
       "dimensions": "",
@@ -522,11 +522,11 @@ Với thiết kế gọn gàng, đàn hồi và dễ sử dụng, Wrist Bandage 
     "reviewCount": 68,
     "isFeatured": false,
     "image": "/products/ĐAI HỖ TRỢ VÙNG CHÂN.png",
-    "shortDescription": "ĐAI HỖ TRỢ VÙNG CHÂN chính hãng Bonbone, xuất xứ Nhật bản.",
+    "shortDescription": "ĐAI HỖ TRỢ VÙNG CHÂN chính hãng Bonbone, xuất xứ Nhật Bản.",
     "fullDescription": "Sản phẩm ĐAI HỖ TRỢ VÙNG CHÂN được phân phối chính hãng bởi TECNIC. Đảm bảo chất lượng và uy tín.",
     "specifications": {
       "brand": "Bonbone",
-      "origin": "Nhật bản",
+      "origin": "Nhật Bản",
       "warrantyMonths": 12,
       "model": "Đai chân",
       "dimensions": "",
@@ -550,11 +550,11 @@ Với thiết kế gọn gàng, đàn hồi và dễ sử dụng, Wrist Bandage 
     "reviewCount": 69,
     "isFeatured": false,
     "image": "/products/ĐAI HỖ TRỢ VÙNG BẮP VÀ GÓT CHÂN.png",
-    "shortDescription": "ĐAI HỖ TRỢ VÙNG BẮP VÀ GÓT CHÂN chính hãng Bonbone, xuất xứ Nhật bản.",
+    "shortDescription": "ĐAI HỖ TRỢ VÙNG BẮP VÀ GÓT CHÂN chính hãng Bonbone, xuất xứ Nhật Bản.",
     "fullDescription": "Sản phẩm ĐAI HỖ TRỢ VÙNG BẮP VÀ GÓT CHÂN được phân phối chính hãng bởi TECNIC. Đảm bảo chất lượng và uy tín.",
     "specifications": {
       "brand": "Bonbone",
-      "origin": "Nhật bản",
+      "origin": "Nhật Bản",
       "warrantyMonths": 12,
       "model": "Bắp và gót chân",
       "dimensions": "",
@@ -578,11 +578,11 @@ Với thiết kế gọn gàng, đàn hồi và dễ sử dụng, Wrist Bandage 
     "reviewCount": 70,
     "isFeatured": true,
     "image": "/products/ĐAI CỐ ĐỊNH CỔ CHÂN.png",
-    "shortDescription": "ĐAI CỐ ĐỊNH CỔ CHÂN chính hãng Bonbone, xuất xứ Nhật bản.",
+    "shortDescription": "ĐAI CỐ ĐỊNH CỔ CHÂN chính hãng Bonbone, xuất xứ Nhật Bản.",
     "fullDescription": "Sản phẩm ĐAI CỐ ĐỊNH CỔ CHÂN được phân phối chính hãng bởi TECNIC. Đảm bảo chất lượng và uy tín.",
     "specifications": {
       "brand": "Bonbone",
-      "origin": "Nhật bản",
+      "origin": "Nhật Bản",
       "warrantyMonths": 12,
       "model": "Đai chân",
       "dimensions": "",

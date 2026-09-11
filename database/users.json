@@ -1,9 +1,9 @@
 [
   {
     "id": "USR-ADMIN-ROOT",
-    "fullName": "Quản Trị Viên TECNIC",
+    "fullName": "Quản Trị Viên TECNIC MEDTECH",
     "phone": "0348402466",
-    "email": "tecnic.vn.group@gmail.com",
+    "email": "admin@ytetecnic.vn",
     "password": "tecnic2466",
     "address": "Tòa New Skyline, Văn Quán, Hà Đông, Hà Nội",
     "accountType": "ADMIN",
@@ -13,21 +13,6 @@
     ],
     "status": "ACTIVE",
     "createdAt": "2026-08-27T19:19:52.206Z"
-  },
-  {
-    "id": "USR-ADMIN",
-    "fullName": "Quản Trị Viên Hệ Thống TECNIC",
-    "phone": "0348402466",
-    "email": "admin@tecnic.vn",
-    "password": "admin",
-    "address": "Tòa New Skyline, Văn Quán, Hà Đông, Hà Nội",
-    "accountType": "ADMIN",
-    "clinicName": "TECNIC MEDTECH VIỆT NAM",
-    "permissions": [
-      "ALL"
-    ],
-    "status": "ACTIVE",
-    "createdAt": "2026-08-27T01:19:33.777Z"
   },
   {
     "id": "USR-STAFF-01",
@@ -45,65 +30,5 @@
     ],
     "status": "ACTIVE",
     "createdAt": "2026-08-27T01:19:33.778Z"
-  },
-  {
-    "id": "USR-001",
-    "fullName": "Nguyễn Hoàng Long",
-    "phone": "0912345678",
-    "email": "khachhang@gmail.com",
-    "password": "123456",
-    "address": "128 Giải Phóng, Phương Mai, Đống Đa, Hà Nội",
-    "accountType": "DAI_LY",
-    "clinicName": "Đại Lý Thiết Bị Y Tế Hoàng Long",
-    "status": "ACTIVE",
-    "createdAt": "2026-08-27T01:19:33.778Z"
-  },
-  {
-    "id": "USR-204102",
-    "fullName": "NGUYENDUNGDBD1",
-    "phone": "0389880369",
-    "email": "nguyendungdbd1@gmail.com",
-    "password": "123456",
-    "address": "Hà Nội, Việt Nam",
-    "accountType": "CA_NHAN",
-    "clinicName": "",
-    "status": "ACTIVE",
-    "createdAt": "2026-08-27T04:16:44.102Z"
-  },
-  {
-    "id": "USR-873675",
-    "fullName": "nguyễn văn dũng",
-    "phone": "0369483469",
-    "email": "nguyendungdbd2@gmail.com",
-    "password": "123456",
-    "address": "",
-    "accountType": "CA_NHAN",
-    "clinicName": "",
-    "status": "ACTIVE",
-    "createdAt": "2026-08-27T06:57:53.675Z"
-  },
-  {
-    "id": "USR-255235",
-    "fullName": "minh",
-    "phone": "0369147258",
-    "email": "minh2904tv@gmail.com",
-    "password": "123456",
-    "address": "",
-    "accountType": "CA_NHAN",
-    "clinicName": "",
-    "status": "ACTIVE",
-    "createdAt": "2026-08-27T07:20:55.235Z"
-  },
-  {
-    "id": "USR-924863",
-    "fullName": "Khách Hàng dung",
-    "phone": "",
-    "email": "tecnic.medtech@gmail.com",
-    "password": "123456",
-    "address": "Hà Nội, Việt Nam",
-    "accountType": "CA_NHAN",
-    "clinicName": "",
-    "status": "ACTIVE",
-    "createdAt": "2026-08-28T01:18:44.863Z"
   }
 ]

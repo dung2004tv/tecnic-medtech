@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Search, RotateCcw, Download, Eye, Trash2, Mail, Phone, UserCheck } from 'lucide-react';
+import { Search, RotateCcw, Download, Trash2, Mail, Phone, Plus, Edit, X, Save, Check } from 'lucide-react';
 
 interface ContactItem {
   id: string;
@@ -35,6 +35,15 @@ export const AdminContactList: React.FC = () => {
     }
   ]);
 
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingContact, setEditingContact] = useState<ContactItem | null>(null);
+  const [toast, setToast] = useState<string | null>(null);
+
+  const showToast = (msg: string) => {
+    setToast(msg);
+    setTimeout(() => setToast(null), 3000);
+  };
+
   const filteredContacts = contacts.filter(c => {
     const matchKey = !keyword.trim() || 
       c.name.toLowerCase().includes(keyword.toLowerCase()) || 
@@ -49,20 +58,71 @@ export const AdminContactList: React.FC = () => {
       ...c, 
       status: c.status === 'PROCESSED' ? 'PENDING' : 'PROCESSED' 
     } : c));
+    showToast('Đã đổi trạng thái xử lý liên hệ!');
   };
 
   const handleDelete = (id: string) => {
     if (window.confirm("Bạn có chắc muốn xóa thông tin liên hệ này?")) {
       setContacts(prev => prev.filter(c => c.id !== id));
+      showToast('Đã xóa liên hệ!');
     }
   };
 
+  const handleOpenAdd = () => {
+    setEditingContact({
+      id: '',
+      name: '',
+      phone: '',
+      email: '',
+      content: '',
+      status: 'PENDING',
+      createdAt: new Date().toISOString().replace('T', ' ').substring(0, 16)
+    });
+    setIsModalOpen(true);
+  };
+
+  const handleOpenEdit = (c: ContactItem) => {
+    setEditingContact({ ...c });
+    setIsModalOpen(true);
+  };
+
+  const handleSaveModal = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editingContact || !editingContact.name.trim() || !editingContact.phone.trim()) {
+      showToast('Vui lòng nhập họ tên và số điện thoại!');
+      return;
+    }
+
+    if (editingContact.id) {
+      setContacts(prev => prev.map(c => c.id === editingContact.id ? editingContact : c));
+      showToast('Đã cập nhật liên hệ!');
+    } else {
+      const newContact: ContactItem = {
+        ...editingContact,
+        id: Date.now().toString(),
+        createdAt: new Date().toISOString().replace('T', ' ').substring(0, 16)
+      };
+      setContacts(prev => [newContact, ...prev]);
+      showToast('Đã thêm liên hệ mới thành công!');
+    }
+
+    setIsModalOpen(false);
+    setEditingContact(null);
+  };
+
   return (
-    <div className="space-y-4 font-sans text-slate-800">
-      
+    <div className="space-y-4 font-sans text-slate-800 animate-fadeIn">
+      {/* Toast */}
+      {toast && (
+        <div className="fixed top-5 right-5 z-50 bg-[#032f6a] text-white px-4 py-2.5 rounded shadow-lg text-xs font-bold flex items-center gap-2">
+          <Check className="w-4 h-4 text-emerald-400" />
+          <span>{toast}</span>
+        </div>
+      )}
+
       {/* Title & Breadcrumbs */}
       <div className="flex flex-wrap items-center justify-between gap-2">
-        <h1 className="text-2xl font-bold text-slate-800 tracking-tight">Danh sách</h1>
+        <h1 className="text-2xl font-bold text-slate-800 tracking-tight">Danh sách liên hệ</h1>
         <div className="flex items-center gap-1.5 text-xs text-slate-500">
           <span className="hover:text-blue-600 cursor-pointer">Trang chủ</span>
           <span>/</span>
@@ -70,6 +130,17 @@ export const AdminContactList: React.FC = () => {
           <span>/</span>
           <span className="font-semibold text-slate-700">Danh sách</span>
         </div>
+      </div>
+
+      {/* Button top: + Thêm mới */}
+      <div className="flex justify-start">
+        <button 
+          onClick={handleOpenAdd}
+          className="bg-[#17a2b8] hover:bg-[#138496] text-white text-xs font-bold px-4 py-2 rounded shadow-xs flex items-center gap-1.5 transition cursor-pointer"
+        >
+          <Plus className="w-4 h-4" />
+          <span>+ Thêm thông tin liên hệ mới</span>
+        </button>
       </div>
 
       {/* Filter Box (Thanh tìm kiếm chuẩn hình 8) */}
@@ -110,7 +181,7 @@ export const AdminContactList: React.FC = () => {
           <div className="flex gap-1.5 md:col-span-2">
             <button 
               onClick={() => {}}
-              className="flex-1 bg-[#28a745] hover:bg-[#218838] text-white text-xs font-bold py-1.5 px-2 rounded transition flex items-center justify-center gap-1"
+              className="flex-1 bg-[#28a745] hover:bg-[#218838] text-white text-xs font-bold py-1.5 px-2 rounded transition flex items-center justify-center gap-1 cursor-pointer"
             >
               <Search className="w-3.5 h-3.5" />
               <span>Tìm kiếm</span>
@@ -120,14 +191,14 @@ export const AdminContactList: React.FC = () => {
                 setKeyword('');
                 setStatusFilter('ALL');
               }}
-              className="bg-[#dc3545] hover:bg-[#c82333] text-white text-xs font-bold py-1.5 px-3 rounded transition flex items-center justify-center"
+              className="bg-[#dc3545] hover:bg-[#c82333] text-white text-xs font-bold py-1.5 px-3 rounded transition flex items-center justify-center cursor-pointer"
               title="Làm lại"
             >
               <RotateCcw className="w-3.5 h-3.5" />
             </button>
             <button 
-              onClick={() => alert("Đã xuất danh sách liên hệ!")}
-              className="bg-[#28a745] hover:bg-[#218838] text-white text-xs font-bold py-1.5 px-2.5 rounded transition flex items-center justify-center gap-1"
+              onClick={() => showToast("Đã xuất danh sách liên hệ ra file Excel thành công!")}
+              className="bg-[#28a745] hover:bg-[#218838] text-white text-xs font-bold py-1.5 px-2.5 rounded transition flex items-center justify-center gap-1 cursor-pointer"
               title="Xuất Excel"
             >
               <Download className="w-3.5 h-3.5" />
@@ -154,9 +225,9 @@ export const AdminContactList: React.FC = () => {
               <th className="py-2.5 px-2 w-10 text-center">Stt</th>
               <th className="py-2.5 px-4 min-w-[220px]">Thông tin</th>
               <th className="py-2.5 px-3 w-28 text-center">Trạng thái</th>
-              <th className="py-2.5 px-4 min-w-[280px]">Nội dung</th>
+              <th className="py-2.5 px-4 min-w-[280px]">Nội dung liên hệ</th>
               <th className="py-2.5 px-3 w-32 text-center">Thời gian</th>
-              <th className="py-2.5 px-3 w-20 text-center">Hành động</th>
+              <th className="py-2.5 px-3 w-24 text-center">Hành động</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-100 font-medium">
@@ -174,7 +245,7 @@ export const AdminContactList: React.FC = () => {
                     <Phone className="w-3 h-3 text-slate-400" /> {c.phone}
                   </div>
                   <div className="text-slate-500 text-[11px] flex items-center gap-1">
-                    <Mail className="w-3 h-3 text-slate-400" /> {c.email}
+                    <Mail className="w-3 h-3 text-slate-400" /> {c.email || 'N/A'}
                   </div>
                 </td>
 
@@ -182,7 +253,7 @@ export const AdminContactList: React.FC = () => {
                 <td className="py-3 px-3 text-center">
                   <button
                     onClick={() => handleToggleStatus(c.id)}
-                    className={`px-2.5 py-1 rounded text-[11px] font-bold transition ${
+                    className={`px-2.5 py-1 rounded text-[11px] font-bold transition cursor-pointer ${
                       c.status === 'PROCESSED' 
                         ? 'bg-[#28a745] hover:bg-[#218838] text-white' 
                         : 'bg-[#ffc107] hover:bg-[#e0a800] text-slate-900'
@@ -204,19 +275,122 @@ export const AdminContactList: React.FC = () => {
 
                 {/* Hành động */}
                 <td className="py-3 px-3 text-center">
-                  <button 
-                    onClick={() => handleDelete(c.id)}
-                    className="bg-[#dc3545] hover:bg-[#c82333] text-white p-1.5 rounded transition"
-                    title="Xóa liên hệ"
-                  >
-                    <Trash2 className="w-3.5 h-3.5" />
-                  </button>
+                  <div className="flex items-center justify-center gap-1.5">
+                    <button 
+                      onClick={() => handleOpenEdit(c)}
+                      className="bg-[#17a2b8] hover:bg-[#138496] text-white p-1.5 rounded transition cursor-pointer"
+                      title="Sửa thông tin liên hệ"
+                    >
+                      <Edit className="w-3.5 h-3.5" />
+                    </button>
+                    <button 
+                      onClick={() => handleDelete(c.id)}
+                      className="bg-[#dc3545] hover:bg-[#c82333] text-white p-1.5 rounded transition cursor-pointer"
+                      title="Xóa liên hệ"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
+
+      {/* MODAL THÊM / SỬA LIÊN HỆ */}
+      {isModalOpen && editingContact && (
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white rounded-xl max-w-lg w-full overflow-hidden shadow-2xl border border-slate-200">
+            <div className="bg-[#032f6a] text-white px-5 py-3.5 flex items-center justify-between">
+              <h3 className="font-bold text-sm">
+                {editingContact.id ? 'Chỉnh sửa Thông tin liên hệ' : 'Thêm mới Thông tin liên hệ'}
+              </h3>
+              <button onClick={() => setIsModalOpen(false)} className="text-white/80 hover:text-white">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <form onSubmit={handleSaveModal} className="p-5 space-y-4 text-xs">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-slate-700 font-bold mb-1">Họ và tên <span className="text-red-500">*</span></label>
+                  <input 
+                    type="text" 
+                    required
+                    value={editingContact.name}
+                    onChange={(e) => setEditingContact({ ...editingContact, name: e.target.value })}
+                    placeholder="Nguyễn Văn B"
+                    className="w-full border border-slate-300 p-2 rounded outline-none focus:border-[#17a2b8]"
+                  />
+                </div>
+                <div>
+                  <label className="block text-slate-700 font-bold mb-1">Số điện thoại <span className="text-red-500">*</span></label>
+                  <input 
+                    type="text" 
+                    required
+                    value={editingContact.phone}
+                    onChange={(e) => setEditingContact({ ...editingContact, phone: e.target.value })}
+                    placeholder="0988..."
+                    className="w-full border border-slate-300 p-2 rounded outline-none focus:border-[#17a2b8]"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-slate-700 font-bold mb-1">Email liên hệ</label>
+                <input 
+                  type="email" 
+                  value={editingContact.email}
+                  onChange={(e) => setEditingContact({ ...editingContact, email: e.target.value })}
+                  placeholder="khachhang@gmail.com"
+                  className="w-full border border-slate-300 p-2 rounded outline-none focus:border-[#17a2b8]"
+                />
+              </div>
+
+              <div>
+                <label className="block text-slate-700 font-bold mb-1">Nội dung nhu cầu tư vấn</label>
+                <textarea 
+                  rows={4}
+                  value={editingContact.content}
+                  onChange={(e) => setEditingContact({ ...editingContact, content: e.target.value })}
+                  placeholder="Cần tư vấn báo giá giường y tế, giao hàng tận nơi..."
+                  className="w-full border border-slate-300 p-2 rounded outline-none focus:border-[#17a2b8]"
+                />
+              </div>
+
+              <div>
+                <label className="block text-slate-700 font-bold mb-1">Trạng thái xử lý</label>
+                <select
+                  value={editingContact.status}
+                  onChange={(e) => setEditingContact({ ...editingContact, status: e.target.value as any })}
+                  className="w-full border border-slate-300 p-2 rounded outline-none focus:border-[#17a2b8] bg-white font-bold"
+                >
+                  <option value="PENDING">Chưa xử lý (Cần gọi lại)</option>
+                  <option value="PROCESSED">Đã xử lý (Đã tư vấn/báo giá)</option>
+                </select>
+              </div>
+
+              <div className="flex justify-end gap-2 pt-4 border-t border-slate-200">
+                <button 
+                  type="button"
+                  onClick={() => setIsModalOpen(false)}
+                  className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded text-xs font-bold transition"
+                >
+                  Hủy bỏ
+                </button>
+                <button 
+                  type="submit"
+                  className="px-5 py-2 bg-[#032f6a] hover:bg-[#021f4a] text-white rounded text-xs font-bold transition flex items-center gap-1.5 shadow-xs"
+                >
+                  <Save className="w-4 h-4 text-amber-300" />
+                  <span>{editingContact.id ? 'Lưu thông tin' : 'Tạo liên hệ'}</span>
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
 
     </div>
   );

@@ -19,18 +19,27 @@ export const ProductImage: React.FC<ProductImageProps> = ({
 
   const candidateUrls = useMemo(() => {
     const list: string[] = [];
-    if (product.image) list.push(product.image);
+    const modelClean = product.specifications?.model?.trim() || '';
+
+    if (product.image) {
+      list.push(product.image);
+      // Handle variations in spacing around parentheses (e.g. " (SÚNG MASSAGE)" vs "(SÚNG MASSAGE)")
+      list.push(product.image.replace(/\s+\(/g, '('));
+      list.push(product.image.replace(/\(/g, ' (').replace(/\s+/g, ' '));
+    }
 
     const nameClean = product.name.trim();
     const codeClean = product.code.trim();
 
-    // Folder candidates: both 'ảnh sản phẩm tecnic-medtech' and 'products'
-    const folders = ['ảnh sản phẩm tecnic-medtech', 'products', ''];
+    // Folder candidates: 'products', 'ảnh sản phẩm tecnic-medtech', and root ''
+    const folders = ['products', 'ảnh sản phẩm tecnic-medtech', ''];
 
-    // Possible name variations (handle GƯỜNG vs GIƯỜNG, slash vs dash, etc.)
+    // Possible name variations (handle GƯỜNG vs GIƯỜNG, slash vs dash, parentheses spacing, etc.)
     const nameVariations = [
       nameClean,
       product.name,
+      nameClean.replace(/\s+\(/g, '('),
+      nameClean.replace(/\(/g, ' (').replace(/\s+/g, ' '),
       `${nameClean} `,
       nameClean.replace(/GIƯỜNG/g, 'GƯỜNG'),
       nameClean.replace(/GƯỜNG/g, 'GIƯỜNG'),
@@ -49,6 +58,13 @@ export const ProductImage: React.FC<ProductImageProps> = ({
         list.push(`${prefix}/${encodeURIComponent(nameVar)}.png`);
         list.push(`${rawPrefix}/${nameVar}.PNG`);
         list.push(`${rawPrefix}/${nameVar}.jpg`);
+      }
+
+      // Model name .png / .jpg if available
+      if (modelClean) {
+        list.push(`${rawPrefix}/${modelClean}.png`);
+        list.push(`${rawPrefix}/${modelClean}.jpg`);
+        list.push(`${rawPrefix}/${modelClean}.PNG`);
       }
 
       // Product code .png

@@ -32,7 +32,7 @@ export const TRI_LIEU_XUNG_DIEN_PRODUCTS: Product[] = [
   {
     "id": 100084,
     "code": "TEC-100084",
-    "name": "SÚNG MASSAGE PERCUSSIVE(SÚNG MASSAGE)",
+    "name": "Súng Massage Percussive Oromi OMR-677",
     "category": "TRI_LIEU_XUNG_DIEN",
     "categoryName": "Trị Liệu",
     "marketPrice": 816000,
@@ -44,8 +44,8 @@ export const TRI_LIEU_XUNG_DIEN_PRODUCTS: Product[] = [
     "reviewCount": 103,
     "isFeatured": false,
     "image": "/products/SÚNG MASSAGE PERCUSSIVE(SÚNG MASSAGE).png",
-    "shortDescription": "SÚNG MASSAGE PERCUSSIVE(SÚNG MASSAGE) chính hãng Oromi, xuất xứ Trung Quốc.",
-    "fullDescription": "Sản phẩm SÚNG MASSAGE PERCUSSIVE(SÚNG MASSAGE) được phân phối chính hãng bởi TECNIC. Đảm bảo chất lượng và uy tín.",
+    "shortDescription": "Súng Massage Percussive Oromi OMR-677 chính hãng Oromi, xuất xứ Trung Quốc.",
+    "fullDescription": "Sản phẩm Súng Massage Percussive Oromi OMR-677 được phân phối chính hãng bởi TECNIC. Đảm bảo chất lượng và uy tín.",
     "specifications": {
       "brand": "Oromi",
       "origin": "Trung Quốc",
@@ -60,7 +60,7 @@ export const TRI_LIEU_XUNG_DIEN_PRODUCTS: Product[] = [
   {
     "id": 100085,
     "code": "TEC-100085",
-    "name": "SÚNG MASSAGE (SÚNG MASSAGE)",
+    "name": "Súng Massage Cầm Tay Philips PPM7323",
     "category": "TRI_LIEU_XUNG_DIEN",
     "categoryName": "Trị Liệu",
     "marketPrice": 1188000,
@@ -71,9 +71,9 @@ export const TRI_LIEU_XUNG_DIEN_PRODUCTS: Product[] = [
     "rating": 4.8,
     "reviewCount": 104,
     "isFeatured": false,
-    "image": "/products/SÚNG MASSAGE (SÚNG MASSAGE).png",
-    "shortDescription": "SÚNG MASSAGE (SÚNG MASSAGE) chính hãng Philips, xuất xứ Trung Quốc.",
-    "fullDescription": "Sản phẩm SÚNG MASSAGE (SÚNG MASSAGE) được phân phối chính hãng bởi TECNIC. Đảm bảo chất lượng và uy tín.",
+    "image": "/products/SÚNG MASSAGE(SÚNG MASSAGE).png",
+    "shortDescription": "Súng Massage Cầm Tay Philips PPM7323 chính hãng Philips, xuất xứ Trung Quốc.",
+    "fullDescription": "Sản phẩm Súng Massage Cầm Tay Philips PPM7323 được phân phối chính hãng bởi TECNIC. Đảm bảo chất lượng và uy tín.",
     "specifications": {
       "brand": "Philips",
       "origin": "Trung Quốc",

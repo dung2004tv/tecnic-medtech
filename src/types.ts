@@ -108,6 +108,22 @@ export interface OrderItem {
   isBulky?: boolean;
 }
 
+export interface Doctor {
+  id: string;
+  name: string;
+  code: string; // Tên chuẩn hóa hoặc mã tìm kiếm
+  hospital?: string; // Bệnh viện / Phòng khám công tác
+  specialty?: string; // Chuyên khoa (ví dụ: Phục hồi chức năng, Chấn thương chỉnh hình)
+  phone?: string;
+  email?: string;
+  discountType: 'PERCENT' | 'FIXED';
+  discountValue: number; // Ví dụ: 5 (%) hoặc 100000 (VNĐ)
+  commissionRate?: number; // % hoa hồng cho bác sĩ nếu áp dụng
+  isActive: boolean;
+  notes?: string;
+  createdAt: string;
+}
+
 export interface Order {
   id: string;
   orderCode: string;
@@ -132,6 +148,15 @@ export interface Order {
     invoiceEmail: string;
   };
   notes?: string;
+  referralDoctor?: {
+    doctorId?: string;
+    doctorName: string;
+    doctorCode?: string;
+    discountAmount: number;
+    discountDesc: string;
+    commissionRate?: number;
+    commissionAmount?: number;
+  } | null;
   createdAt: string;
 }
 
@@ -176,6 +201,7 @@ export interface BannerSlide {
   linkText: string;
   targetCategory?: CategoryId;
   bgGradient: string;
+  tabLabel?: string;
 }
 
 export type ArticleCategory = 

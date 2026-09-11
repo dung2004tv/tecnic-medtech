@@ -64,7 +64,7 @@ export function transformProductToExportItem(p: Product): ExportProductItem {
     appList.push(p.specifications.application);
   }
   if (p.categoryName) {
-    appList.push(`Hỗ trợ chăm sóc và ${p.categoryName.toLowerCase()} chuẩn y khoa`);
+    appList.push(`Hỗ trợ chăm sóc và ${p.categoryName.toLowerCase()} an toàn`);
   }
   if (appList.length === 0) {
     appList.push("Thiết bị hỗ trợ phục hồi chức năng và chăm sóc người bệnh");
@@ -76,7 +76,7 @@ export function transformProductToExportItem(p: Product): ExportProductItem {
     featuresList.push(...p.specifications.features);
   } else {
     featuresList.push(`Chất liệu ${p.specifications.material || 'cao cấp bền bỉ, an toàn y tế'}`);
-    featuresList.push(`Bảo hành chính hãng ${p.specifications.warrantyMonths || 12} tháng`);
+    featuresList.push("Bảo hành tại TECNIC MEDTECH");
     featuresList.push("Thiết kế tối ưu cho người bệnh và người cao tuổi sử dụng tại nhà");
   }
 

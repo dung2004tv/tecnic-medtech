@@ -4,13 +4,13 @@ import { Check, RotateCcw, Image as ImageIcon, Trash2 } from 'lucide-react';
 export const AdminSeoConfig: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'VI' | 'EN'>('VI');
   
-  const [seoTitle, setSeoTitle] = useState('CÔNG TY CỔ PHẦN GIẢI PHÁP CÔNG NGHỆ HỖ TRỢ Y TẾ TECNIC (TECNIC Medtech)');
-  const [seoKeywords, setSeoKeywords] = useState('giường y tế, xe lăn, máy theo dõi sức khoẻ, máy đo đường huyết, máy đo huyết áp, TECNIC');
-  const [seoDescription, setSeoDescription] = useState('Chăm sóc sức khỏe cộng đồng, chúng tôi phụng sự khách hàng bằng những dịch vụ, sản phẩm công nghệ thiết bị y tế giúp người bệnh, người già và người thân của họ trong việc điều trị, phụng dưỡng và chăm sóc như người thân của mình.');
+  const [seoTitle, setSeoTitle] = useState('CÔNG TY CỔ PHẦN GIẢI PHÁP CÔNG NGHỆ HỖ TRỢ Y TẾ TECNIC (TECNIC MEDTECH)');
+  const [seoKeywords, setSeoKeywords] = useState('thiết bị y tế, giường bệnh đa năng, xe lăn, đai nẹp y tế, phục hồi chức năng, TECNIC MEDTECH');
+  const [seoDescription, setSeoDescription] = useState('Tecnic nhận thấy trách nhiệm xã hội của doanh nghiệp trong việc bảo vệ và chăm sóc sức khỏe cộng đồng, chúng tôi cung cấp các giải pháp thiết bị y tế và phục hồi chức năng toàn diện.');
   const [indexWebsite, setIndexWebsite] = useState<'index' | 'noindex'>('index');
   const [notificationEmail, setNotificationEmail] = useState('tecnic.medtech@gmail.com');
-  const [seoImage, setSeoImage] = useState('https://images.unsplash.com/photo-1516549655169-df83a0774514?w=800&auto=format&fit=crop&q=80');
-  const [faviconImage, setFaviconImage] = useState('/logo-tecnic.png');
+  const [seoImage, setSeoImage] = useState('/anh-duong-dan.jpg');
+  const [faviconImage, setFaviconImage] = useState('/logo-tecnic.jpg');
   const [savedSuccess, setSavedSuccess] = useState(false);
 
   const handleSave = () => {
@@ -19,11 +19,13 @@ export const AdminSeoConfig: React.FC = () => {
   };
 
   const handleReset = () => {
-    setSeoTitle('CÔNG TY CỔ PHẦN GIẢI PHÁP CÔNG NGHỆ HỖ TRỢ Y TẾ TECNIC (TECNIC Medtech)');
-    setSeoKeywords('giường y tế, xe lăn, máy theo dõi sức khoẻ, máy đo đường huyết, máy đo huyết áp');
-    setSeoDescription('chăm sóc sức khỏe cộng đồng, chúng tôi phụng sự khách hàng bằng những dịch vụ, sản phẩm công nghệ thiết bị y tế giúp người bệnh, người già và người thân của họ trong việc điều trị, phụng dưỡng và chăm sóc như người thân của mình.');
+    setSeoTitle('CÔNG TY CỔ PHẦN GIẢI PHÁP CÔNG NGHỆ HỖ TRỢ Y TẾ TECNIC (TECNIC MEDTECH)');
+    setSeoKeywords('thiết bị y tế, giường bệnh đa năng, xe lăn, đai nẹp y tế, phục hồi chức năng, TECNIC MEDTECH');
+    setSeoDescription('Tecnic nhận thấy trách nhiệm xã hội của doanh nghiệp trong việc bảo vệ và chăm sóc sức khỏe cộng đồng, chúng tôi cung cấp các giải pháp thiết bị y tế và phục hồi chức năng toàn diện.');
     setIndexWebsite('index');
-    setNotificationEmail('ytetecnic.vn.group@gmail.com');
+    setNotificationEmail('tecnic.medtech@gmail.com');
+    setSeoImage('/anh-duong-dan.jpg');
+    setFaviconImage('/logo-tecnic.jpg');
   };
 
   return (

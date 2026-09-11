@@ -17,31 +17,53 @@ export const TecnicLogo: React.FC<TecnicLogoProps> = ({
   layout = 'vertical',
   customImageSrc = '/logo-tecnic.jpg'
 }) => {
+  const [currentSrc, setCurrentSrc] = useState<string | undefined>(customImageSrc);
   const [imageError, setImageError] = useState(false);
+
+  // Sync if prop changes
+  React.useEffect(() => {
+    setCurrentSrc(customImageSrc || '/logo-tecnic.jpg');
+    setImageError(false);
+  }, [customImageSrc]);
+
+  const handleImageError = () => {
+    if (currentSrc === '/logo-tecnic.jpg') {
+      setCurrentSrc('/logo-tecnic.svg');
+    } else {
+      setImageError(true);
+    }
+  };
 
   // Dimension scale
   const dimensions = {
-    sm: { width: 72, height: 78, icon: 28, title: 'text-sm', sub: 'text-[9px]', slogan: 'text-[7.5px]', imgH: 'h-14 sm:h-16' },
-    md: { width: 90, height: 96, icon: 34, title: 'text-base', sub: 'text-[10px]', slogan: 'text-[9px]', imgH: 'h-16 sm:h-20' },
-    lg: { width: 120, height: 130, icon: 46, title: 'text-xl', sub: 'text-xs', slogan: 'text-[11px]', imgH: 'h-24 sm:h-28' },
-    xl: { width: 160, height: 175, icon: 62, title: 'text-2xl', sub: 'text-sm', slogan: 'text-xs', imgH: 'h-32 sm:h-36' }
+    sm: { width: 68, height: 72, icon: 26, title: 'text-sm', sub: 'text-[9px]', slogan: 'text-[7.5px]', imgH: 'h-11 sm:h-12' },
+    md: { width: 84, height: 88, icon: 32, title: 'text-base', sub: 'text-[10px]', slogan: 'text-[9px]', imgH: 'h-14 sm:h-16' },
+    lg: { width: 110, height: 116, icon: 44, title: 'text-xl', sub: 'text-xs', slogan: 'text-[11px]', imgH: 'h-20 sm:h-22' },
+    xl: { width: 140, height: 150, icon: 56, title: 'text-2xl', sub: 'text-sm', slogan: 'text-xs', imgH: 'h-26 sm:h-28' }
   }[size];
 
-  // Colors based on variant
+  // Colors based on brand standard
   const isDark = variant === 'dark';
   const isBadge = variant === 'badge';
-  const navyColor = '#123577';
+  const navyColor = '#0e387a';
   const redColor = '#e31b23';
 
   // Render Image tag if available and not errored
-  if (!imageError && customImageSrc) {
+  if (!imageError && currentSrc) {
     return (
-      <div className={`inline-flex items-center justify-center select-none ${className}`}>
+      <div 
+        className={`inline-flex items-center justify-center select-none rounded-2xl overflow-hidden transition-all duration-200 ${
+          isBadge || isDark
+            ? 'bg-white p-1 sm:p-1.5 shadow-md border border-white/90 shadow-blue-950/15' 
+            : 'bg-white p-1 rounded-2xl border border-slate-100 shadow-xs'
+        } ${className}`}
+        style={isBadge || isDark ? { minWidth: dimensions.width } : undefined}
+      >
         <img
-          src={customImageSrc}
-          alt="TECNIC MEDICAL - Kiến tạo để phụng sự"
-          onError={() => setImageError(true)}
-          className={`${dimensions.imgH} w-auto object-contain max-w-full drop-shadow-xs transition-transform duration-200 hover:scale-[1.02]`}
+          src={currentSrc}
+          alt="TECNIC MEDTECH - Thiết Bị Y Tế & Phục Hồi Chức Năng"
+          onError={handleImageError}
+          className={`${dimensions.imgH} w-auto object-contain max-w-full rounded-xl transition-transform duration-200 hover:scale-[1.02]`}
         />
       </div>
     );
@@ -50,17 +72,17 @@ export const TecnicLogo: React.FC<TecnicLogoProps> = ({
   // Pure SVG / Vector Fallback rendering exact brand badge
   return (
     <div 
-      className={`inline-flex flex-col items-center justify-center select-none transition-all duration-200 ${
+      className={`inline-flex flex-col items-center justify-center select-none transition-all duration-200 rounded-2xl overflow-hidden ${
         isBadge || isDark
-          ? 'bg-white rounded-2xl sm:rounded-3xl p-2 sm:p-2.5 shadow-md border border-white/90 shadow-blue-950/10' 
-          : ''
+          ? 'bg-white p-2 sm:p-2.5 shadow-md border border-white/90 shadow-blue-950/15' 
+          : 'bg-white/90 p-1.5 rounded-2xl'
       } ${className}`}
       style={isBadge || isDark ? { minWidth: dimensions.width } : undefined}
     >
-      {/* 1. Emblem: Dark Navy Circle with T-bar & Serifs */}
+      {/* 1. Emblem: Dark Navy Circle with T-bar */}
       <div 
         className="shrink-0 relative flex items-center justify-center"
-        style={{ width: dimensions.icon * 1.05, height: dimensions.icon * 1.05 }}
+        style={{ width: dimensions.icon * 1.1, height: dimensions.icon * 1.1 }}
       >
         <svg 
           viewBox="0 0 100 100" 
@@ -71,57 +93,39 @@ export const TecnicLogo: React.FC<TecnicLogoProps> = ({
           {/* Circle */}
           <circle 
             cx="50" 
-            cy="50" 
-            r="40" 
+            cy="52" 
+            r="38" 
             stroke={navyColor} 
-            strokeWidth="7.5" 
+            strokeWidth="6" 
             fill="none" 
           />
           {/* Top T-bar */}
           <line 
-            x1="14" 
-            y1="13" 
-            x2="86" 
-            y2="13" 
+            x1="18" 
+            y1="14" 
+            x2="82" 
+            y2="14" 
             stroke={navyColor} 
-            strokeWidth="7.5" 
-          />
-          {/* Serif bracket on left */}
-          <line 
-            x1="14" 
-            y1="9" 
-            x2="14" 
-            y2="19" 
-            stroke={navyColor} 
-            strokeWidth="4.5" 
-            strokeLinecap="round" 
-          />
-          {/* Serif bracket on right */}
-          <line 
-            x1="86" 
-            y1="9" 
-            x2="86" 
-            y2="19" 
-            stroke={navyColor} 
-            strokeWidth="4.5" 
-            strokeLinecap="round" 
+            strokeWidth="6" 
+            strokeLinecap="square"
           />
           {/* Vertical T stem */}
           <line 
             x1="50" 
-            y1="13" 
+            y1="14" 
             x2="50" 
-            y2="88" 
+            y2="90" 
             stroke={navyColor} 
-            strokeWidth="7.5" 
+            strokeWidth="6" 
+            strokeLinecap="square"
           />
         </svg>
       </div>
 
       {/* 2. Brand Typography */}
-      <div className="flex flex-col items-center leading-tight mt-0.5">
+      <div className="flex flex-col items-center leading-tight mt-1">
         {/* TECNIC with red dot in first C */}
-        <div className="flex items-center justify-center font-black tracking-wider text-[#123577]">
+        <div className="flex items-center justify-center font-black tracking-wider text-[#0e387a]">
           <span className={dimensions.title} style={{ fontFamily: 'Montserrat, sans-serif' }}>TE</span>
           <span className="relative inline-flex items-center justify-center">
             <span className={dimensions.title} style={{ fontFamily: 'Montserrat, sans-serif' }}>C</span>
@@ -132,21 +136,21 @@ export const TecnicLogo: React.FC<TecnicLogoProps> = ({
           <span className={dimensions.title} style={{ fontFamily: 'Montserrat, sans-serif' }}>NIC</span>
         </div>
 
-        {/* MEDICAL in Red */}
+        {/* MEDTECH in Red */}
         <span 
-          className={`font-black tracking-[0.24em] uppercase text-[#e31b23] ${dimensions.sub} -mt-0.5`}
+          className={`font-black tracking-[0.26em] uppercase text-[#e31b23] ${dimensions.sub} -mt-0.5`}
           style={{ fontFamily: 'Montserrat, sans-serif' }}
         >
-          MEDICAL
+          MEDTECH
         </span>
 
-        {/* Slogan: Kiến tạo để phụng sự in Red Cursive / Italic Script */}
+        {/* Slogan: Giải pháp toàn diện, tái sinh cuộc sống in Blue Italic */}
         {showSlogan && (
           <span 
-            className={`font-bold italic text-[#e31b23] ${dimensions.slogan} mt-0.5 whitespace-nowrap`}
-            style={{ fontFamily: "'Brush Script MT', 'Dancing Script', 'Segoe Script', cursive, 'Times New Roman', serif" }}
+            className={`font-bold italic text-[#0071ba] ${dimensions.slogan} mt-0.5 whitespace-nowrap`}
+            style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
           >
-            Kiến tạo để phụng sự
+            Giải pháp toàn diện, tái sinh cuộc sống
           </span>
         )}
       </div>
