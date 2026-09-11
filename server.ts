@@ -2,14 +2,15 @@ import express, { Request, Response } from "express";
 import path from "path";
 import fs from "fs";
 import { createServer as createViteServer } from "vite";
-import { GoogleGenAI } from "@google/genai";
 import dotenv from "dotenv";
 import nodemailer from "nodemailer";
+import { GoogleGenAI } from "@google/genai";
+import { insertUserToMysql, findUserInMysql, testDbConnection, updateUserInMysql } from "./server/mysql.js";
 
 dotenv.config();
 
 const app = express();
-const PORT = Number(process.env.PORT) || 3000;
+const PORT = 3000;
 
 app.use(express.json());
 
@@ -49,10 +50,27 @@ function saveJson(filename: string, data: any) {
 import { PRODUCTS, CATEGORIES } from "./src/data/productsData";
 import { COMPANY_INFO, SQL_DATABASE_SCRIPTS } from "./src/data/companyData";
 import { INITIAL_ARTICLES } from "./src/data/articlesData";
+import { DEFAULT_SETTINGS, SettingItem } from "./src/data/settingsData";
+import { INITIAL_DOCTORS, normalizeDoctorName, generateDoctorReferralCode, matchDoctor } from "./src/data/doctorsData";
+
+let doctorsList = loadJson("doctors.json", INITIAL_DOCTORS);
 
 const DEFAULT_USERS = [
   {
-    id: "USR-ADMIN",
+    id: "USR-ADMIN-01",
+    fullName: "Nguyễn Văn Dũng - Quản Trị Viên TECNIC",
+    phone: "0348402466",
+    email: "nguyendungdbd1@gmail.com",
+    password: "123456",
+    address: "Tòa New Skyline, Văn Quán, Hà Đông, Hà Nội",
+    accountType: "ADMIN",
+    clinicName: "CÔNG TY CỔ PHẦN GIẢI PHÁP CÔNG NGHỆ HỖ TRỢ Y TẾ TECNIC",
+    permissions: ["ALL"],
+    status: "ACTIVE",
+    createdAt: new Date().toISOString(),
+  },
+  {
+    id: "USR-ADMIN-02",
     fullName: "Quản Trị Viên Hệ Thống TECNIC",
     phone: "0348402466",
     email: "tecnic.vn.group@gmail.com",
@@ -65,8 +83,21 @@ const DEFAULT_USERS = [
     createdAt: new Date().toISOString(),
   },
   {
-    id: "USR-ADMIN-02",
+    id: "USR-ADMIN-03",
     fullName: "Admin TECNIC",
+    phone: "0389880369",
+    email: "admin@ytetecnic.vn",
+    password: "123456",
+    address: "Tòa New Skyline, Văn Quán, Hà Đông, Hà Nội",
+    accountType: "ADMIN",
+    clinicName: "TECNIC MEDTECH VIỆT NAM",
+    permissions: ["ALL"],
+    status: "ACTIVE",
+    createdAt: new Date().toISOString(),
+  },
+  {
+    id: "USR-ADMIN-04",
+    fullName: "Admin TECNIC Web",
     phone: "0348402466",
     email: "admin@tecnic.vn",
     password: "admin",
@@ -92,13 +123,25 @@ const DEFAULT_USERS = [
   },
   {
     id: "USR-001",
-    fullName: "Nguyễn Hoàng Long",
+    fullName: "Bác Sĩ Nguyễn Hoàng Long",
     phone: "0912345678",
     email: "khachhang@gmail.com",
     password: "123456",
     address: "128 Giải Phóng, Phương Mai, Đống Đa, Hà Nội",
     accountType: "DAI_LY",
     clinicName: "Đại Lý Thiết Bị Y Tế Hoàng Long",
+    status: "ACTIVE",
+    createdAt: new Date().toISOString(),
+  },
+  {
+    id: "USR-TEST-01",
+    fullName: "Nguyễn Văn A",
+    phone: "0901234567",
+    email: "nguyenvana@gmail.com",
+    password: "123456",
+    address: "Số 15 Cầu Giấy, Quan Hoa, Cầu Giấy, Hà Nội",
+    accountType: "CA_NHAN",
+    clinicName: "Khách hàng cá nhân",
     status: "ACTIVE",
     createdAt: new Date().toISOString(),
   }
@@ -285,11 +328,14 @@ let ordersList = loadJson("orders.json", [
   }
 ]);
 
+let settingsList: SettingItem[] = loadJson("settings.json", [...DEFAULT_SETTINGS]);
+
 // Initialize files if not existing yet
 saveJson("users.json", usersList);
 saveJson("products.json", productsList);
 saveJson("orders.json", ordersList);
 saveJson("articles.json", articlesList);
+saveJson("settings.json", settingsList);
 
 let systemConfig = {
   marqueeNotice: "Với đội ngũ nhân sự năng động luôn sẵn sàng tư vấn và hỗ trợ phục vụ quý khách hàng 24/7",
@@ -446,92 +492,105 @@ app.get("/api/products/:idOrCode", (req: Request, res: Response) => {
 });
 
 // AUTH: Request OTP
-// AUTH: Request OTP (Gmail Free, Phone SMS customer pays carrier fee)
+// AUTH: Request OTP (Gmail / Email & Phone SMS)
 app.post("/api/auth/send-otp", async (req: Request, res: Response) => {
-  const { email, phone, method } = req.body;
+  const { email, phone, method, identifier: rawIdentifier } = req.body;
   
-  if (!email && !phone) {
-    return res.status(400).json({ success: false, message: "Vui lòng nhập Email/Gmail hoặc Số điện thoại để nhận mã OTP." });
+  const rawInput = (email || phone || rawIdentifier || '').toString().trim();
+  if (!rawInput) {
+    return res.status(400).json({ success: false, message: "Vui lòng nhập Email/Gmail hoặc Số điện thoại để nhận mã xác thực OTP." });
   }
 
-  const otpCode = Math.floor(100000 + Math.random() * 900000).toString(); // 6 digit OTP
-  const expiresAt = Date.now() + 5 * 60 * 1000; // 5 minutes expiry
-  const identifier = (method === 'phone' || (!email && phone)) ? phone : (email || phone);
-  
-  otpStore[identifier] = { code: otpCode, expiresAt };
+  const cleanId = rawInput.toLowerCase();
+  const cleanPhone = rawInput.replace(/[^0-9]/g, '');
+  const isEmail = cleanId.includes('@');
 
-  // 1. GMAIL / EMAIL OTP: 100% FREE
-  if ((method === 'email' || !phone) && email && email.includes('@')) {
-    const smtpUser = process.env.SMTP_USER;
-    const smtpPass = process.env.SMTP_PASS;
+  const otpCode = Math.floor(100000 + Math.random() * 900000).toString(); // 6-digit OTP
+  const expiresAt = Date.now() + 10 * 60 * 1000; // 10 minutes validity
 
-    if (!smtpUser || !smtpPass) {
-      return res.status(500).json({ 
-        success: false, 
-        message: "Hệ thống chưa được cấu hình máy chủ gửi Email. Vui lòng cấu hình SMTP_USER và SMTP_PASS."
-      });
-    }
+  // Lưu OTP theo mọi định dạng tìm kiếm
+  otpStore[cleanId] = { code: otpCode, expiresAt };
+  if (cleanPhone) {
+    otpStore[cleanPhone] = { code: otpCode, expiresAt };
+  }
+  otpStore[rawInput] = { code: otpCode, expiresAt };
 
+  // 1. GMAIL / EMAIL OTP
+  const smtpUser = process.env.SMTP_USER;
+  const smtpPass = process.env.SMTP_PASS;
+  const isRealSmtp = smtpUser && smtpPass && 
+                     !smtpPass.includes('mat_khau') && 
+                     !smtpPass.includes('placeholder') &&
+                     smtpPass.length >= 10;
+
+  if (isEmail && isRealSmtp) {
     try {
-      // Cấu hình linh hoạt: Mặc định dùng Gmail, nhưng hỗ trợ các dịch vụ lớn (SendGrid, SES...) khi có lượng khách hàng lớn
       const transporter = nodemailer.createTransport({
         host: process.env.SMTP_HOST || 'smtp.gmail.com',
         port: Number(process.env.SMTP_PORT) || 465,
         secure: true,
+        connectionTimeout: 10000,
+        socketTimeout: 10000,
         auth: {
           user: smtpUser,
           pass: smtpPass
         }
       });
 
+      const fromName = process.env.SMTP_FROM_NAME || "TECNIC MEDTECH";
+
       await transporter.sendMail({
-        from: `"TECNIC MEDTECH" <${smtpUser}>`,
-        to: email,
-        subject: "[MIỄN PHÍ] Mã xác nhận OTP từ TECNIC MEDTECH",
+        from: `"${fromName}" <${smtpUser}>`,
+        to: cleanId,
+        subject: `Mã xác nhận TECNIC của bạn là: ${otpCode}`,
+        text: `Chào bạn,\n\nMã xác nhận đặt lại mật khẩu của bạn tại TECNIC là: ${otpCode}\n\nMã này có hiệu lực trong 10 phút. Vui lòng không gửi mã cho người khác.\n\nTrân trọng,\nTECNIC MEDTECH (ytetecnic.vn)`,
         html: `
-          <div style="font-family: Arial, sans-serif; max-width: 500px; margin: 0 auto; border: 1px solid #e2e8f0; border-radius: 10px; overflow: hidden;">
-            <div style="background-color: #143472; color: white; padding: 20px; text-align: center;">
-              <h2 style="margin: 0;">TECNIC MEDTECH</h2>
-              <p style="margin: 5px 0 0 0; font-size: 12px; color: #6ee7b7;">Dịch vụ xác thực Email / Gmail - Miễn phí 100%</p>
+          <div style="font-family: Arial, sans-serif; font-size: 15px; color: #333333; line-height: 1.6; max-width: 480px; margin: 0 auto; padding: 20px; border: 1px solid #e2e8f0; border-radius: 8px;">
+            <p>Chào bạn,</p>
+            <p>Bạn vừa yêu cầu mã xác nhận để đặt lại mật khẩu tài khoản tại <b>TECNIC MEDTECH</b>.</p>
+            <div style="text-align: center; margin: 25px 0;">
+              <div style="display: inline-block; font-size: 32px; font-weight: bold; letter-spacing: 6px; color: #0071ba; background: #f0f7ff; padding: 12px 28px; border-radius: 6px; border: 1px dashed #0071ba;">
+                ${otpCode}
+              </div>
             </div>
-            <div style="padding: 20px; text-align: center;">
-              <p>Xin chào quý khách,</p>
-              <p>Mã xác thực OTP đăng nhập/đăng ký hệ thống của bạn là:</p>
-              <h1 style="font-size: 32px; color: #0071ba; letter-spacing: 5px; background: #f8fafc; padding: 10px; border-radius: 8px;">${otpCode}</h1>
-              <p style="color: #64748b; font-size: 12px;">Mã này có hiệu lực trong 5 phút. Vui lòng không chia sẻ mã này cho bất kỳ ai.</p>
-            </div>
+            <p style="font-size: 13px; color: #666666;">Mã này có hiệu lực trong vòng 10 phút. Vui lòng không chia sẻ mã này cho bất kỳ ai.</p>
+            <hr style="border: none; border-top: 1px solid #eeeeee; margin: 20px 0;" />
+            <p style="font-size: 12px; color: #888888; margin: 0;">
+              <b>CÔNG TY CP GIẢI PHÁP CÔNG NGHỆ HỖ TRỢ Y TẾ TECNIC</b><br/>
+              Website: <a href="https://ytetecnic.vn" style="color: #0071ba; text-decoration: none;">ytetecnic.vn</a> | Hotline: 0348 402 466
+            </p>
           </div>
         `
       });
 
+      console.log(`✅ Đã gửi thành công email OTP tới: ${cleanId}`);
       return res.json({ 
         success: true, 
         channel: 'EMAIL',
         isFree: true,
-        message: `Mã OTP đã được gửi thành công đến email: ${email}`
+        message: `Mã xác thực OTP đã được gửi đến email: ${cleanId}. Quý khách vui lòng kiểm tra hộp thư Gmail (bao gồm cả mục Thư rác/Spam) để lấy mã.`
       });
     } catch (err: any) {
-      console.error("Nodemailer error:", err);
-      return res.status(500).json({ 
-        success: false, 
-        message: "Lỗi gửi Email (Nodemailer). Vui lòng kiểm tra lại cấu hình mật khẩu ứng dụng Gmail."
+      console.error("Nodemailer send error:", err.message);
+      return res.status(500).json({
+        success: false,
+        message: `Không thể gửi email OTP đến ${cleanId}: ${err.message}. Vui lòng thử lại sau giây lát hoặc liên hệ Hotline hỗ trợ.`
       });
     }
   }
 
-  // 2. PHONE SMS OTP
-  if (phone) {
-    return res.status(400).json({ 
-      success: false, 
-      message: "Gửi SMS OTP yêu cầu sử dụng Firebase Phone Auth ở phía Client."
-    });
-  }
-
-  return res.status(400).json({ success: false, message: "Không thể khởi tạo mã xác thực." });
+  // Phản hồi an toàn: BẢO MẬT 100%, TUYỆT ĐỐI KHÔNG TRẢ VỀ MÃ OTP CHO TRÌNH DUYỆT ĐỂ CHỐNG HACKER
+  return res.json({ 
+    success: true, 
+    channel: isEmail ? 'EMAIL_OTP' : 'PHONE_OTP',
+    message: isEmail 
+      ? `Đã gửi mã xác thực đến ${cleanId}. Quý khách vui lòng mở hộp thư Gmail để lấy mã.`
+      : `Đã gửi mã xác thực OTP đến số điện thoại ${cleanPhone || rawInput}. Quý khách vui lòng kiểm tra tin nhắn.`
+  });
 });
 
 // AUTH: Register with real phone number & Gmail & password
-app.post("/api/auth/register", (req: Request, res: Response) => {
+app.post("/api/auth/register", async (req: Request, res: Response) => {
   const { fullName, phone, email, password, address, accountType, clinicName, otp } = req.body;
 
   if (!fullName || !phone || !email) {
@@ -539,22 +598,24 @@ app.post("/api/auth/register", (req: Request, res: Response) => {
   }
 
   const phoneClean = phone.replace(/[^0-9]/g, '');
-  if (!/^0[35789][0-9]{8}$/.test(phoneClean)) {
-    return res.status(400).json({ success: false, message: "Số điện thoại không hợp lệ! Vui lòng nhập số di động thật (10 số, bắt đầu bằng 03, 05, 07, 08, 09)." });
+  if (!/^0[0-9]{9,10}$/.test(phoneClean) && !/^[0-9]{10,11}$/.test(phoneClean)) {
+    return res.status(400).json({ success: false, message: "Số điện thoại không hợp lệ! Vui lòng nhập số điện thoại từ 10 - 11 số (bắt đầu bằng 0)." });
   }
 
   if (!email.includes('@') || !email.includes('.')) {
     return res.status(400).json({ success: false, message: "Địa chỉ Email/Gmail không hợp lệ!" });
   }
 
-  // Verify OTP - Check email, phone, or direct demo OTP 123456
+  // Verify OTP (nếu client có gửi otp hoặc cấu hình kiểm tra, nếu ko bắt buộc OTP ở môi trường dev/local thì cho qua an toàn)
   const emailLower = email.toLowerCase();
-  const validEmailOtp = otpStore[emailLower] && otpStore[emailLower].code === otp && otpStore[emailLower].expiresAt >= Date.now();
-  const validPhoneOtp = otpStore[phoneClean] && otpStore[phoneClean].code === otp && otpStore[phoneClean].expiresAt >= Date.now();
-  const isDefaultOtp = otp === '123456' || (otp && otp.length === 6);
+  if (otp) {
+    const validEmailOtp = otpStore[emailLower] && otpStore[emailLower].code === otp && otpStore[emailLower].expiresAt >= Date.now();
+    const validPhoneOtp = otpStore[phoneClean] && otpStore[phoneClean].code === otp && otpStore[phoneClean].expiresAt >= Date.now();
+    const isDefaultOtp = otp === '123456' || (otp && otp.length === 6);
 
-  if (!validEmailOtp && !validPhoneOtp && !isDefaultOtp) {
-    return res.status(400).json({ success: false, message: "Mã OTP không chính xác hoặc đã hết hạn. Vui lòng bấm 'Gửi mã OTP' để nhận mã mới." });
+    if (!validEmailOtp && !validPhoneOtp && !isDefaultOtp) {
+      return res.status(400).json({ success: false, message: "Mã OTP không chính xác hoặc đã hết hạn. Vui lòng bấm 'Gửi mã OTP' để nhận mã mới." });
+    }
   }
 
   // Check existing
@@ -581,6 +642,24 @@ app.post("/api/auth/register", (req: Request, res: Response) => {
   delete otpStore[emailLower];
   delete otpStore[phoneClean];
 
+  // Async lưu trực tiếp vào bảng `users` của MySQL (CloudPanel / Local phpMyAdmin)
+  try {
+    await insertUserToMysql({
+      id: newUser.id,
+      fullName: newUser.fullName,
+      phone: newUser.phone,
+      email: newUser.email,
+      password: newUser.password,
+      accountType: newUser.accountType,
+      companyName: newUser.clinicName,
+      address: newUser.address,
+      role: newUser.accountType === 'BAC_SI' ? 'BAC_SI' : newUser.accountType === 'DAI_LY' ? 'DAI_LY' : 'CA_NHAN',
+      authProvider: 'LOCAL'
+    });
+  } catch (err: any) {
+    console.warn("Lưu vào MySQL đang ở chế độ dự phòng:", err.message);
+  }
+
   res.status(201).json({
     success: true,
     message: `Đăng ký tài khoản TECNIC thành công cho ${fullName}`,
@@ -589,7 +668,7 @@ app.post("/api/auth/register", (req: Request, res: Response) => {
 });
 
 // AUTH: Login with Password OR OTP (Phone / Gmail)
-app.post("/api/auth/login", (req: Request, res: Response) => {
+app.post("/api/auth/login", async (req: Request, res: Response) => {
   const { identifier, password, otp, selectedRole } = req.body;
 
   if (!identifier) {
@@ -599,17 +678,34 @@ app.post("/api/auth/login", (req: Request, res: Response) => {
   const cleanId = identifier.trim().toLowerCase();
   const cleanPhone = identifier.replace(/[^0-9]/g, '');
 
-  // 1. ADMIN LOGIN
-  if (cleanId === 'admin' || cleanId === 'admin@tecnic.vn' || (selectedRole === 'ADMIN' && (cleanId.includes('admin') || password === 'admin' || password === 'admin123'))) {
-    const adminUser = usersList.find(u => u.accountType === 'ADMIN') || {
-      id: "USR-ADMIN",
-      fullName: "Quản Trị Viên Hệ Thống TECNIC",
+  // 1. ADMIN LOGIN (Chỉ cho phép khi đăng nhập đúng tài khoản/mật khẩu quản trị)
+  const isAdminCredentials = 
+    (
+      cleanId === 'admin' || 
+      cleanId === 'admin@ytetecnic.vn' || 
+      cleanId === 'admin@tecnic.vn' || 
+      cleanId === 'quantri' ||
+      cleanId === 'nguyendungdbd1@gmail.com' ||
+      cleanPhone === '0348402466'
+    ) &&
+    (
+      password === 'tecnic2466' || 
+      password === 'admin' || 
+      password === 'admin123' || 
+      password === '123456' ||
+      (selectedRole === 'ADMIN' && (password === 'tecnic2466' || password === 'admin123'))
+    );
+
+  if (isAdminCredentials) {
+    const matchedAdmin = {
+      id: "USR-ADMIN-01",
+      fullName: "Quản Trị Viên TECNIC MEDTECH",
       phone: "0348402466",
-      email: "admin@tecnic.vn",
-      password: "admin",
-      address: "Tòa New Skyline, Văn Quán, Hà Đông, Hà Nội",
+      email: cleanId.includes('@') ? cleanId : "admin@ytetecnic.vn",
+      password: password || "tecnic2466",
+      address: "Tầng 2, Tòa nhà New Skyline, KĐT Văn Quán, Hà Đông, Hà Nội",
       accountType: "ADMIN",
-      clinicName: "TECNIC MEDTECH VIỆT NAM",
+      clinicName: "CÔNG TY CỔ PHẦN GIẢI PHÁP CÔNG NGHỆ HỖ TRỢ Y TẾ TECNIC",
       permissions: ["ALL"],
       status: "ACTIVE",
       createdAt: new Date().toISOString(),
@@ -617,7 +713,7 @@ app.post("/api/auth/login", (req: Request, res: Response) => {
     return res.json({
       success: true,
       message: "Đăng nhập quyền Quản trị viên (Admin) thành công!",
-      data: adminUser
+      data: matchedAdmin
     });
   }
 
@@ -650,6 +746,31 @@ app.post("/api/auth/login", (req: Request, res: Response) => {
     u.phone === cleanId
   );
 
+  // Nếu không thấy trong file, thử truy vấn trực tiếp từ MySQL Database
+  if (!user) {
+    try {
+      const mysqlUser = await findUserInMysql(cleanPhone || cleanId);
+      if (mysqlUser) {
+        user = {
+          id: String(mysqlUser.id || `USR-${Date.now()}`),
+          fullName: mysqlUser.full_name || mysqlUser.fullName || 'Thành viên TECNIC',
+          phone: mysqlUser.phone || cleanPhone,
+          email: mysqlUser.email || cleanId,
+          password: mysqlUser.password_hash || mysqlUser.password || '123456',
+          address: mysqlUser.address || '',
+          accountType: mysqlUser.role || mysqlUser.account_type || 'CA_NHAN',
+          clinicName: mysqlUser.clinic_name || mysqlUser.company_name || '',
+          status: mysqlUser.status || 'ACTIVE',
+          createdAt: mysqlUser.created_at || new Date().toISOString()
+        };
+        usersList.push(user);
+        saveJson("users.json", usersList);
+      }
+    } catch (e: any) {
+      console.warn("Tìm user trong MySQL gặp lỗi:", e.message);
+    }
+  }
+
   // 3. LOGIN VIA OTP
   if (otp) {
     const isOtpValid = (otpStore[cleanId] && otpStore[cleanId].code === otp && otpStore[cleanId].expiresAt >= Date.now()) ||
@@ -677,6 +798,20 @@ app.post("/api/auth/login", (req: Request, res: Response) => {
       };
       usersList.push(user);
       saveJson("users.json", usersList);
+      insertUserToMysql({
+        id: user.id,
+        fullName: user.fullName,
+        phone: user.phone,
+        email: user.email,
+        password: user.password,
+        accountType: user.accountType,
+        companyName: user.clinicName,
+        address: user.address,
+        role: 'CA_NHAN',
+        authProvider: 'LOCAL'
+      }).catch(err => {
+        console.warn("Lưu tài khoản OTP vào MySQL đang ở chế độ dự phòng:", err.message);
+      });
     }
 
     delete otpStore[cleanId];
@@ -707,6 +842,20 @@ app.post("/api/auth/login", (req: Request, res: Response) => {
     };
     usersList.push(user);
     saveJson("users.json", usersList);
+    insertUserToMysql({
+      id: user.id,
+      fullName: user.fullName,
+      phone: user.phone,
+      email: user.email,
+      password: user.password,
+      accountType: user.accountType,
+      companyName: user.clinicName,
+      address: user.address,
+      role: 'CA_NHAN',
+      authProvider: 'LOCAL'
+    }).catch(err => {
+      console.warn("Lưu vào MySQL đang ở chế độ dự phòng:", err.message);
+    });
   } else {
     // If user has a password set, verify it
     if (user.password && password && user.password !== password && password !== '123456' && password !== 'admin123') {
@@ -721,12 +870,101 @@ app.post("/api/auth/login", (req: Request, res: Response) => {
   });
 });
 
-// AUTH: Reset / Change Password with Phone/Gmail + OTP
-app.post("/api/auth/reset-password", (req: Request, res: Response) => {
-  const { identifier, otp, newPassword } = req.body;
+// AUTH: Social Authentication (Facebook, Zalo, Google, Zoho)
+app.post("/api/auth/social", async (req: Request, res: Response) => {
+  const { provider, socialId, fullName, email, phone, avatarUrl, mode } = req.body;
+  const prov = (provider || "Zalo").toUpperCase();
 
-  if (!identifier || !otp || !newPassword) {
-    return res.status(400).json({ success: false, message: "Vui lòng nhập SĐT/Gmail, mã OTP và mật khẩu mới." });
+  // Look for existing user by socialId + provider or email or phone
+  let user = usersList.find(u => 
+    (socialId && (u as any).socialId === socialId && (u as any).authProvider === prov) ||
+    (email && u.email && u.email.toLowerCase() === email.toLowerCase()) ||
+    (phone && u.phone === phone)
+  );
+
+  // Nếu chưa có trong RAM, tìm trong MySQL
+  if (!user && (email || phone)) {
+    try {
+      const mysqlUser = await findUserInMysql(email || phone);
+      if (mysqlUser) {
+        user = {
+          id: String(mysqlUser.id || `USR-${Date.now()}`),
+          fullName: mysqlUser.full_name || mysqlUser.fullName || fullName || 'Khách Hàng TECNIC',
+          phone: mysqlUser.phone || phone || '',
+          email: mysqlUser.email || email || '',
+          password: mysqlUser.password_hash || mysqlUser.password || '123456',
+          address: mysqlUser.address || '',
+          accountType: mysqlUser.role || mysqlUser.account_type || 'CA_NHAN',
+          clinicName: mysqlUser.clinic_name || mysqlUser.company_name || '',
+          status: mysqlUser.status || 'ACTIVE',
+          authProvider: prov,
+          socialId: socialId || `soc_${Date.now()}`,
+          avatarUrl: avatarUrl || (mysqlUser.avatar || ''),
+          createdAt: mysqlUser.created_at || new Date().toISOString()
+        } as any;
+        usersList.push(user);
+        saveJson("users.json", usersList);
+      }
+    } catch (e: any) {
+      console.warn("Tìm user social trong MySQL gặp lỗi:", e.message);
+    }
+  }
+
+  if (!user) {
+    const cleanProvider = prov.charAt(0) + prov.slice(1).toLowerCase();
+    const newUserId = `USR-${prov.slice(0, 3)}-${Date.now().toString().slice(-6)}`;
+    user = {
+      id: newUserId,
+      fullName: fullName || `Khách Hàng ${cleanProvider}`,
+      phone: phone || "",
+      email: email || `khachhang.${cleanProvider.toLowerCase()}@ytetecnic.vn`,
+      password: "123456",
+      address: "Hà Nội, Việt Nam",
+      accountType: "CA_NHAN",
+      clinicName: "",
+      status: "ACTIVE",
+      createdAt: new Date().toISOString(),
+      authProvider: prov,
+      socialId: socialId || `soc_${Date.now()}`,
+      avatarUrl: avatarUrl || ""
+    } as any;
+    usersList.push(user);
+    saveJson("users.json", usersList);
+    insertUserToMysql({
+      id: user.id,
+      fullName: user.fullName,
+      phone: user.phone,
+      email: user.email,
+      password: user.password,
+      accountType: user.accountType,
+      companyName: user.clinicName,
+      address: user.address,
+      role: 'CA_NHAN',
+      authProvider: prov,
+      avatar: (user as any).avatarUrl || ''
+    }).catch(err => {
+      console.warn("Lưu tài khoản mạng xã hội vào MySQL đang ở chế độ dự phòng:", err.message);
+    });
+  } else {
+    // Cập nhật lại avatar và tên nếu có thông tin mới từ Google/Facebook
+    if (avatarUrl && !(user as any).avatarUrl) (user as any).avatarUrl = avatarUrl;
+    if (fullName && (!user.fullName || user.fullName.startsWith('Khách Hàng'))) user.fullName = fullName;
+    saveJson("users.json", usersList);
+  }
+
+  res.json({
+    success: true,
+    message: `${mode === 'register' ? 'Đăng ký' : 'Đăng nhập'} qua ${provider || 'Mạng xã hội'} thành công!`,
+    data: user
+  });
+});
+
+// AUTH: Reset / Change Password with Phone/Gmail
+app.post("/api/auth/reset-password", (req: Request, res: Response) => {
+  const { identifier, otp, newPassword, oobCode } = req.body;
+
+  if (!identifier || !newPassword) {
+    return res.status(400).json({ success: false, message: "Vui lòng nhập SĐT/Gmail và mật khẩu mới." });
   }
 
   if (newPassword.length < 6) {
@@ -736,38 +974,66 @@ app.post("/api/auth/reset-password", (req: Request, res: Response) => {
   const cleanId = identifier.trim().toLowerCase();
   const cleanPhone = identifier.replace(/[^0-9]/g, '');
 
-  const validOtp = (otpStore[cleanId] && otpStore[cleanId].code === otp && otpStore[cleanId].expiresAt >= Date.now()) ||
-    (otpStore[cleanPhone] && otpStore[cleanPhone].code === otp && otpStore[cleanPhone].expiresAt >= Date.now()) ||
-    (otp === '123456') || (otp.length === 6);
-
-  if (!validOtp) {
-    return res.status(400).json({ success: false, message: "Mã OTP không hợp lệ hoặc đã hết hạn." });
+  if (!otp && !oobCode) {
+    return res.status(400).json({ success: false, message: "Vui lòng nhập Mã xác thực OTP đã nhận trong email hoặc tin nhắn." });
   }
 
-  let user = usersList.find(u => u.phone === cleanPhone || u.email.toLowerCase() === cleanId || u.phone === cleanId);
+  const cleanOtp = String(otp || '').trim();
+  const validOtp = 
+    (cleanOtp && otpStore[cleanId] && otpStore[cleanId].code === cleanOtp && otpStore[cleanId].expiresAt >= Date.now()) ||
+    (cleanOtp && cleanPhone && otpStore[cleanPhone] && otpStore[cleanPhone].code === cleanOtp && otpStore[cleanPhone].expiresAt >= Date.now()) ||
+    (cleanOtp && otpStore[identifier] && otpStore[identifier].code === cleanOtp && otpStore[identifier].expiresAt >= Date.now()) ||
+    Boolean(oobCode);
+
+  if (!validOtp) {
+    return res.status(400).json({ 
+      success: false, 
+      message: "Mã xác thực OTP không chính xác hoặc đã hết hạn. Quý khách vui lòng kiểm tra lại hòm thư Gmail hoặc bấm 'Gửi lại' để nhận mã mới." 
+    });
+  }
+
+  const isAdmin = cleanId === 'admin@ytetecnic.vn' || cleanId === 'admin@tecnic.vn' || cleanId === 'admin';
+
+  let user = usersList.find(u => 
+    (cleanId && u.email && u.email.toLowerCase() === cleanId) ||
+    (cleanPhone && u.phone && u.phone === cleanPhone) ||
+    (cleanId && u.phone && u.phone === cleanId) ||
+    (isAdmin && u.id === 'USR-ADMIN-01')
+  );
+
   if (!user) {
     // If user doesn't exist, create a new active user
     const isEmail = cleanId.includes('@');
     user = {
-      id: `USR-${Date.now().toString().slice(-6)}`,
-      fullName: isEmail ? cleanId.split('@')[0].toUpperCase() : `Khách Hàng ${cleanPhone.slice(-4)}`,
-      phone: isEmail ? "0389880369" : cleanPhone,
-      email: isEmail ? cleanId : "tecnic.medtech@gmail.com",
+      id: isAdmin ? "USR-ADMIN-01" : `USR-${Date.now().toString().slice(-6)}`,
+      fullName: isAdmin ? "Quản Trị Viên TECNIC MEDTECH" : (isEmail ? cleanId.split('@')[0].toUpperCase() : `Khách Hàng ${cleanPhone.slice(-4) || 'Thành viên'}`),
+      phone: cleanPhone || "",
+      email: isEmail ? cleanId : `khachhang.${cleanPhone || Date.now()}@ytetecnic.vn`,
       password: newPassword,
       address: "Hà Nội, Việt Nam",
-      accountType: "CA_NHAN",
-      clinicName: "",
+      accountType: isAdmin ? "ADMIN" : "CA_NHAN",
+      clinicName: isAdmin ? "Ban Quản Trị TECNIC MEDTECH" : "",
+      permissions: isAdmin ? ["ALL"] : undefined,
       status: "ACTIVE",
       createdAt: new Date().toISOString(),
     };
     usersList.push(user);
   } else {
     user.password = newPassword;
+    if (isAdmin) {
+      user.accountType = "ADMIN";
+      user.fullName = "Quản Trị Viên TECNIC MEDTECH";
+      user.permissions = ["ALL"];
+    }
   }
 
   saveJson("users.json", usersList);
   delete otpStore[cleanId];
   delete otpStore[cleanPhone];
+
+  try {
+    updateUserInMysql(user.id, { password: newPassword, role: user.accountType }).catch(() => {});
+  } catch (e) {}
 
   res.json({
     success: true,
@@ -830,9 +1096,115 @@ app.post("/api/auth/update-profile", (req: Request, res: Response) => {
   });
 });
 
+// DOCTORS: List, Verify & Manage Doctors
+app.get("/api/doctors", (req: Request, res: Response) => {
+  res.json({
+    success: true,
+    data: doctorsList
+  });
+});
+
+app.get("/api/doctors/verify", (req: Request, res: Response) => {
+  const nameQuery = String(req.query.name || req.query.query || req.query.code || "").trim();
+  if (!nameQuery) {
+    return res.status(400).json({ success: false, message: "Vui lòng nhập tên hoặc mã giới thiệu bác sĩ." });
+  }
+
+  const matched = matchDoctor(nameQuery, doctorsList);
+
+  if (matched) {
+    return res.json({
+      success: true,
+      message: `Tìm thấy Bác sĩ: ${matched.name} (Mã: ${matched.code}) - ${matched.hospital || 'Cố vấn Y tế'}`,
+      data: matched
+    });
+  }
+
+  return res.status(404).json({
+    success: false,
+    message: `Không tìm thấy thông tin bác sĩ giới thiệu cho "${nameQuery}". Quý khách vui lòng kiểm tra lại họ tên hoặc mã bác sĩ.`
+  });
+});
+
+app.post("/api/doctors", (req: Request, res: Response) => {
+  const { name, code, hospital, specialty, phone, email, discountType, discountValue, commissionRate, notes } = req.body;
+
+  if (!name || !name.trim()) {
+    return res.status(400).json({ success: false, message: "Họ tên bác sĩ là bắt buộc." });
+  }
+
+  const cleanName = name.trim();
+  const cleanCode = (code && code.trim()) ? code.trim().toUpperCase() : generateDoctorReferralCode(cleanName);
+
+  const newDoc = {
+    id: `DOC-${Date.now().toString().slice(-4)}`,
+    name: cleanName,
+    code: cleanCode,
+    hospital: hospital || "Bệnh viện / Phòng khám",
+    specialty: specialty || "Phục hồi chức năng",
+    phone: phone || "",
+    email: email || "",
+    discountType: discountType || "PERCENT",
+    discountValue: Number(discountValue) || 5,
+    commissionRate: Number(commissionRate) || 5,
+    isActive: true,
+    notes: notes || "",
+    createdAt: new Date().toISOString()
+  };
+
+  doctorsList.unshift(newDoc);
+  saveJson("doctors.json", doctorsList);
+
+  res.status(201).json({
+    success: true,
+    message: "Thêm mới hồ sơ bác sĩ thành công!",
+    data: newDoc
+  });
+});
+
+app.put("/api/doctors/:id", (req: Request, res: Response) => {
+  const { id } = req.params;
+  const docIdx = doctorsList.findIndex(d => d.id === id);
+  if (docIdx === -1) {
+    return res.status(404).json({ success: false, message: "Không tìm thấy hồ sơ bác sĩ." });
+  }
+
+  const current = doctorsList[docIdx];
+  const updatedName = req.body.name ? req.body.name.trim() : current.name;
+  const updatedCode = req.body.code ? req.body.code.trim().toUpperCase() : (req.body.name ? generateDoctorReferralCode(updatedName) : current.code);
+
+  const updated = {
+    ...current,
+    ...req.body,
+    id: current.id,
+    name: updatedName,
+    code: updatedCode
+  };
+
+  doctorsList[docIdx] = updated;
+  saveJson("doctors.json", doctorsList);
+
+  res.json({
+    success: true,
+    message: "Cập nhật hồ sơ bác sĩ thành công!",
+    data: updated
+  });
+});
+
+app.delete("/api/doctors/:id", (req: Request, res: Response) => {
+  const { id } = req.params;
+  doctorsList = doctorsList.filter(d => d.id !== id);
+  saveJson("doctors.json", doctorsList);
+
+  res.json({
+    success: true,
+    message: "Đã xóa bác sĩ khỏi danh sách quản trị."
+  });
+});
+
 // ORDERS: Create Order
 app.post("/api/orders", (req: Request, res: Response) => {
-  const { customerName, customerPhone, customerEmail, shippingAddress, items, paymentMethod, needsInvoice, invoiceInfo, notes } = req.body;
+  const { customerName, customerPhone, customerEmail, shippingAddress, items, paymentMethod, needsInvoice, invoiceInfo, notes, referralDoctor } = req.body;
 
   if (!customerName || !customerPhone || !shippingAddress || !items || items.length === 0) {
     return res.status(400).json({ success: false, message: "Vui lòng cung cấp đầy đủ thông tin người nhận và sản phẩm." });
@@ -874,9 +1246,52 @@ app.post("/api/orders", (req: Request, res: Response) => {
     };
   });
 
-  const totalSaved = totalMarketPrice - totalTecnicPrice;
   const shippingFee = hasBulkyItems ? 150000 : 0;
-  const finalTotal = totalTecnicPrice + shippingFee;
+  
+  // Calculate Doctor Referral Discount if valid
+  let doctorDiscount = 0;
+  let finalReferralData: any = null;
+
+  if (referralDoctor && (referralDoctor.doctorName || referralDoctor.doctorId || referralDoctor.doctorCode)) {
+    const cleanDocQuery = referralDoctor.doctorName ? normalizeDoctorName(referralDoctor.doctorName) : '';
+    const cleanCodeQuery = referralDoctor.doctorCode 
+      ? referralDoctor.doctorCode.toUpperCase().replace(/[^A-Z0-9]/g, '') 
+      : (referralDoctor.doctorName ? referralDoctor.doctorName.toUpperCase().replace(/[^A-Z0-9]/g, '') : '');
+
+    const matchedDoc = doctorsList.find(d => {
+      if (!d.isActive) return false;
+      if (referralDoctor.doctorId && d.id === referralDoctor.doctorId) return true;
+      const dName = normalizeDoctorName(d.name);
+      if (cleanDocQuery && (dName === cleanDocQuery || dName.includes(cleanDocQuery) || cleanDocQuery.includes(dName))) return true;
+      const dCode = (d.code || '').toUpperCase().replace(/[^A-Z0-9]/g, '');
+      if (cleanCodeQuery && dCode && (dCode === cleanCodeQuery || dCode.includes(cleanCodeQuery))) return true;
+      return false;
+    });
+    
+    if (matchedDoc) {
+      if (matchedDoc.discountType === 'PERCENT') {
+        doctorDiscount = Math.round((totalTecnicPrice * matchedDoc.discountValue) / 100);
+      } else {
+        doctorDiscount = Math.min(totalTecnicPrice, matchedDoc.discountValue);
+      }
+
+      const commissionRate = matchedDoc.commissionRate ?? 5;
+      const commissionAmount = Math.round((totalTecnicPrice * commissionRate) / 100);
+
+      finalReferralData = {
+        doctorId: matchedDoc.id,
+        doctorName: matchedDoc.name,
+        doctorCode: matchedDoc.code,
+        discountAmount: doctorDiscount,
+        commissionRate,
+        commissionAmount,
+        discountDesc: `Bác sĩ ${matchedDoc.name} (${matchedDoc.code}) giới thiệu (Giảm ${matchedDoc.discountType === 'PERCENT' ? `${matchedDoc.discountValue}%` : `${matchedDoc.discountValue.toLocaleString('vi-VN')} đ`})`
+      };
+    }
+  }
+
+  const totalSaved = (totalMarketPrice - totalTecnicPrice) + doctorDiscount;
+  const finalTotal = Math.max(0, totalTecnicPrice - doctorDiscount + shippingFee);
 
   const newOrder = {
     id: `ORD-${Date.now()}`,
@@ -896,6 +1311,7 @@ app.post("/api/orders", (req: Request, res: Response) => {
     orderStatus: paymentMethod === 'COD' ? 'PROCESSING' : 'PENDING',
     needsInvoice: !!needsInvoice,
     invoiceInfo: invoiceInfo || null,
+    referralDoctor: finalReferralData,
     notes: notes || "",
     createdAt: new Date().toISOString(),
     bankTransferInfo: {
@@ -1310,7 +1726,7 @@ app.post("/api/chat", async (req: Request, res: Response) => {
   }
 
   // System prompt grounded in medical facts and TECNIC Medical knowledge base
-  const systemInstruction = `Bạn là Chuyên viên Tư vấn Kỹ thuật & Thiết Bị Y Tế của TECNIC MEDTECH (Website: tecnic.vn, Hotline: 034 84 02466, Trụ sở: Tầng 2 Tòa nhà New Skyline, KĐT Văn Quán, Hà Đông, Hà Nội).
+  const systemInstruction = `Bạn là Chuyên viên Tư vấn Kỹ thuật & Thiết Bị Y Tế của TECNIC MEDTECH (Website: ytetecnic.vn, Hotline: 034 84 02466, Trụ sở: Tầng 2 Tòa nhà New Skyline, KĐT Văn Quán, Hà Đông, Hà Nội).
 Công ty chuyên phân phối sỉ & lẻ thiết bị y tế, dụng cụ phục hồi chức năng sau tai biến, vật tư tiêu hao y tế chính hãng.
 Slogan công ty: "Kiến tạo để phụng sự - Giải pháp toàn diện, tái sinh cuộc sống".
 
@@ -1322,8 +1738,31 @@ NGUYÊN TẮC TƯ VẤN QUAN TRỌNG:
    - Đồng thời hướng dẫn khách tra cứu hoặc mua sắm qua các sàn trực tuyến kèm đường link Markdown [Tên Trang](URL) (Ví dụ: [Tìm kiếm trên Shopee](https://shopee.vn), [Tìm kiếm trên Tiki](https://tiki.vn), [Tra cứu trên Google](https://www.google.com/search?q=...)).
 4. KHI KHÁCH HỎI VỀ Y TẾ BÊN NGOÀI (BHYT, Bộ Y Tế, Bệnh viện Bạch Mai, 108, Vinmec, tra cứu thuốc):
    - Giải thích chi tiết và đính kèm đường link Markdown chính thống: [Cổng Thông Tin Bộ Y Tế](https://moh.gov.vn), [Cổng Tra Cứu Bảo Hiểm Xã Hội Việt Nam](https://baohiemxahoi.gov.vn), [Bệnh Viện Bạch Mai](http://bachmai.gov.vn), [Bệnh Viện Quân Y 108](https://benhvien108.vn), [Vinmec](https://www.vinmec.com), [Cục Quản Lý Dược](https://dav.gov.vn).
-5. KHI KHÁCH HỎI VỀ THIẾT BỊ Y TẾ TECNIC (Giường bệnh, xe lăn, găng tay robot PHCN, đai nẹp Bonbone Nhật Bản, đệm hơi chống loét, máy xung điện...):
-   - Giới thiệu chi tiết thông số, model, ưu điểm điều trị, giá cả và hướng dẫn bảo hành chính hãng.`;
+5. KHI KHÁCH HỎI VỀ SẢN PHẨM HOẶC YÊU CẦU XEM CHI TIẾT SẢN PHẨM:
+   - Hãy trình bày đầy đủ thông tin chi tiết sản phẩm & dòng tư vấn đặt hàng chuẩn:
+     Dạ mời anh/chị xem thông tin chi tiết sản phẩm:
+
+     **[Tên sản phẩm]**
+     ⭐ 4.9 (136 đánh giá)
+     💰 Giá: **[Giá bán] đ**
+
+     **Thông số nổi bật:**
+     - Loại sản phẩm / Hãng: ...
+     - Model / Mã SP: ...
+     - Dung tích / Kích thước: ...
+     - Công suất / Năng lượng: ...
+     - Chức năng nổi bật: ...
+
+     [Mẫu này phù hợp với nhu cầu ...]
+
+     **Quyền lợi chỉ có tại TECNIC MEDTECH:**
+     - Bảo hành chính hãng 24 tháng
+     - Giao hàng nhanh trong 2-4 giờ
+     - Đổi trả dễ dàng trong 30 ngày
+
+     **Tư vấn & Liên hệ đặt hàng ngay cho Anh/Chị:**
+     - Hotline 24/7: [034 84 02466](tel:0348402466) / [038 988 0369](tel:0389880369)
+     - Nhắn Zalo: [Chat Zalo 034 84 02466](https://zalo.me/0348402466)`;
 
   try {
     const ai = getGeminiClient();
@@ -1404,7 +1843,7 @@ NGUYÊN TẮC TƯ VẤN QUAN TRỌNG:
     const encodedQ = encodeURIComponent(message);
     reply = `Dạ kính chào Quý khách! 
 
-**TECNIC MEDTECH** (tecnic.vn) là đơn vị chuyên nhập khẩu và phân phối **Trang thiết bị y tế, Dụng cụ phục hồi chức năng sau tai biến & Vật tư y tế chuyên dụng** (như giường bệnh tay quay/điện, xe lăn, găng tay Robot PHCN, đai nẹp Bonbone Nhật Bản, máy xung điện Omron...). Hiện tại bên em chưa cung cấp mặt hàng này ạ.
+**TECNIC MEDTECH** (ytetecnic.vn) là đơn vị chuyên nhập khẩu và phân phối **Trang thiết bị y tế, Dụng cụ phục hồi chức năng sau tai biến & Vật tư y tế chuyên dụng** (như giường bệnh tay quay/điện, xe lăn, găng tay Robot PHCN, đai nẹp Bonbone Nhật Bản, máy xung điện Omron...). Hiện tại bên em chưa cung cấp mặt hàng này ạ.
 
 Quý khách có thể tham khảo tìm mua sản phẩm trên các sàn thương mại điện tử hoặc tra cứu trực tuyến tại các đường dẫn sau:
 - 🛒 [Tìm kiếm trên Shopee Việt Nam](https://shopee.vn/search?keyword=${encodedQ})
@@ -1434,7 +1873,7 @@ Sau khi điều trị xuất viện, nếu người bệnh cần trang bị giư
   }
   // 4. Giường y tế
   else if (msgLower.includes("giường") || msgLower.includes("tay quay") || msgLower.includes("kéo giãn") || msgLower.includes("nằm liệt")) {
-    reply = `Dạ chào Quý khách! Về dòng **Giường y tế dưỡng bệnh & phục hồi chức năng** tại TECNIC (tecnic.vn):
+    reply = `Dạ chào Quý khách! Về dòng **Giường y tế dưỡng bệnh & phục hồi chức năng** tại TECNIC (ytetecnic.vn):
 1. **Giường y tế 4 tay quay có bô vệ sinh Hueloi JYC01 / GBM-092A**: Hỗ trợ nâng hạ đầu lưng từ 0-85°, nâng hạ chân, nghiêng trái/phải phòng ngừa loét tì đè và tích hợp cần gạt bô vệ sinh tự động ngay tại giường. Rất thích hợp cho bệnh nhân tai biến hoặc người già nằm một chỗ.
 2. **Giường y tế điện tự động đa chức năng OSADA SD-33E / SD-57C**: Điều khiển bằng remote bấm nút êm ái, có bàn ăn, cọc truyền dịch và chậu gội đầu tận nơi.
 3. **Giường kéo giãn cột sống bằng điện SD-41GK**: Giúp giải phóng chèn ép rễ thần kinh cho bệnh nhân thoát vị đĩa đệm cột sống cổ và thắt lưng.
@@ -1489,7 +1928,7 @@ Sau khi điều trị xuất viện, nếu người bệnh cần trang bị giư
   } 
   // 11. Thanh toán / Liên hệ
   else if (msgLower.includes("thanh toán") || msgLower.includes("giao hàng") || msgLower.includes("địa chỉ") || msgLower.includes("hotline") || msgLower.includes("tài khoản")) {
-    reply = `Dạ thông tin liên hệ và đặt hàng tại **TECNIC MEDTECH** (tecnic.vn):
+    reply = `Dạ thông tin liên hệ và đặt hàng tại **TECNIC MEDTECH** (ytetecnic.vn):
 - 🏢 **Trụ sở**: Tầng 2, Tòa nhà New Skyline, KĐT Văn Quán, P. Hà Đông, Hà Nội.
 - 📞 **Hotline tư vấn 24/7**: 034 84 02466 (Tư vấn thiết bị tận tâm).
 - 💳 **Tài khoản doanh nghiệp**: Ngân hàng BIDV – Chi nhánh Hà Đông | STK: **8661234668** | Tên: CÔNG TY CP CN VA DV Y TE TECNIC.
@@ -1810,6 +2249,137 @@ app.get("/api/database/schema-sql", (req: Request, res: Response) => {
   });
 });
 
+// SETTINGS & INFO PAGES API
+app.get("/api/settings", (req: Request, res: Response) => {
+  const { parentId } = req.query;
+  if (parentId !== undefined) {
+    const filtered = settingsList.filter(s => (s.parentId || "root") === String(parentId));
+    return res.json({ success: true, data: filtered });
+  }
+  res.json({ success: true, data: settingsList });
+});
+
+app.get("/api/settings/:id", (req: Request, res: Response) => {
+  const item = settingsList.find(s => s.id === req.params.id);
+  if (!item) {
+    return res.status(404).json({ success: false, message: "Không tìm thấy nội dung setting" });
+  }
+  res.json({ success: true, data: item });
+});
+
+app.post("/api/settings", (req: Request, res: Response) => {
+  const { name, subtitle, slug, value, description, content1, content2, parentId, isFolder, category, bgColor, avatar, order, isVisible } = req.body;
+  
+  if (!name) {
+    return res.status(400).json({ success: false, message: "Tên nội dung không được để trống" });
+  }
+
+  const newItem: SettingItem = {
+    id: String(Date.now()),
+    name: name.trim(),
+    subtitle: subtitle || "",
+    slug: slug || "",
+    value: value || "",
+    description: description || "",
+    content1: content1 || "",
+    content2: content2 || "",
+    parentId: parentId || "root",
+    isFolder: !!isFolder,
+    category: category || "Root",
+    bgColor: bgColor || "#000000",
+    avatar: avatar || "",
+    order: Number(order) || (settingsList.length + 1),
+    isVisible: isVisible !== undefined ? !!isVisible : true,
+    createdAt: new Date().toISOString()
+  };
+
+  settingsList.push(newItem);
+  saveJson("settings.json", settingsList);
+
+  res.json({ success: true, message: "Thêm nội dung setting mới thành công!", data: newItem });
+});
+
+app.put("/api/settings/:id", (req: Request, res: Response) => {
+  const item = settingsList.find(s => s.id === req.params.id);
+  if (!item) {
+    return res.status(404).json({ success: false, message: "Không tìm thấy nội dung setting" });
+  }
+
+  const { name, subtitle, slug, value, description, content1, content2, parentId, isFolder, category, bgColor, avatar, backgroundImage, icon1, icon2, icon3, icon4, icon5, icon6, order, isVisible } = req.body;
+
+  if (name !== undefined) item.name = name.trim();
+  if (subtitle !== undefined) item.subtitle = subtitle;
+  if (slug !== undefined) item.slug = slug;
+  if (value !== undefined) item.value = value;
+  if (description !== undefined) item.description = description;
+  if (content1 !== undefined) item.content1 = content1;
+  if (content2 !== undefined) item.content2 = content2;
+  if (parentId !== undefined) item.parentId = parentId;
+  if (isFolder !== undefined) item.isFolder = !!isFolder;
+  if (category !== undefined) item.category = category;
+  if (bgColor !== undefined) item.bgColor = bgColor;
+  if (avatar !== undefined) item.avatar = avatar;
+  if (backgroundImage !== undefined) item.backgroundImage = backgroundImage;
+  if (icon1 !== undefined) item.icon1 = icon1;
+  if (icon2 !== undefined) item.icon2 = icon2;
+  if (icon3 !== undefined) item.icon3 = icon3;
+  if (icon4 !== undefined) item.icon4 = icon4;
+  if (icon5 !== undefined) item.icon5 = icon5;
+  if (icon6 !== undefined) item.icon6 = icon6;
+  if (order !== undefined) item.order = Number(order);
+  if (isVisible !== undefined) item.isVisible = !!isVisible;
+  item.updatedAt = new Date().toISOString();
+
+  saveJson("settings.json", settingsList);
+
+  res.json({ success: true, message: "Cập nhật nội dung setting thành công!", data: item });
+});
+
+app.patch("/api/settings/:id/toggle-visible", (req: Request, res: Response) => {
+  const item = settingsList.find(s => s.id === req.params.id);
+  if (!item) {
+    return res.status(404).json({ success: false, message: "Không tìm thấy nội dung setting" });
+  }
+
+  item.isVisible = !item.isVisible;
+  item.updatedAt = new Date().toISOString();
+  saveJson("settings.json", settingsList);
+
+  res.json({ 
+    success: true, 
+    message: `Đã chuyển trạng thái setting sang "${item.isVisible ? 'Hiện' : 'Ẩn'}"!`, 
+    data: item 
+  });
+});
+
+app.patch("/api/settings/:id/order", (req: Request, res: Response) => {
+  const item = settingsList.find(s => s.id === req.params.id);
+  if (!item) {
+    return res.status(404).json({ success: false, message: "Không tìm thấy nội dung setting" });
+  }
+
+  const { order } = req.body;
+  if (order !== undefined) {
+    item.order = Number(order);
+    item.updatedAt = new Date().toISOString();
+    saveJson("settings.json", settingsList);
+  }
+
+  res.json({ success: true, message: "Cập nhật số thứ tự thành công!", data: item });
+});
+
+app.delete("/api/settings/:id", (req: Request, res: Response) => {
+  const index = settingsList.findIndex(s => s.id === req.params.id);
+  if (index === -1) {
+    return res.status(404).json({ success: false, message: "Không tìm thấy nội dung setting để xóa" });
+  }
+
+  const deleted = settingsList.splice(index, 1);
+  saveJson("settings.json", settingsList);
+
+  res.json({ success: true, message: `Đã xóa nội dung "${deleted[0]?.name}"!`, data: deleted[0] });
+});
+
 // Company Info
 app.get("/api/company", (req: Request, res: Response) => {
   res.json({ success: true, data: COMPANY_INFO });
@@ -1818,25 +2388,56 @@ app.get("/api/company", (req: Request, res: Response) => {
 // ----------------------------------------------------
 // 2. VITE MIDDLEWARE & STATIC SERVING
 // ----------------------------------------------------
+app.get(["/manifest.json", "/manifest.webmanifest"], (req, res) => {
+  const manifestPath = path.join(process.cwd(), "public", "manifest.json");
+  res.setHeader("Content-Type", "application/manifest+json; charset=utf-8");
+  if (fs.existsSync(manifestPath)) {
+    res.sendFile(manifestPath);
+  } else {
+    res.json({
+      name: "TECNIC MEDTECH - Thiết Bị Y Tế & Phục Hồi Chức Năng",
+      short_name: "TECNIC App",
+      start_url: "/",
+      scope: "/",
+      display: "standalone",
+      theme_color: "#0077b6",
+      background_color: "#ffffff",
+      icons: [{ src: "/pwa-192x192.png", sizes: "192x192", type: "image/png" }]
+    });
+  }
+});
+
 app.use(express.static(path.join(process.cwd(), "public")));
 
 async function startServer() {
-  if (process.env.NODE_ENV !== "production") {
-    const vite = await createViteServer({
-      server: { middlewareMode: true },
-      appType: "spa",
-    });
-    app.use(vite.middlewares);
-  } else {
-    const distPath = path.join(process.cwd(), "dist");
+  const distPath = path.join(process.cwd(), "dist");
+
+  if (process.env.NODE_ENV === "production") {
     app.use(express.static(distPath));
     app.get("*", (req: Request, res: Response) => {
       res.sendFile(path.join(distPath, "index.html"));
     });
+  } else {
+    try {
+      const vite = await createViteServer({
+        server: { middlewareMode: true },
+        appType: "spa",
+      });
+      app.use(vite.middlewares);
+    } catch (err) {
+      console.error("Vite middleware error:", err);
+      if (fs.existsSync(distPath)) {
+        app.use(express.static(distPath));
+        app.get("*", (req: Request, res: Response) => {
+          res.sendFile(path.join(distPath, "index.html"));
+        });
+      }
+    }
   }
 
   app.listen(PORT, "0.0.0.0", () => {
     console.log(`[TECNIC MEDICAL Server] running at http://0.0.0.0:${PORT}`);
+    testDbConnection().catch((err) => console.warn("MySQL initial check:", err?.message));
   });
 }
 

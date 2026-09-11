@@ -20,7 +20,8 @@
         "./src/*"
       ]
     },
-    "noEmit": true
+    "noEmit": true,
+    "types": ["vite/client", "vite-plugin-pwa/client"]
   },
   "include": [
     "src",
