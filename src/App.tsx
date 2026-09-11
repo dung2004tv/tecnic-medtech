@@ -31,14 +31,16 @@ import { FloatingContactWidgets } from './components/FloatingContactWidgets';
 import { MobileBottomNav } from './components/MobileBottomNav';
 import { MetaCategoryHeader } from './components/MetaCategoryHeader';
 import { MetaSidebarFilter } from './components/MetaSidebarFilter';
-import { PWAInstallModal } from './components/PWAInstallModal';
-import { FloatingInstallPrompt } from './components/FloatingInstallPrompt';
+import { useIsAppMode } from './hooks/useIsAppMode';
 
 import { PRODUCTS as INITIAL_PRODUCTS, CATEGORIES } from './data/productsData';
 import { Product, CartItem, User, CategoryId, Order, Doctor } from './types';
 import { signOutFirebase } from './firebase';
 
 export default function App() {
+  // 0. CHẾ ĐỘ APP (PWA Standalone / Cài đặt ra màn hình chính) hay WEB BROWSER
+  const isAppMode = useIsAppMode();
+
   // 1. STATE: Trang chủ mặc định là HOME (Banner + Sản phẩm bán chạy dưới banner + Danh mục + Bài báo)
   const [currentView, setCurrentView] = useState<AppView>('HOME');
   const [products, setProducts] = useState<Product[]>(INITIAL_PRODUCTS);
@@ -121,7 +123,6 @@ export default function App() {
     };
   }, []);
   const [isOrderHistoryOpen, setIsOrderHistoryOpen] = useState(false);
-  const [isInstallModalOpen, setIsInstallModalOpen] = useState(false);
   const [selectedArticleId, setSelectedArticleId] = useState<string | null>(null);
 
   // Toast Notification
@@ -718,7 +719,6 @@ export default function App() {
         }}
         currentSearchKeyword={searchKeyword}
         onLogoClick={() => handleSelectView('HOME')}
-        onOpenInstallApp={() => setIsInstallModalOpen(true)}
       />
 
       {/* 3. NAVIGATION (Mega Menu, View Tabs & Category Tabs) */}
@@ -739,7 +739,7 @@ export default function App() {
       )}
 
       {/* 5. MAIN BODY CONTENT */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-2.5 sm:px-4 py-4 sm:py-6 space-y-6 sm:space-y-8 pb-20 md:pb-8">
+      <main className={`flex-1 max-w-7xl w-full mx-auto px-2.5 sm:px-4 py-4 sm:py-6 space-y-6 sm:space-y-8 ${isAppMode ? 'pb-20 md:pb-8' : 'pb-8 sm:pb-12'}`}>
         
         {/* VIEW: DEDICATED PRODUCT DETAIL PAGE (Khớp yêu cầu: chuyển sang 1 trang khác xem chi tiết sản phẩm) */}
         {selectedProduct ? (
@@ -1207,7 +1207,6 @@ export default function App() {
         onOpenAdmin={() => {
           setIsAdminOpen(true);
         }}
-        onOpenInstallApp={() => setIsInstallModalOpen(true)}
       />
 
       {/* 8. FLOATING CHATBOT */}
@@ -1231,10 +1230,11 @@ export default function App() {
           handleSelectCategory('ALL');
         }}
         allProducts={products}
+        isAppMode={isAppMode}
       />
 
-      {/* 9. FLOATING CONTACT WIDGETS (Hotline rung đỏ 038 988 0369 bên trái + Zalo và nút TOP bên phải) */}
-      <FloatingContactWidgets />
+      {/* 9. FLOATING CONTACT WIDGETS (Hotline rung đỏ bên trái + Zalo bên phải) */}
+      <FloatingContactWidgets isAppMode={isAppMode} />
 
       {/* 10. MODALS */}
       <CartModal
@@ -1327,12 +1327,6 @@ export default function App() {
         currentUser={currentUser}
       />
 
-      {/* PWA INSTALL MODAL */}
-      <PWAInstallModal
-        isOpen={isInstallModalOpen}
-        onClose={() => setIsInstallModalOpen(false)}
-      />
-
       {/* MOBILE FILTER DRAWER MODAL */}
       {isMobileFilterOpen && (
         <div className="fixed inset-0 z-50 md:hidden flex flex-col justify-end bg-slate-900/60 backdrop-blur-xs animate-fade-in">
@@ -1396,17 +1390,19 @@ export default function App() {
         </div>
       )}
 
-      {/* 11. MOBILE BOTTOM APP BAR (Dành riêng cho màn hình điện thoại, chuẩn App di động hiện đại) */}
-      <MobileBottomNav
-        currentView={currentView}
-        onSelectView={(view) => handleSelectView(view)}
-        cartCount={cartCount}
-        currentUser={currentUser}
-        onOpenAuth={(mode) => {
-          setAuthMode(mode);
-          setIsAuthOpen(true);
-        }}
-      />
+      {/* MOBILE BOTTOM NAVIGATION BAR: Chỉ kích hoạt khi mở bằng App (Màn hình chính / PWA / Standalone / APK) */}
+      {isAppMode && (
+        <MobileBottomNav
+          currentView={currentView}
+          onSelectView={(view) => handleSelectView(view)}
+          cartCount={cartCount}
+          currentUser={currentUser}
+          onOpenAuth={(mode) => {
+            setAuthMode(mode);
+            setIsAuthOpen(true);
+          }}
+        />
+      )}
 
     </div>
   );

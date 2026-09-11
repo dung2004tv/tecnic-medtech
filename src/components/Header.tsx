@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { 
   Phone, Mail, Search, ShoppingCart, User as UserIcon, 
   Heart, Sparkles, LogOut, ChevronDown, 
-  FileText, ShieldCheck, MapPin, Stethoscope, Download, Smartphone
+  FileText, ShieldCheck, MapPin, Stethoscope, Download
 } from 'lucide-react';
 import { Product, User } from '../types';
 import { COMPANY_INFO } from '../data/companyData';
@@ -25,7 +25,6 @@ interface HeaderProps {
   onQuickSearchTag?: (tag: string) => void;
   currentSearchKeyword: string;
   onLogoClick?: () => void;
-  onOpenInstallApp?: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -43,8 +42,7 @@ export const Header: React.FC<HeaderProps> = ({
   onOpenAdmin,
   onQuickSearchTag,
   currentSearchKeyword,
-  onLogoClick,
-  onOpenInstallApp
+  onLogoClick
 }) => {
   const [searchTerm, setSearchTerm] = useState(currentSearchKeyword);
   const [showSuggestions, setShowSuggestions] = useState(false);
@@ -123,20 +121,8 @@ export const Header: React.FC<HeaderProps> = ({
             </a>
           </div>
 
-          {/* Quick Links: Install App, Order History & Logout */}
+          {/* Quick Links: Order History & User Actions */}
           <div className="flex items-center gap-2 sm:gap-3 text-xs shrink-0">
-            {onOpenInstallApp && (
-              <button
-                type="button"
-                onClick={onOpenInstallApp}
-                className="flex items-center gap-1.5 bg-[#0077b6] hover:bg-[#023e8a] text-white font-bold text-[11px] sm:text-xs px-2.5 py-1 rounded-full cursor-pointer shadow-xs transition transform active:scale-95"
-                title="Cài đặt ứng dụng TECNIC App về máy tính & điện thoại"
-              >
-                <Smartphone className="w-3.5 h-3.5 text-amber-300" />
-                <span className="font-extrabold">Cài App</span>
-              </button>
-            )}
-
             {currentUser ? (
               <div className="flex items-center gap-1.5 sm:gap-2">
                 <button 

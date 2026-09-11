@@ -17,7 +17,6 @@ interface FooterProps {
   onOpenArticles?: () => void;
   onOpenProducts?: () => void;
   onOpenAdmin?: () => void;
-  onOpenInstallApp?: () => void;
 }
 
 export const Footer: React.FC<FooterProps> = ({
@@ -28,7 +27,6 @@ export const Footer: React.FC<FooterProps> = ({
   onOpenArticles,
   onOpenProducts,
   onOpenAdmin,
-  onOpenInstallApp
 }) => {
   const handleOpenMap = () => {
     window.open(COMPANY_INFO.googleMapsUrl, '_blank');
@@ -179,17 +177,6 @@ export const Footer: React.FC<FooterProps> = ({
                   Liên hệ & Đặt lịch tư vấn
                 </button>
               </li>
-              {onOpenInstallApp && (
-                <li>
-                  <button 
-                    onClick={onOpenInstallApp} 
-                    className="hover:text-emerald-600 hover:translate-x-1 transition-all flex items-center gap-1.5 font-bold text-emerald-600 cursor-pointer"
-                  >
-                    <ChevronRight className="w-3.5 h-3.5 text-emerald-600" />
-                    📱 Tải TECNIC App cho iOS & Android
-                  </button>
-                </li>
-              )}
             </ul>
           </div>
 

@@ -34,6 +34,7 @@ interface ChatBotProps {
   onOpenArticles?: () => void;
   onOpenProducts?: () => void;
   allProducts: Product[];
+  isAppMode?: boolean;
 }
 
 interface ExtendedChatMessage extends ChatMessage {
@@ -604,7 +605,8 @@ export const ChatBot: React.FC<ChatBotProps> = ({
   onOpenContact,
   onOpenArticles,
   onOpenProducts,
-  allProducts 
+  allProducts,
+  isAppMode = false
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<ExtendedChatMessage[]>(INITIAL_MESSAGES);
@@ -783,7 +785,7 @@ ${adviceStr}
   };
 
   return (
-    <aside aria-label="Hỗ trợ trực tuyến" className="fixed bottom-18 sm:bottom-4 right-3 sm:right-6 z-40 flex flex-col items-end">
+    <aside aria-label="Hỗ trợ trực tuyến" className={`fixed ${isAppMode ? 'bottom-18 md:bottom-4' : 'bottom-4'} right-3 sm:right-6 z-40 flex flex-col items-end`}>
       
       {/* CHAT WINDOW */}
       {isOpen && (
