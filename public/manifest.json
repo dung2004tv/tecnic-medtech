@@ -1,7 +1,7 @@
 {
-  "name": "TECNIC MEDTECH - Thiết Bị Y Tế & Phục Hồi Chức Năng",
-  "short_name": "TECNIC App",
-  "description": "Hệ thống phân phối thiết bị y tế, giường bệnh đa năng, xe lăn, đai nẹp chính hãng TECNIC MEDTECH.",
+  "name": "TECNIC Medtech - Thiết Bị Y Tế & Phục Hồi Chức Năng",
+  "short_name": "TECNIC Medtech",
+  "description": "Hệ thống phân phối thiết bị y tế, giường bệnh đa năng, xe lăn, đai nẹp chính hãng TECNIC Medtech.",
   "start_url": "/?mode=app",
   "scope": "/",
   "id": "/",

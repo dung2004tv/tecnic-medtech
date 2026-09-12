@@ -14,9 +14,9 @@ export default defineConfig(() => {
         includeAssets: ['logo-tecnic.jpg', 'logo-tecnic.png', 'apple-touch-icon.png', 'pwa-192x192.png', 'pwa-512x512.png'],
         manifest: {
           id: '/',
-          name: 'TECNIC MEDTECH - Thiết Bị Y Tế & Phục Hồi Chức Năng',
-          short_name: 'TECNIC App',
-          description: 'Hệ thống phân phối thiết bị y tế, giường bệnh đa năng, xe lăn, đai nẹp chính hãng TECNIC MEDTECH.',
+          name: 'TECNIC Medtech - Thiết Bị Y Tế & Phục Hồi Chức Năng',
+          short_name: 'TECNIC Medtech',
+          description: 'Hệ thống phân phối thiết bị y tế, giường bệnh đa năng, xe lăn, đai nẹp chính hãng TECNIC Medtech.',
           theme_color: '#0077b6',
           background_color: '#ffffff',
           display: 'standalone',

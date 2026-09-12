@@ -1,4 +1,5 @@
 import express, { Request, Response } from "express";
+import http from "http";
 import path from "path";
 import fs from "fs";
 import { createServer as createViteServer } from "vite";
@@ -2411,6 +2412,7 @@ app.use(express.static(path.join(process.cwd(), "public")));
 
 async function startServer() {
   const distPath = path.join(process.cwd(), "dist");
+  const httpServer = http.createServer(app);
 
   if (process.env.NODE_ENV === "production") {
     app.use(express.static(distPath));
@@ -2419,8 +2421,12 @@ async function startServer() {
     });
   } else {
     try {
+      const isHmrDisabled = process.env.DISABLE_HMR === "true";
       const vite = await createViteServer({
-        server: { middlewareMode: true },
+        server: {
+          middlewareMode: true,
+          hmr: isHmrDisabled ? false : { server: httpServer },
+        },
         appType: "spa",
       });
       app.use(vite.middlewares);
@@ -2435,7 +2441,7 @@ async function startServer() {
     }
   }
 
-  app.listen(PORT, "0.0.0.0", () => {
+  httpServer.listen(PORT, "0.0.0.0", () => {
     console.log(`[TECNIC MEDICAL Server] running at http://0.0.0.0:${PORT}`);
     testDbConnection().catch((err) => console.warn("MySQL initial check:", err?.message));
   });

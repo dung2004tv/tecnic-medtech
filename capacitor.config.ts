@@ -2,7 +2,7 @@ import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
   appId: 'com.tecnicmedtech.app',
-  appName: 'TECNIC MEDTECH',
+  appName: 'TECNIC Medtech',
   webDir: 'dist',
   server: {
     androidScheme: 'https'

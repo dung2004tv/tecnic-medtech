@@ -38,8 +38,18 @@ self.addEventListener('activate', (event) => {
 });
 
 self.addEventListener('fetch', (event) => {
-  // Pass through non-GET and API calls
-  if (event.request.method !== 'GET' || event.request.url.includes('/api/')) {
+  const url = event.request.url;
+  // Pass through non-GET, API calls, Vite internals, source files, and dev queries
+  if (
+    event.request.method !== 'GET' || 
+    url.includes('/api/') ||
+    url.includes('/@') ||
+    url.includes('/src/') ||
+    url.includes('/node_modules/') ||
+    url.includes('?v=') ||
+    url.includes('?t=') ||
+    url.includes('hot-update')
+  ) {
     return;
   }
 

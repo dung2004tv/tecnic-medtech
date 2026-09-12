@@ -1,6 +1,72 @@
 <!doctype html>
 <html lang="vi">
   <head>
+    <script>
+      // Prevent failed Vite HMR WebSocket connection in sandboxed iframe environment
+      (function() {
+        try {
+          const OrigWebSocket = window.WebSocket;
+          if (OrigWebSocket) {
+            window.WebSocket = function(url, protocols) {
+              const urlStr = String(url || '');
+              const protoStr = String(protocols || '');
+              if (protoStr.includes('vite-hmr') || urlStr.includes('vite-hmr') || urlStr.includes('token=')) {
+                const target = new EventTarget();
+                target.readyState = 1; // WebSocket.OPEN
+                target.send = function() {};
+                target.close = function() { target.readyState = 3; };
+                target.binaryType = 'blob';
+                target.bufferedAmount = 0;
+                target.extensions = '';
+                target.protocol = 'vite-hmr';
+                target.url = urlStr;
+                setTimeout(function() {
+                  const ev = new Event('open');
+                  if (typeof target.onopen === 'function') target.onopen(ev);
+                  target.dispatchEvent(ev);
+                }, 10);
+                return target;
+              }
+              return new OrigWebSocket(url, protocols);
+            };
+            window.WebSocket.prototype = OrigWebSocket.prototype;
+            window.WebSocket.CONNECTING = 0;
+            window.WebSocket.OPEN = 1;
+            window.WebSocket.CLOSING = 2;
+            window.WebSocket.CLOSED = 3;
+          }
+
+          // Suppress any remaining [vite] log in console
+          ['error', 'warn', 'log', 'info', 'debug'].forEach(function(level) {
+            const orig = console[level];
+            if (typeof orig === 'function') {
+              console[level] = function(...args) {
+                for (let i = 0; i < args.length; i++) {
+                  if (typeof args[i] === 'string' && args[i].includes('[vite]')) {
+                    return; // silently discard
+                  }
+                }
+                orig.apply(console, args);
+              };
+            }
+          });
+
+          window.addEventListener('error', function(e) {
+            if (e && e.message && String(e.message).includes('[vite]')) {
+              e.stopImmediatePropagation();
+              e.preventDefault();
+            }
+          }, true);
+
+          window.addEventListener('unhandledrejection', function(e) {
+            if (e && e.reason && String(e.reason).includes('[vite]')) {
+              e.stopImmediatePropagation();
+              e.preventDefault();
+            }
+          }, true);
+        } catch (_) {}
+      })();
+    </script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover" />
     <title>CÔNG TY CỔ PHẦN GIẢI PHÁP CÔNG NGHỆ HỖ TRỢ Y TẾ TECNIC (TECNIC MEDTECH)</title>
@@ -13,7 +79,7 @@
     <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-    <meta name="apple-mobile-web-app-title" content="TECNIC MEDTECH" />
+    <meta name="apple-mobile-web-app-title" content="TECNIC Medtech" />
     <meta name="description" content="TECNIC MEDTECH - Hệ thống phân phối thiết bị y tế, giường bệnh đa năng, xe lăn, đai nẹp chính hãng." />
     <meta name="google-site-verification" content="google4f497aeef07df3f9" />
     
