@@ -1,0 +1,62 @@
+title: Vì sao người nằm lâu dễ bị teo cơ?
+voiceover: audio/voiceover.mp3
+
+[SCENE 1]
+image: scene01.jpg
+duration: 6
+effect: zoom-in
+caption: Vì sao người nằm lâu dễ bị teo cơ?
+
+[SCENE 2]
+image: scene02.jpg
+duration: 9
+effect: pan-right
+caption: Khi nằm lâu, cơ thể ít vận động hơn bình thường
+
+[SCENE 3]
+image: scene03.jpg
+duration: 10
+effect: highlight
+caption: Cơ bắp bình thường cần vận động và chịu tải
+
+[SCENE 4]
+image: scene04.jpg
+duration: 11
+effect: zoom-out
+caption: Ít vận động khiến cơ ít được kích thích
+
+[SCENE 5]
+image: scene05.jpg
+duration: 11
+effect: zoom-in
+caption: Khối lượng và sức mạnh cơ có thể suy giảm theo thời gian
+
+[SCENE 6]
+image: scene06.jpg
+duration: 11
+effect: highlight
+caption: Vì sao chân thường bị ảnh hưởng rõ?
+
+[SCENE 7]
+image: scene07.jpg
+duration: 10
+effect: pan-up
+caption: Cơ yếu khiến khó ngồi dậy, đứng và đi lại
+
+[SCENE 8]
+image: scene08.jpg
+duration: 10
+effect: pan-left
+caption: Nếu kéo dài, khả năng phục hồi vận động có thể khó khăn hơn
+
+[SCENE 9]
+image: scene09.jpg
+duration: 11
+effect: zoom-in
+caption: Vận động phù hợp theo tình trạng người bệnh là điều nên làm
+
+[SCENE 10]
+image: scene10.jpg
+duration: 9
+effect: zoom-out
+caption: Cơ khỏe → vận động → phục hồi
